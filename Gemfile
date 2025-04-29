@@ -53,7 +53,7 @@ group :development, :test do
   gem "pry"
   gem "rspec-rails"
   gem "shoulda-matchers"
-  gem "pundit-matchers", "~> 3.1"
+  gem "pundit-matchers", "~> 4.0"
   gem "webmock"
   gem "vcr"
   gem "factory_bot_rails"
