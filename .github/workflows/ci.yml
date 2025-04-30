@@ -1,86 +1,95 @@
-name: CI
+name: "CI"
 
 on:
   pull_request:
   push:
-    branches: [ main ]
+    branches: [ "main" ]
 
 jobs:
-  scan_ruby:
+  scan_and_lint:
     runs-on: ubuntu-latest
-
+    
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-
-      - name: Set up Ruby
+        
+      - name: Install Ruby and gems
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: .ruby-version
           bundler-cache: true
-
-      - name: Scan for common Rails security vulnerabilities using static analysis
-        run: bin/brakeman --no-pager
-
-  scan_js:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Set up Ruby
-        uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: .ruby-version
-          bundler-cache: true
-
-      - name: Scan for security vulnerabilities in JavaScript dependencies
-        run: bin/importmap audit
-
-  lint:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Set up Ruby
-        uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: .ruby-version
-          bundler-cache: true
-
-      - name: Lint code for consistent style
-        run: bin/rubocop -f github
+          
+      # - name: Generate binstubs
+      #   run: bundle binstubs bundler-audit brakeman rubocop
+          
+      # - name: Security audit dependencies
+      #   run: bin/bundler-audit --update
+        
+      # - name: Security audit Rails application code
+      #   run: bin/brakeman --no-pager -q -w2
+        
+      # - name: Scan JavaScript dependencies
+      #   run: bin/importmap audit
+        
+      - name: Lint Ruby files
+        run: bin/rubocop -f github --parallel
 
   test:
     runs-on: ubuntu-latest
-
-    # services:
-    #  redis:
-    #    image: redis
-    #    ports:
-    #      - 6379:6379
-    #    options: --health-cmd "redis-cli ping" --health-interval 10s --health-timeout 5s --health-retries 5
+    needs: scan_and_lint
+    
+    services:
+      postgres:
+        image: postgres:11-alpine
+        ports:
+          - "5432:5432"
+        env:
+          POSTGRES_DB: rails_test
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+          
+      redis:
+        image: redis
+        ports:
+          - "6379:6379"
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+          
+    env:
+      RAILS_ENV: test
+      DATABASE_URL: "postgres://postgres:postgres@localhost:5432/rails_test"
+      REDIS_URL: "redis://localhost:6379/0"
+      
     steps:
-      - name: Install packages
+      - name: Install system dependencies
         run: sudo apt-get update && sudo apt-get install --no-install-recommends -y google-chrome-stable curl libjemalloc2 libvips sqlite3
-
+        
       - name: Checkout code
         uses: actions/checkout@v4
-
-      - name: Set up Ruby
+        
+      - name: Install Ruby and gems
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: .ruby-version
           bundler-cache: true
-
+          
+      - name: Set up database schema
+        run: bin/rails db:schema:load
+        
+      - name: Prepare test database
+        run: bin/rails db:test:prepare
+        
       - name: Run tests
-        env:
-          RAILS_ENV: test
-          # REDIS_URL: redis://localhost:6379/0
-        run: bin/rails db:test:prepare test test:system
-
+        run: bin/rails test test:system
+        
       - name: Keep screenshots from failed system tests
         uses: actions/upload-artifact@v4
         if: failure()

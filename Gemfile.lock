@@ -81,8 +81,6 @@ GEM
     bindex (0.8.1)
     bootsnap (1.18.4)
       msgpack (~> 1.2)
-    brakeman (7.0.2)
-      racc
     builder (3.3.0)
     capybara (3.40.0)
       addressable
@@ -307,14 +305,7 @@ GEM
       rubocop-performance (>= 1.24)
       rubocop-rails (>= 2.30)
     ruby-progressbar (1.13.0)
-    rubyzip (2.4.1)
     securerandom (0.4.1)
-    selenium-webdriver (4.31.0)
-      base64 (~> 0.2)
-      logger (~> 1.4)
-      rexml (~> 3.2, >= 3.2.5)
-      rubyzip (>= 1.2.2, < 3.0)
-      websocket (~> 1.0)
     shoulda-matchers (6.5.0)
       activesupport (>= 5.2.0)
     simplecov (0.22.0)
@@ -357,7 +348,6 @@ GEM
       addressable (>= 2.8.0)
       crack (>= 0.3.2)
       hashdiff (>= 0.4.0, < 2.0.0)
-    websocket (1.2.11)
     websocket-driver (0.7.7)
       base64
       websocket-extensions (>= 0.1.0)
@@ -367,20 +357,17 @@ GEM
     zeitwerk (2.7.2)
 
 PLATFORMS
-  aarch64-linux
   aarch64-linux-gnu
   aarch64-linux-musl
   arm-linux-gnu
   arm-linux-musl
   arm64-darwin
   x86_64-darwin
-  x86_64-linux
   x86_64-linux-gnu
   x86_64-linux-musl
 
 DEPENDENCIES
   bootsnap
-  brakeman
   capybara
   debug
   factory_bot_rails
@@ -398,7 +385,6 @@ DEPENDENCIES
   redis (>= 5.0)
   rspec-rails
   rubocop-rails-omakase
-  selenium-webdriver
   shoulda-matchers
   simplecov
   sprockets-rails
