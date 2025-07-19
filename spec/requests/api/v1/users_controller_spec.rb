@@ -1,7 +1,9 @@
 require "rails_helper"
 
-RSpec.describe UsersController do
-  xit "should retrieve all users" do
+RSpec.describe "users endpoints", type: :request do
+  it "should retrieve all users" do
+    bob = User.create(username: "Bob3", email: "bob3@gmail.com")
+    
 
   end
 
