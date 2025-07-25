@@ -49,7 +49,8 @@ group :development, :test do
 
   # Omakase Ruby styling [https://github.com/rails/rubocop-rails-omakase/]
   gem "rubocop-rails-omakase", require: false
-
+  gem "bundler-audit"
+  gem "brakeman"
   gem "pry"
   gem "rspec-rails"
   gem "shoulda-matchers"
