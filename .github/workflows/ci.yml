@@ -32,7 +32,7 @@ jobs:
       #   run: bin/importmap audit
         
       - name: Lint Ruby files
-        run: bin/rubocop -f github --parallel --display_only_failed
+        run: bin/rubocop -f github --parallel
 
   test:
     runs-on: ubuntu-latest
