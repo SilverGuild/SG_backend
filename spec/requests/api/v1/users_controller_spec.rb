@@ -13,21 +13,22 @@ RSpec.describe "users endpoints", type: :request do
 
       get "/api/v1/users"
       expect(response).to be_successful
+      
       json = JSON.parse(response.body, symbolize_names: true)
-
+      
       users = json[:data]
       expect(users.count).to eq(3)
-    
+      
       first_user = users.first
       last_user = users.last
-
-      expect(first_user[:id]).to eq(@user1[:id])
+    
+      expect(first_user[:id]).to eq(@user1.id)
       expect(first_user[:attributes][:username]).to eq(@user1[:username])
       expect(first_user[:attributes][:email]).to eq(@user1[:email])
       
       expect(last_user[:id]).to eq(@user3.id)
-      expect(last_user[:username]).to eq(@user3[:username])
-      expect(last_user[:email]).to eq(@user3[email])
+      expect(last_user[:attributes][:username]).to eq(@user3[:username])
+      expect(last_user[:attributes][:email]).to eq(@user3[:email])
     end
 
     xit "should create a new user" do
