@@ -6,9 +6,15 @@ class Api::V1::UsersController < ApplicationController
     render json: UserSerializer.new(users).serializable_hash
   end
 
+  def create
+    user = User.create!(user_params)
+
+    render json: { message: 'Account created successfully', data: user}, status: :created
+  end
+
   private
 
-  def allow_params
-    params.permit(:id, :username, :email)
+  def user_params
+    params.require(:user).permit(:username, :email)
   end
 end
