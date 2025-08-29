@@ -4,9 +4,9 @@ RSpec.describe "users endpoints", type: :request do
 
   describe "Happy Paths" do
     before(:each) do
-      @user1 = User.create(username: "user1", email: "user1@gmail.com")
-      @user2 = User.create(username: "user2", email: "user2@gmail.com")
-      @user3 = User.create(username: "user3", email: "user3@gmail.com")
+      @user1 = User.create!(username: "user1", email: "user1@gmail.com")
+      @user2 = User.create!(username: "user2", email: "user2@gmail.com")
+      @user3 = User.create!(username: "user3", email: "user3@gmail.com")
     end
 
     it "should retrieve all users" do
@@ -22,20 +22,43 @@ RSpec.describe "users endpoints", type: :request do
       first_user = users.first
       last_user = users.last
     
-      expect(first_user[:id]).to eq(@user1.id)
+      expect(first_user[:id]).to eq(@user1[:id])
       expect(first_user[:attributes][:username]).to eq(@user1[:username])
       expect(first_user[:attributes][:email]).to eq(@user1[:email])
       
-      expect(last_user[:id]).to eq(@user3.id)
+      expect(last_user[:id]).to eq(@user3[:id])
       expect(last_user[:attributes][:username]).to eq(@user3[:username])
       expect(last_user[:attributes][:email]).to eq(@user3[:email])
     end
 
-    xit "should create a new user" do
-       bob = User.create(username: "Bob3", email: "bob3@gmail.com")
+    xit "should retrieve one user" do
+
     end
 
-    xit "should retrieve one user" do
-    end
+    it "should create a new user and return 201 Created status" do
+      test_params = {
+        username: "test",
+        email: "test@gmail.com"
+      }
+
+      post "/api/v1/users/", params: test_params, as: :json
+
+      expect(response).to have_http_status(:created)
+
+      json = JSON.parse(response.body, symbolize_names: true)
+      test_user = json[:data]
+
+      expect(test_user[:username]).to eq(test_params[:username])
+      expect(test_user[:email]).to eq(test_params[:email])
+
+      # Show that it is added to existing list of users
+      users = User.all
+
+      expect(users.count).to eq(4)
+
+      last_user = users.last
+
+      expect(last_user[:id]).to eq(test_user[:id])
+    end 
   end
 end
