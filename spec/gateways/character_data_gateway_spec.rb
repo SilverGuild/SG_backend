@@ -16,4 +16,21 @@ RSpec.describe CharacterDataGateway do
       end
     end
   end
+
+  describe "GET /api/2014/races/" do
+    VCR.use_cassette("character_races") do
+
+        character_races = CharacterDataGateway.fetch_racees
+
+        expect(character_races).not_to be_empty
+        expect(character_races.count).to eq(9)
+        expect(character_races.first[:index]).to eq("dragonborn")
+        expect(character_races.last[:index]).to eq("tiefling")
+      end
+  end
+
+  describe "GET /api/2014/languages/" do
+    
+  end
+
 end
