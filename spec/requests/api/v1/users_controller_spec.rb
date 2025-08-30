@@ -10,7 +10,6 @@ RSpec.describe "users endpoints", type: :request do
     end
 
     it "should retrieve all users" do
-
       get "/api/v1/users"
       expect(response).to be_successful
       
@@ -21,18 +20,29 @@ RSpec.describe "users endpoints", type: :request do
       
       first_user = users.first
       last_user = users.last
-    
-      expect(first_user[:id]).to eq(@user1[:id])
-      expect(first_user[:attributes][:username]).to eq(@user1[:username])
-      expect(first_user[:attributes][:email]).to eq(@user1[:email])
+      
+      expect(first_user[:id]).to eq(@user1.id)
+      expect(first_user[:attributes][:username]).to eq(@user1.username)
+      expect(first_user[:attributes][:email]).to eq(@user1.email)
       
       expect(last_user[:id]).to eq(@user3[:id])
-      expect(last_user[:attributes][:username]).to eq(@user3[:username])
-      expect(last_user[:attributes][:email]).to eq(@user3[:email])
+      expect(last_user[:attributes][:username]).to eq(@user3.username)
+      expect(last_user[:attributes][:email]).to eq(@user3.email)
     end
 
-    xit "should retrieve one user" do
+    it "should retrieve one user" do
+      target_id = @user2.id
 
+      get "/api/v1/users/#{target_id}"
+
+      expect(response).to be_successful
+
+      json = JSON.parse(response.body, symbolize_names: true)
+      user = json[:data]
+
+      expect(user[:attributes][:id]).to eq(@user2.id)
+      expect(user[:attributes][:username]).to eq(@user2.username)
+      expect(user[:attributes][:email]).to eq(@user2.email)
     end
 
     it "should create a new user and return 201 Created status" do
