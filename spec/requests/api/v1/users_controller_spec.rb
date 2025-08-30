@@ -70,6 +70,8 @@ RSpec.describe "users endpoints", type: :request do
     end 
 
     it "should updaate a user attribute and return successful status" do
+      user = User.find(@target_id)
+      
       updated_params = {
         username: "user2",
         email: "user2_0@gmail.com"
@@ -80,10 +82,12 @@ RSpec.describe "users endpoints", type: :request do
       expect(response).to be_successful
 
       json = JSON.parse(response.body, symbolize_names: true)
-      target = json[:data]
+      target = json[:data].first
+      # require "pry"; binding.pry
       expect(target[:attributes][:username]).to eq("user2")
       expect(target[:attributes][:email]).to eq("user2_0@gmail.com")
 
+      # Verify db was updated
       user.reload
       expect(user.username).to eq("user2")
       expect(user.email).to eq("user2_0@gmail.com")
