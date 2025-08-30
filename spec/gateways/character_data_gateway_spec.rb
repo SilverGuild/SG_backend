@@ -30,7 +30,14 @@ RSpec.describe CharacterDataGateway do
   end
 
   describe "GET /api/2014/languages/" do
-    
-  end
+    VCR.use_cassette("languages") do
 
+        languages = CharacterDataGateway.fetch_languages
+
+        expect(languages).not_to be_empty
+        expect(languages.count).to eq(16)
+        expect(languages.first[:index]).to eq("abyssal")
+        expect(languages.last[:index]).to eq("undercommon")
+      end
+  end
 end
