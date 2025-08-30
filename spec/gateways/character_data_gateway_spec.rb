@@ -18,19 +18,22 @@ RSpec.describe CharacterDataGateway do
   end
 
   describe "GET /api/2014/races/" do
-    VCR.use_cassette("character_races") do
-
-        character_races = CharacterDataGateway.fetch_racees
+    it "should make a request to D&D 5e API and return all character races" do
+      VCR.use_cassette("character_races") do
+  
+        character_races = CharacterDataGateway.fetch_races
 
         expect(character_races).not_to be_empty
         expect(character_races.count).to eq(9)
         expect(character_races.first[:index]).to eq("dragonborn")
         expect(character_races.last[:index]).to eq("tiefling")
       end
+    end
   end
 
   describe "GET /api/2014/languages/" do
-    VCR.use_cassette("languages") do
+    it "should make a request to D&D 5e API and return all character races" do
+      VCR.use_cassette("languages") do
 
         languages = CharacterDataGateway.fetch_languages
 
@@ -39,5 +42,6 @@ RSpec.describe CharacterDataGateway do
         expect(languages.first[:index]).to eq("abyssal")
         expect(languages.last[:index]).to eq("undercommon")
       end
+    end
   end
 end
