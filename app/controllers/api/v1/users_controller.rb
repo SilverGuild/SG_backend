@@ -7,7 +7,7 @@ class Api::V1::UsersController < ApplicationController
   end
 
   def show
-    user = User.find_by(id: params[:id])\
+    user = User.find(params[:id])
    
     render json: UserSerializer.new(user).serializable_hash
   end
@@ -18,9 +18,17 @@ class Api::V1::UsersController < ApplicationController
     render json: { message: 'Account created successfully', data: user}, status: :created
   end
 
+  def update
+    user = User.find(params[:id])
+
+    user.update(user_params)
+
+    render json: UserSerializer.new(user).serializable_hash
+  end
+
   private
 
   def user_params
-    params.require(:user).permit(:username, :email)
+    params.permit(:username, :email)
   end
 end
