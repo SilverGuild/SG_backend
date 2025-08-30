@@ -38,9 +38,9 @@ RSpec.describe "users endpoints", type: :request do
       expect(response).to be_successful
 
       json = JSON.parse(response.body, symbolize_names: true)
-      user = json[:data]
-
-      expect(user[:attributes][:id]).to eq(@user2.id)
+      user = json[:data].first
+     
+      expect(user[:id]).to eq(@user2.id)
       expect(user[:attributes][:username]).to eq(@user2.username)
       expect(user[:attributes][:email]).to eq(@user2.email)
     end
