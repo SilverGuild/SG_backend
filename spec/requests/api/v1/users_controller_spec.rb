@@ -7,6 +7,8 @@ RSpec.describe "users endpoints", type: :request do
       @user1 = User.create!(username: "user1", email: "user1@gmail.com")
       @user2 = User.create!(username: "user2", email: "user2@gmail.com")
       @user3 = User.create!(username: "user3", email: "user3@gmail.com")
+
+      @target_id = @user2.id
     end
 
     it "should retrieve all users" do
@@ -31,15 +33,12 @@ RSpec.describe "users endpoints", type: :request do
     end
 
     it "should retrieve one user" do
-      target_id = @user2.id
-
-      get "/api/v1/users/#{target_id}"
+      get "/api/v1/users/#{@target_id}"
 
       expect(response).to be_successful
 
       json = JSON.parse(response.body, symbolize_names: true)
       user = json[:data].first
-     
       expect(user[:id]).to eq(@user2.id)
       expect(user[:attributes][:username]).to eq(@user2.username)
       expect(user[:attributes][:email]).to eq(@user2.email)
@@ -57,7 +56,6 @@ RSpec.describe "users endpoints", type: :request do
 
       json = JSON.parse(response.body, symbolize_names: true)
       test_user = json[:data]
-
       expect(test_user[:username]).to eq(test_params[:username])
       expect(test_user[:email]).to eq(test_params[:email])
 
@@ -70,5 +68,29 @@ RSpec.describe "users endpoints", type: :request do
 
       expect(last_user[:id]).to eq(test_user[:id])
     end 
+
+    it "should updaate a user attribute and return successful status" do
+      updated_params = {
+        username: "user2",
+        email: "user2_0@gmail.com"
+      }
+
+      patch "/api/v1/users/#{@target_id}", params: updated_params
+
+      expect(response).to be_successful
+
+      json = JSON.parse(response.body, symbolize_names: true)
+      target = json[:data]
+      expect(target[:attributes][:username]).to eq("user2")
+      expect(target[:attributes][:email]).to eq("user2_0@gmail.com")
+
+      user.reload
+      expect(user.username).to eq("user2")
+      expect(user.email).to eq("user2_0@gmail.com")
+    end
+
+    xit "should destroy a user by id and return a 200 succussful status" do
+      patch 
+    end
   end
 end
