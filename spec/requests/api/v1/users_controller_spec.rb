@@ -99,8 +99,8 @@ RSpec.describe "users endpoints", type: :request do
       }.to change(User, :count).by(-1)
 
       expect(response).to be_successful
-      expect(reponse.body).to be_empty
-      expect(User.exist?(@target_id)).to be_false
+      expect(response.body).to be_empty
+      expect(User.exists?(@target_id)).to be false
     end
   end
 end
