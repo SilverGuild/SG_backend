@@ -6,6 +6,12 @@ class Api::V1::UsersController < ApplicationController
     render json: UserSerializer.new(users).serializable_hash
   end
 
+  def show
+    user = User.find_by(id: params[:id])\
+   
+    render json: UserSerializer.new(user).serializable_hash
+  end
+
   def create
     user = User.create!(user_params)
 
