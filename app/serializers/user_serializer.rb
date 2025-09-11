@@ -4,7 +4,7 @@ class UserSerializer
   attributes  :username,
               :email
 
-  # Override serializable_hash to confirm id is int type when rendered  
+  # Override serializable_hash to confirm id is int type when rendered
   def serializable_hash
     hash = super
     

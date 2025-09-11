@@ -1,5 +1,4 @@
 class Api::V1::UsersController < ApplicationController
-
   def index
     users = User.all
 
@@ -15,7 +14,7 @@ class Api::V1::UsersController < ApplicationController
   def create
     user = User.create!(user_params)
 
-    render json: { message: 'Account created successfully', data: user}, status: :created
+    render json: { message: "Account created successfully", data: user }, status: :created
   end
 
   def update
