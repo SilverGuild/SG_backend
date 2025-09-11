@@ -6,7 +6,7 @@ class CharacterDataGateway
     json = JSON.parse(response.body, symbolize_names: true)
     classes = json[:results]
 
-    return classes
+    classes
   end
 
   def self.fetch_races
@@ -16,7 +16,7 @@ class CharacterDataGateway
     json = JSON.parse(response.body, symbolize_names: true)
     races = json[:results]
 
-    return races
+    races
   end
 
   def self.fetch_languages
@@ -26,11 +26,11 @@ class CharacterDataGateway
     json = JSON.parse(response.body, symbolize_names: true)
     languages = json[:results]
 
-    return languages
+    languages
   end
 
   private
-  
+
   def self.connect
     Faraday.new(url: "https://www.dnd5eapi.co/")
   end
