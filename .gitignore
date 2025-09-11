@@ -35,7 +35,3 @@
 /config/master.key
 
 /coverage
-
-# Ignore CI/CD for now
-/.github/workflows
-/.github/dependabot.yml
