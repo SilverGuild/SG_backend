@@ -37,8 +37,8 @@ RSpec.describe "character_classes endpoints" do
     describe "GET /api/v1/character_classes" do
       it "should retrieve all character classes" do
         get "/api/v1/character_classes"
-        expect(response).to be_successful
 
+        expect(response).to be_successful
         json = JSON.parse(response.body, symbolize_names: true)
 
         character_classes = json[:data]
@@ -55,19 +55,32 @@ RSpec.describe "character_classes endpoints" do
         expect(first_class[:attributes][:skill_proficiencies].skills).to eq(@class1.skill_proficiencies.skills)
         expect(first_class[:attributes][:saving_throw_proficiencies]).to eq(@class1.saving_throw_proficiencies)
 
-        expect(last_class[:id]).to eq(@class2.id)
-        expect(last_class[:attributes][:name]).to eq(@class2.name)
-        expect(last_class[:attributes][:description]).to eq(@class2.description)
-        expect(last_class[:attributes][:hit_die]).to eq(@class2.hit_die)
-        expect(last_class[:attributes][:skill_proficiencies].choose).to eq(@class2.skill_proficiencies.choose)
-        expect(last_class[:attributes][:skill_proficiencies].skills).to eq(@class2.skill_proficiencies.skills)
-        expect(last_class[:attributes][:saving_throw_proficiencies]).to eq(@class2.saving_throw_proficiencies)
+        expect(last_class[:id]).to eq(@class3.id)
+        expect(last_class[:attributes][:name]).to eq(@class3.name)
+        expect(last_class[:attributes][:description]).to eq(@class3.description)
+        expect(last_class[:attributes][:hit_die]).to eq(@class3.hit_die)
+        expect(last_class[:attributes][:skill_proficiencies].choose).to eq(@class3.skill_proficiencies.choose)
+        expect(last_class[:attributes][:skill_proficiencies].skills).to eq(@class3.skill_proficiencies.skills)
+        expect(last_class[:attributes][:saving_throw_proficiencies]).to eq(@class3.saving_throw_proficiencies)
       end
     end
 
     describe "GET /api/v1/character_classe/{ID}" do
       xit "should retrieve one character class" do
-        
+        get "/api/v1/character_classes/#{@target_id}"
+
+        expect(response).to be_successful
+
+        json = JSON.parse(response.bod, symbolize_names: true)
+        target_class = json[:data].first
+
+        expect(target_class[:id]).to eq(@class2.id)
+        expect(target_class[:attributes][:name]).to eq(@class2.name)
+        expect(target_class[:attributes][:description]).to eq(@class2.description)
+        expect(target_class[:attributes][:hit_die]).to eq(@class2.hit_die)
+        expect(target_class[:attributes][:skill_proficiencies].choose).to eq(@class2.skill_proficiencies.choose)
+        expect(target_class[:attributes][:skill_proficiencies].skills).to eq(@class2.skill_proficiencies.skills)
+        expect(target_class[:attributes][:saving_throw_proficiencies]).to eq(@class2.saving_throw_proficiencies)
       end
     end
   end
