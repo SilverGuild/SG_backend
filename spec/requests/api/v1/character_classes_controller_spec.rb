@@ -68,20 +68,20 @@ RSpec.describe "character_classes endpoints", type: :request do
     end
 
     describe "GET /api/v1/character_classe/{ID}" do
-      xit "should retrieve one character class" do
+      it "should retrieve one character class" do
         get "/api/v1/character_classes/#{@target_id}"
 
         expect(response).to be_successful
 
-        json = JSON.parse(response.bod, symbolize_names: true)
+        json = JSON.parse(response.body, symbolize_names: true)
         target_class = json[:data].first
 
         expect(target_class[:id]).to eq(@class2.id)
         expect(target_class[:attributes][:name]).to eq(@class2.name)
         expect(target_class[:attributes][:description]).to eq(@class2.description)
         expect(target_class[:attributes][:hit_die]).to eq(@class2.hit_die)
-        expect(target_class[:attributes][:skill_proficiencies].choose).to eq(@class2.skill_proficiencies.choose)
-        expect(target_class[:attributes][:skill_proficiencies].skills).to eq(@class2.skill_proficiencies.skills)
+        expect(target_class[:attributes][:skill_proficiencies].first[:choose]).to eq(@class2.skill_proficiencies.first["choose"])
+        expect(target_class[:attributes][:skill_proficiencies].first[:skills]).to eq(@class2.skill_proficiencies.first["skills"])
         expect(target_class[:attributes][:saving_throw_proficiencies]).to eq(@class2.saving_throw_proficiencies)
       end
     end
