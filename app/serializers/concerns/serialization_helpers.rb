@@ -1,4 +1,4 @@
-module SerializationHelpers 
+module SerializationHelpers
   extend ActiveSupport::Concern
 
   # Override serializable_hash to confirm id is int type when rendered

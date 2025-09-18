@@ -3,33 +3,33 @@ require "rails_helper"
 RSpec.describe "character_classes endpoints", type: :request do
   describe "RESTful endpoints" do
     before(:each) do
-      @class1 = CharacterClass.create!( name: "Sorcerer", 
-                                        description: "A magic user", 
-                                        hit_die: 6, 
-                                        skill_proficiencies: [{
+      @class1 = CharacterClass.create!(name: "Sorcerer",
+                                        description: "A magic user",
+                                        hit_die: 6,
+                                        skill_proficiencies: [ {
                                           "choose" => 2,
-                                          "skills" => ["arcana", "deception", "insight", "intimidation", "persuasion", "religion"]
-                                        }],
-                                        saving_throw_proficiencies: ["con", "cha"])
+                                          "skills" => [ "arcana", "deception", "insight", "intimidation", "persuasion", "religion" ]
+                                        } ],
+                                        saving_throw_proficiencies: [ "con", "cha" ])
 
-       @class2 = CharacterClass.create!( name: "Druid", 
-                                        description: "One with nature", 
-                                        hit_die: 8, 
-                                        skill_proficiencies: [{
+       @class2 = CharacterClass.create!(name: "Druid",
+                                        description: "One with nature",
+                                        hit_die: 8,
+                                        skill_proficiencies: [ {
                                           "choose" => 2,
-                                          "skills" => ["arcana", "animal handling", "insight", "medicine", "nature", "perception", "religion", "survival"]
+                                          "skills" => [ "arcana", "animal handling", "insight", "medicine", "nature", "perception", "religion", "survival" ]
 
-                                        }],
-                                        saving_throw_proficiencies: ["int", "wis"])
-      @class3 = CharacterClass.create!( name: "Rogue", 
-                                        description: "SOOOO sneaky", 
-                                        hit_die: 8, 
-                                        skill_proficiencies: [{
+                                        } ],
+                                        saving_throw_proficiencies: [ "int", "wis" ])
+      @class3 = CharacterClass.create!(name: "Rogue",
+                                        description: "SOOOO sneaky",
+                                        hit_die: 8,
+                                        skill_proficiencies: [ {
                                           "choose" => 4,
-                                          "skills" => ["acrobatics", "athletics", "deception", "insight", "intimdation", "investigation", "perception", "performance", "persuasion", "sleight of hand", "stealth"]
+                                          "skills" => [ "acrobatics", "athletics", "deception", "insight", "intimdation", "investigation", "perception", "performance", "persuasion", "sleight of hand", "stealth" ]
 
-                                        }],
-                                        saving_throw_proficiencies: ["dex", "int"])
+                                        } ],
+                                        saving_throw_proficiencies: [ "dex", "int" ])
 
       @target_id = @class2.id
     end
