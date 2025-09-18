@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "character_classes endpoints" do
+RSpec.describe "character_classes endpoints", type: :request do
   describe "RESTful endpoints" do
     before(:each) do
       @class1 = CharacterClass.create!( name: "Sorcerer", 
@@ -47,20 +47,22 @@ RSpec.describe "character_classes endpoints" do
         first_class = character_classes.first
         last_class = character_classes.last
 
+        # require "pry"; binding.pry
+
         expect(first_class[:id]).to eq(@class1.id)
         expect(first_class[:attributes][:name]).to eq(@class1.name)
         expect(first_class[:attributes][:description]).to eq(@class1.description)
         expect(first_class[:attributes][:hit_die]).to eq(@class1.hit_die)
-        expect(first_class[:attributes][:skill_proficiencies].choose).to eq(@class1.skill_proficiencies.choose)
-        expect(first_class[:attributes][:skill_proficiencies].skills).to eq(@class1.skill_proficiencies.skills)
+        expect(first_class[:attributes][:skill_proficiencies].first[:choose]).to eq(@class1.skill_proficiencies.first["choose"])
+        expect(first_class[:attributes][:skill_proficiencies].first[:skills]).to eq(@class1.skill_proficiencies.first["skills"])
         expect(first_class[:attributes][:saving_throw_proficiencies]).to eq(@class1.saving_throw_proficiencies)
 
         expect(last_class[:id]).to eq(@class3.id)
         expect(last_class[:attributes][:name]).to eq(@class3.name)
         expect(last_class[:attributes][:description]).to eq(@class3.description)
         expect(last_class[:attributes][:hit_die]).to eq(@class3.hit_die)
-        expect(last_class[:attributes][:skill_proficiencies].choose).to eq(@class3.skill_proficiencies.choose)
-        expect(last_class[:attributes][:skill_proficiencies].skills).to eq(@class3.skill_proficiencies.skills)
+        expect(last_class[:attributes][:skill_proficiencies].first[:choose]).to eq(@class3.skill_proficiencies.first["choose"])
+        expect(last_class[:attributes][:skill_proficiencies].first[:skills]).to eq(@class3.skill_proficiencies.first["skills"])
         expect(last_class[:attributes][:saving_throw_proficiencies]).to eq(@class3.saving_throw_proficiencies)
       end
     end
