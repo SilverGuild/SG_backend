@@ -10,23 +10,18 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_04_29_225024) do
+ActiveRecord::Schema[8.0].define(version: 2025_09_18_212934) do
   # These are extensions that must be enabled in order to support this database
-  enable_extension "plpgsql"
+  enable_extension "pg_catalog.plpgsql"
 
-  create_table "charClasses", force: :cascade do |t|
+  create_table "character_classes", force: :cascade do |t|
     t.string "name"
     t.string "description"
-    t.string "hit_die"
-    t.string "primary_ability"
-    t.string "saving_throw_proficiencies"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-  end
-
-  create_table "charClasses_characters", id: false, force: :cascade do |t|
-    t.bigint "character_id", null: false
-    t.bigint "charClass_id", null: false
+    t.integer "hit_die"
+    t.json "skill_proficiencies", default: []
+    t.json "saving_throw_proficiencies", default: []
   end
 
   create_table "characters", force: :cascade do |t|
@@ -39,6 +34,11 @@ ActiveRecord::Schema[7.2].define(version: 2025_04_29_225024) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["user_id"], name: "index_characters_on_user_id"
+  end
+
+  create_table "characters_char_classes", id: false, force: :cascade do |t|
+    t.bigint "character_id", null: false
+    t.bigint "charClass_id", null: false
   end
 
   create_table "characters_races", id: false, force: :cascade do |t|
