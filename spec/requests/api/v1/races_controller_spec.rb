@@ -102,7 +102,7 @@ RSpec.describe "races endpoints", type: :request do
                 get "/api/v1/races"
                 expect(response).to be_successful
 
-                json = JSON.parse(Response.body, symbolize_names: true)
+                json = JSON.parse(response.body, symbolize_names: true)
 
                 races = json[:data]
                 expect(races.count).to eq(3)
@@ -115,7 +115,7 @@ RSpec.describe "races endpoints", type: :request do
                 expect(first_race[:attributes][:description]).to eq(@race1.description)
                 expect(first_race[:attributes][:speed]).to eq(@race1.speed)
                 expect(first_race[:attributes][:size]).to eq(@race1.size)
-                expect(first_race[:attributes][:ability_bonuses].first["skill_name"]).to eq(@race1.ability_bonuses.first["skill_name"])
+                expect(first_race[:attributes][:ability_bonuses].first[:skill_name]).to eq(@race1.ability_bonuses.first["skill_name"])
                 expect(first_race[:attributes][:age_description]).to eq(@race1.age_description)
                 expect(first_race[:attributes][:alignment_description]).to eq(@race1.alignment_description)
                 expect(first_race[:attributes][:size_description]).to eq(@race1.size_description)
@@ -127,7 +127,7 @@ RSpec.describe "races endpoints", type: :request do
                 expect(last_race[:attributes][:description]).to eq(@race2.description)
                 expect(last_race[:attributes][:speed]).to eq(@race2.speed)
                 expect(last_race[:attributes][:size]).to eq(@race2.size)
-                expect(last_race[:attributes][:ability_bonuses].first["skill_name"]).to eq(@race2.ability_bonuses.first["skill_name"])
+                expect(last_race[:attributes][:ability_bonuses].first[:skill_name]).to eq(@race2.ability_bonuses.first["skill_name"])
                 expect(last_race[:attributes][:age_description]).to eq(@race2.age_description)
                 expect(last_race[:attributes][:alignment_description]).to eq(@race2.alignment_description)
                 expect(last_race[:attributes][:size_description]).to eq(@race2.size_description)
@@ -137,8 +137,25 @@ RSpec.describe "races endpoints", type: :request do
         end
 
         describe "GET /api/v1/races/{ID}" do
-            xit "should retrieve one character race" do
+            it "should retrieve one character race" do
+                get "/api/v1/races/#{@target_id}"
+                expect(response).to be_successful
 
+                json = JSON.parse(response.body, symbolize_names: true)
+
+                target = json[:data].first
+
+                expect(target[:id]).to eq(@race2.id)
+                expect(target[:attributes][:name]).to eq(@race2.name)
+                expect(target[:attributes][:description]).to eq(@race2.description)
+                expect(target[:attributes][:speed]).to eq(@race2.speed)
+                expect(target[:attributes][:size]).to eq(@race2.size)
+                expect(target[:attributes][:ability_bonuses].first[:skill_name]).to eq(@race2.ability_bonuses.first["skill_name"])
+                expect(target[:attributes][:age_description]).to eq(@race2.age_description)
+                expect(target[:attributes][:alignment_description]).to eq(@race2.alignment_description)
+                expect(target[:attributes][:size_description]).to eq(@race2.size_description)
+                expect(target[:attributes][:languages_description]).to eq(@race2.languages_description)
+                expect(target[:attributes][:languages].first[:language_name]).to eq(@race2.languages.first["language_name"])
             end
         end
     end
