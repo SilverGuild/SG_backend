@@ -3,9 +3,9 @@ require "rails_helper"
 RSpec.describe "races endpoints", type: :request do
     describe "RESTful endpoints" do
         before(:each) do
-            @race1 = Race.create!(  name: "Tiefling", 
-                                    description: "My favroite character race to play", 
-                                    speed: 30, 
+            @race1 = Race.create!(name: "Tiefling",
+                                    description: "My favroite character race to play",
+                                    speed: 30,
                                     size: "medium",
                                     ability_bonuses: [
                                         {
@@ -24,15 +24,15 @@ RSpec.describe "races endpoints", type: :request do
                                     languages: [
                                         {
                                             "language_name" => "common"
-                                        }, 
+                                        },
                                         {
                                             "language_name" => "infernal"
                                         }
                                     ]
                                 )
-            @race2 = Race.create!(  name: "Dwarf", 
-                                    description: "Small but mighty", 
-                                    speed: 25, 
+            @race2 = Race.create!(name: "Dwarf",
+                                    description: "Small but mighty",
+                                    speed: 25,
                                     size: "medium",
                                     ability_bonuses: [
                                         {
@@ -53,9 +53,9 @@ RSpec.describe "races endpoints", type: :request do
                                     ]
                                 )
 
-            @race2 = Race.create!(  name: "Human", 
-                                    description: "He's simple but reliable", 
-                                    speed: 30, 
+            @race2 = Race.create!(name: "Human",
+                                    description: "He's simple but reliable",
+                                    speed: 30,
                                     size: "medium",
                                     ability_bonuses: [
                                         {
