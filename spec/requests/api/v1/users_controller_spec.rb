@@ -23,13 +23,13 @@ RSpec.describe "users endpoints", type: :request do
         first_user = users.first
         last_user = users.last
 
-        expect(first_user[:id]).to eq(@user1.id)
-        expect(first_user[:attributes][:username]).to eq(@user1.username)
-        expect(first_user[:attributes][:email]).to eq(@user1.email)
+        expect(first_user[:id]).to eq(@user1[:id])
+        expect(first_user[:attributes][:username]).to eq(@user1[:username])
+        expect(first_user[:attributes][:email]).to eq(@user1[:email])
 
         expect(last_user[:id]).to eq(@user3[:id])
-        expect(last_user[:attributes][:username]).to eq(@user3.username)
-        expect(last_user[:attributes][:email]).to eq(@user3.email)
+        expect(last_user[:attributes][:username]).to eq(@user3[:username])
+        expect(last_user[:attributes][:email]).to eq(@user3[:email])
       end
     end
 
@@ -55,7 +55,6 @@ RSpec.describe "users endpoints", type: :request do
         }
 
         post "/api/v1/users", params: test_params, as: :json
-
         expect(response).to have_http_status(:created)
 
         json = JSON.parse(response.body, symbolize_names: true)
@@ -95,8 +94,8 @@ RSpec.describe "users endpoints", type: :request do
 
         # Verify db was updated
         user.reload
-        expect(user.username).to eq("user2")
-        expect(user.email).to eq("user2_0@gmail.com")
+        expect(user[:username]).to eq("user2")
+        expect(user[:email]).to eq("user2_0@gmail.com")
       end
     end
 
