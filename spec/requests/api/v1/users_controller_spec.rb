@@ -94,8 +94,8 @@ RSpec.describe "users endpoints", type: :request do
 
         # Verify db was updated
         user.reload
-        expect(user.username).to eq("user2")
-        expect(user.email).to eq("user2_0@gmail.com")
+        expect(user[:username]).to eq("user2")
+        expect(user[:email]).to eq("user2_0@gmail.com")
       end
     end
 

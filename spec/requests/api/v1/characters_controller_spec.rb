@@ -78,7 +78,7 @@ RSpec.describe "characters endpoints", type: :request do
     end
 
     describe "POST /api/v1/characters" do
-      xit "should create a new character and return 201 Created status" do
+      it "should create a new character and return 201 Created status" do
         test_params = {
           name: "Theren Nightwhisper", 
           level: 3, 
@@ -113,7 +113,42 @@ RSpec.describe "characters endpoints", type: :request do
 
      describe "PATCH /api/v1/characters/{ID}" do
       xit "should updaate a character entry in the db and return successful status" do
+        character = Character.find(@target_id)
 
+        updated_params = {
+          name: "Theren Nightblade", 
+          level: 6, 
+          experience_points: 621,
+          alignment: "Lawful Evil",
+          background: "Aristocrate",
+          user_id: @user.id
+        }
+
+        patch "/api/v1/characters/#{target_id}", params: updated_params
+
+        expect(response).to be_successful
+
+        json = JSON.parse(response.body, symbolize_names: true)
+        
+        target = json[:data].first
+
+        expect(target[:id]).to eq(@character2[:id])
+        expect(target[:attributes][:name]).to eq(character[:name])
+        expect(target[:attributes][:level]).to eq(updated_params[:level])
+        expect(target[:attributes][:experience_points]).to eq(updated_params[:experience_points])
+        expect(target[:attributes][:alignment]).to eq(character[:alignment])
+        expect(target[:attributes][:background]).to eq(character[:background])
+        expect(target[:attributes][:user_id]).to eq(character[:user_id])
+
+        # Verify db has updated
+        character.reload
+        expect(target[:id]).to eq(character[:id])
+        expect(target[:attributes][:name]).to eq(character[:name])
+        expect(target[:attributes][:level]).to eq(character[:level])
+        expect(target[:attributes][:experience_points]).to eq(character[:experience_points])
+        expect(target[:attributes][:alignment]).to eq(character[:alignment])
+        expect(target[:attributes][:background]).to eq(character[:background])
+        expect(target[:attributes][:user_id]).to eq(character[:user_id])
       end
     end
 
