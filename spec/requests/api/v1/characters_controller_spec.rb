@@ -154,7 +154,13 @@ RSpec.describe "characters endpoints", type: :request do
 
     describe "DELETE /api/v1/characters/{ID}" do
       xit "should destroy a character by id and return an empty response body" do
+        expect {
+          delete "/api/v1/characters/#{@target_id}"
+        }.to change(Character, :count).by(-1)
 
+        expect(response).to be_successful
+        expect(response.body).to be_empty
+        expect(Character.exists?(@target_id)).to be false
       end
     end
   end
