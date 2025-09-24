@@ -5,20 +5,20 @@ RSpec.describe "characters endpoints", type: :request do
     before(:each) do
       @user =  @user1 = User.create!(username: "user1", email: "user1@gmail.com")
 
-      @character1 = Character.create!(name: "Kaelynn Thornwick", 
-                                      level: 1, 
+      @character1 = Character.create!(name: "Kaelynn Thornwick",
+                                      level: 1,
                                       experience_points: 0,
                                       alignment: "Neutral Good",
                                       background: "Hermit",
                                       user_id: @user.id)
-      @character2 = Character.create!(name: "Theren Nightblade", 
-                                      level: 5, 
+      @character2 = Character.create!(name: "Theren Nightblade",
+                                      level: 5,
                                       experience_points: 500,
                                       alignment: "Lawful Evil",
                                       background: "Aristocrate",
                                       user_id: @user.id)
-      @character3 = Character.create!(name: "Mira Stormhaven", 
-                                      level: 8, 
+      @character3 = Character.create!(name: "Mira Stormhaven",
+                                      level: 8,
                                       experience_points: 853,
                                       alignment: "Chaotic Neutral",
                                       background: "Acolyte",
@@ -66,7 +66,7 @@ RSpec.describe "characters endpoints", type: :request do
         json = JSON.parse(response.body, symbolize_names: true)
 
         target = json[:data].first
-        
+
         expect(target[:id]).to eq(@character2[:id])
         expect(target[:attributes][:name]).to eq(@character2[:name])
         expect(target[:attributes][:level]).to eq(@character2[:level])
@@ -80,8 +80,8 @@ RSpec.describe "characters endpoints", type: :request do
     describe "POST /api/v1/characters" do
       it "should create a new character and return 201 Created status" do
         test_params = {
-          name: "Theren Nightwhisper", 
-          level: 3, 
+          name: "Theren Nightwhisper",
+          level: 3,
           experience_points: 345,
           alignment: "Good Chaotic",
           background: "Folk Hero",
@@ -116,8 +116,8 @@ RSpec.describe "characters endpoints", type: :request do
         character = Character.find(@target_id)
 
         updated_params = {
-          name: "Theren Nightblade", 
-          level: 6, 
+          name: "Theren Nightblade",
+          level: 6,
           experience_points: 621,
           alignment: "Lawful Evil",
           background: "Aristocrate",
@@ -129,7 +129,7 @@ RSpec.describe "characters endpoints", type: :request do
         expect(response).to be_successful
 
         json = JSON.parse(response.body, symbolize_names: true)
-        
+
         target = json[:data].first
 
         expect(target[:id]).to eq(@character2[:id])
