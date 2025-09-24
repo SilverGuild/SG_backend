@@ -77,20 +77,48 @@ RSpec.describe "characters endpoints", type: :request do
       end
     end
 
-    describe "POST /api/v1/users" do
+    describe "POST /api/v1/characters" do
       xit "should create a new character and return 201 Created status" do
+        test_params = {
+          name: "Theren Nightwhisper", 
+          level: 3, 
+          experience_points: 345,
+          alignment: "Good Chaotic",
+          background: "Folk Hero",
+          user_id: @user.id
+        }
+
+        post "/api/v1/characters", params: test_params, as: :json
+        expect(response).to have_http_status(:created)
+
+        json = JSON.parse(response.body, symbolize_names: true)
+
+        test_character = json[:data]
+
+        expect(test_character[:name]).to eq(test_character[:name])
+        expect(test_character[:level]).to eq(test_character[:level])
+        expect(test_character[:experience_points]).to eq(test_character[:experience_points])
+        expect(test_character[:alignment]).to eq(test_character[:alignment])
+        expect(test_character[:background]).to eq(test_character[:background])
+        expect(test_character[:user_id]).to eq(test_character[:user_id])
+
+        # Show that test_character has been added to the existing lsit of characters
+        characters = Character.all
+        expect(users.count).to eq(4)
+
+        last_character = characters.last
+        expect(last_character[:id]).to eq(test_character[:id])
+      end
+    end
+
+     describe "PATCH /api/v1/characters/{ID}" do
+      xit "should updaate a character entry in the db and return successful status" do
 
       end
     end
 
-     describe "PATCH /api/v1/users/{ID}" do
-      xit "should updaate a user entry in the db and return successful status" do
-
-      end
-    end
-
-    describe "DELETE /api/v1/users/{ID}" do
-      xit "should destroy a user by id and return an empty response body" do
+    describe "DELETE /api/v1/characters/{ID}" do
+      xit "should destroy a character by id and return an empty response body" do
 
       end
     end

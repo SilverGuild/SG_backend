@@ -55,7 +55,6 @@ RSpec.describe "users endpoints", type: :request do
         }
 
         post "/api/v1/users", params: test_params, as: :json
-
         expect(response).to have_http_status(:created)
 
         json = JSON.parse(response.body, symbolize_names: true)
