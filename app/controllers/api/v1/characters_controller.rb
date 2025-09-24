@@ -25,6 +25,14 @@ class Api::V1::CharactersController < ApplicationController
     render json: CharacterSerializer.new(character).serializable_hash
   end
 
+  def destroy
+    character = Character.find(params[:id])
+
+    character.destroy
+
+    head :no_content
+  end
+
   private
 
   def character_params
