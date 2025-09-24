@@ -10,4 +10,18 @@ class Api::V1::CharactersController < ApplicationController
 
     render json: CharacterSerializer.new(character).serializable_hash
   end
+  
+  def update
+    character = Character.find(params[:id])
+
+    character.update(character_params)
+
+    render json: CharacterSerializer.new(character).serializable_hash
+  end
+
+  private
+
+  def character_params
+    params.permit(:name, :level, :experience_points, :alignment, :background, :user_id)
+  end
 end

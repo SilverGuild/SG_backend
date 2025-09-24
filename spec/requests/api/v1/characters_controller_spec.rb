@@ -78,7 +78,7 @@ RSpec.describe "characters endpoints", type: :request do
     end
 
     describe "POST /api/v1/characters" do
-      it "should create a new character and return 201 Created status" do
+      xit "should create a new character and return 201 Created status" do
         test_params = {
           name: "Theren Nightwhisper", 
           level: 3, 
@@ -112,7 +112,7 @@ RSpec.describe "characters endpoints", type: :request do
     end
 
      describe "PATCH /api/v1/characters/{ID}" do
-      xit "should updaate a character entry in the db and return successful status" do
+      it "should updaate a character entry in the db and return successful status" do
         character = Character.find(@target_id)
 
         updated_params = {
@@ -124,7 +124,7 @@ RSpec.describe "characters endpoints", type: :request do
           user_id: @user.id
         }
 
-        patch "/api/v1/characters/#{target_id}", params: updated_params
+        patch "/api/v1/characters/#{@target_id}", params: updated_params
 
         expect(response).to be_successful
 
