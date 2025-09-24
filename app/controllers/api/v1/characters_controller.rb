@@ -10,7 +10,13 @@ class Api::V1::CharactersController < ApplicationController
 
     render json: CharacterSerializer.new(character).serializable_hash
   end
-  
+
+  def create 
+    character = Character.create!(character_params)
+
+    render json: {message: "Character created successfully", data: character }, status: :created
+  end
+
   def update
     character = Character.find(params[:id])
 

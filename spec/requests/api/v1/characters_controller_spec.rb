@@ -78,7 +78,7 @@ RSpec.describe "characters endpoints", type: :request do
     end
 
     describe "POST /api/v1/characters" do
-      xit "should create a new character and return 201 Created status" do
+      it "should create a new character and return 201 Created status" do
         test_params = {
           name: "Theren Nightwhisper", 
           level: 3, 
@@ -104,7 +104,7 @@ RSpec.describe "characters endpoints", type: :request do
 
         # Show that test_character has been added to the existing lsit of characters
         characters = Character.all
-        expect(users.count).to eq(4)
+        expect(characters.count).to eq(4)
 
         last_character = characters.last
         expect(last_character[:id]).to eq(test_character[:id])
@@ -153,7 +153,7 @@ RSpec.describe "characters endpoints", type: :request do
     end
 
     describe "DELETE /api/v1/characters/{ID}" do
-      xit "should destroy a character by id and return an empty response body" do
+      it "should destroy a character by id and return an empty response body" do
         expect {
           delete "/api/v1/characters/#{@target_id}"
         }.to change(Character, :count).by(-1)
