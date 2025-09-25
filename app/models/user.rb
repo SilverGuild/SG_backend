@@ -3,6 +3,6 @@ class User < ApplicationRecord
   has_many :characters
 
   # Attribute validations
-  validates :name, presence: true
+  validates :username, presence: true
   validates :email, presence: true
 end

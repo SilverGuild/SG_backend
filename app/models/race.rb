@@ -7,7 +7,7 @@ class Race < ApplicationRecord
 
   # Validate attributes
   validates :name, presence: true
-  validates :desccription, presence: true
+  validates :description, presence: true
   validates :speed, presence: true
   validates :size, presence: true
   validates :ability_bonuses, presence: true
