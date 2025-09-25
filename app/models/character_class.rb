@@ -3,6 +3,7 @@ class CharacterClass < ApplicationRecord
   has_many :characters_char_classes
   has_many :characters, through: :characters_char_classes
 
+  # Attribute validations
   validates :name, presence: true
   validates :description, presence: true
   validates :hit_die, presence: true
