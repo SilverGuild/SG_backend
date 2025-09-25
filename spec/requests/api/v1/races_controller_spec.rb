@@ -53,7 +53,7 @@ RSpec.describe "races endpoints", type: :request do
                                     ]
                                 )
 
-            @race2 = Race.create!(name: "Human",
+            @race3 = Race.create!(name: "Human",
                                     description: "He's simple but reliable",
                                     speed: 30,
                                     size: "medium",
@@ -122,17 +122,17 @@ RSpec.describe "races endpoints", type: :request do
                 expect(first_race[:attributes][:languages_description]).to eq(@race1.languages_description)
                 expect(first_race[:attributes][:languages].first[:language_name]).to eq(@race1.languages.first["language_name"])
 
-                expect(last_race[:id]).to eq(@race2.id)
-                expect(last_race[:attributes][:name]).to eq(@race2.name)
-                expect(last_race[:attributes][:description]).to eq(@race2.description)
-                expect(last_race[:attributes][:speed]).to eq(@race2.speed)
-                expect(last_race[:attributes][:size]).to eq(@race2.size)
-                expect(last_race[:attributes][:ability_bonuses].first[:skill_name]).to eq(@race2.ability_bonuses.first["skill_name"])
-                expect(last_race[:attributes][:age_description]).to eq(@race2.age_description)
-                expect(last_race[:attributes][:alignment_description]).to eq(@race2.alignment_description)
-                expect(last_race[:attributes][:size_description]).to eq(@race2.size_description)
-                expect(last_race[:attributes][:languages_description]).to eq(@race2.languages_description)
-                expect(last_race[:attributes][:languages].first[:language_name]).to eq(@race2.languages.first["language_name"])
+                expect(last_race[:id]).to eq(@race3.id)
+                expect(last_race[:attributes][:name]).to eq(@race3.name)
+                expect(last_race[:attributes][:description]).to eq(@race3.description)
+                expect(last_race[:attributes][:speed]).to eq(@race3.speed)
+                expect(last_race[:attributes][:size]).to eq(@race3.size)
+                expect(last_race[:attributes][:ability_bonuses].first[:skill_name]).to eq(@race3.ability_bonuses.first["skill_name"])
+                expect(last_race[:attributes][:age_description]).to eq(@race3.age_description)
+                expect(last_race[:attributes][:alignment_description]).to eq(@race3.alignment_description)
+                expect(last_race[:attributes][:size_description]).to eq(@race3.size_description)
+                expect(last_race[:attributes][:languages_description]).to eq(@race3.languages_description)
+                expect(last_race[:attributes][:languages].first[:language_name]).to eq(@race3.languages.first["language_name"])
             end
         end
 
