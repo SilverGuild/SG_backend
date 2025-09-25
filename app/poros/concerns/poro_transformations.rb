@@ -23,7 +23,7 @@ module PoroTransformations
       snake_key = to_snake_case(key)
       mapping[key] = snake_key unless key == snake_key
     end
-    mapping 
+    mapping
   end
 
   def to_snake_case(key)

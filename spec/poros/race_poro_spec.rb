@@ -3,7 +3,7 @@ require "rails_helper"
 RSpec.describe "Race PORO" do
   describe "happy paths" do
     it "should create a new race poro with all attributes accessible" do
-      test_json = { 
+      test_json = {
         name: "Human",
         description: "He's simple but reliable",
         speed: 30,
@@ -42,11 +42,11 @@ RSpec.describe "Race PORO" do
             {
                 "language_name" => "common"
             }
-        ]                          
+        ]
       }
 
       human = RacePoro.new(test_json)
-  
+
       expect(human).to be_an_instance_of RacePoro
       expect(human.name).to eq(test_json[:name])
       expect(human.description).to eq(test_json[:description])
