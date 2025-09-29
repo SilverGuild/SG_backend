@@ -98,64 +98,81 @@ RSpec.describe "races endpoints", type: :request do
         end
 
         describe "GET /api/v1/races" do
-            it "should retrieve all character races" do
-                get "/api/v1/races"
-                expect(response).to be_successful
 
-                json = JSON.parse(response.body, symbolize_names: true)
+            describe "from DB" do
+                it "should retrieve all character races from DB" do
+                    get "/api/v1/races?db=true"
+                    expect(response).to be_successful
 
-                races = json[:data]
-                expect(races.count).to eq(3)
+                    json = JSON.parse(response.body, symbolize_names: true)
 
-                first_race = races.first
-                last_race = races.last
+                    races = json[:data]
+                    expect(races.count).to eq(3)
 
-                expect(first_race[:id]).to eq(@race1.id)
-                expect(first_race[:attributes][:name]).to eq(@race1.name)
-                expect(first_race[:attributes][:description]).to eq(@race1.description)
-                expect(first_race[:attributes][:speed]).to eq(@race1.speed)
-                expect(first_race[:attributes][:size]).to eq(@race1.size)
-                expect(first_race[:attributes][:ability_bonuses].first[:skill_name]).to eq(@race1.ability_bonuses.first["skill_name"])
-                expect(first_race[:attributes][:age_description]).to eq(@race1.age_description)
-                expect(first_race[:attributes][:alignment_description]).to eq(@race1.alignment_description)
-                expect(first_race[:attributes][:size_description]).to eq(@race1.size_description)
-                expect(first_race[:attributes][:languages_description]).to eq(@race1.languages_description)
-                expect(first_race[:attributes][:languages].first[:language_name]).to eq(@race1.languages.first["language_name"])
+                    first_race = races.first
+                    last_race = races.last
 
-                expect(last_race[:id]).to eq(@race3.id)
-                expect(last_race[:attributes][:name]).to eq(@race3.name)
-                expect(last_race[:attributes][:description]).to eq(@race3.description)
-                expect(last_race[:attributes][:speed]).to eq(@race3.speed)
-                expect(last_race[:attributes][:size]).to eq(@race3.size)
-                expect(last_race[:attributes][:ability_bonuses].first[:skill_name]).to eq(@race3.ability_bonuses.first["skill_name"])
-                expect(last_race[:attributes][:age_description]).to eq(@race3.age_description)
-                expect(last_race[:attributes][:alignment_description]).to eq(@race3.alignment_description)
-                expect(last_race[:attributes][:size_description]).to eq(@race3.size_description)
-                expect(last_race[:attributes][:languages_description]).to eq(@race3.languages_description)
-                expect(last_race[:attributes][:languages].first[:language_name]).to eq(@race3.languages.first["language_name"])
+                    expect(first_race[:id]).to eq(@race1.id)
+                    expect(first_race[:attributes][:name]).to eq(@race1.name)
+                    expect(first_race[:attributes][:description]).to eq(@race1.description)
+                    expect(first_race[:attributes][:speed]).to eq(@race1.speed)
+                    expect(first_race[:attributes][:size]).to eq(@race1.size)
+                    expect(first_race[:attributes][:ability_bonuses].first[:skill_name]).to eq(@race1.ability_bonuses.first["skill_name"])
+                    expect(first_race[:attributes][:age_description]).to eq(@race1.age_description)
+                    expect(first_race[:attributes][:alignment_description]).to eq(@race1.alignment_description)
+                    expect(first_race[:attributes][:size_description]).to eq(@race1.size_description)
+                    expect(first_race[:attributes][:languages_description]).to eq(@race1.languages_description)
+                    expect(first_race[:attributes][:languages].first[:language_name]).to eq(@race1.languages.first["language_name"])
+
+                    expect(last_race[:id]).to eq(@race3.id)
+                    expect(last_race[:attributes][:name]).to eq(@race3.name)
+                    expect(last_race[:attributes][:description]).to eq(@race3.description)
+                    expect(last_race[:attributes][:speed]).to eq(@race3.speed)
+                    expect(last_race[:attributes][:size]).to eq(@race3.size)
+                    expect(last_race[:attributes][:ability_bonuses].first[:skill_name]).to eq(@race3.ability_bonuses.first["skill_name"])
+                    expect(last_race[:attributes][:age_description]).to eq(@race3.age_description)
+                    expect(last_race[:attributes][:alignment_description]).to eq(@race3.alignment_description)
+                    expect(last_race[:attributes][:size_description]).to eq(@race3.size_description)
+                    expect(last_race[:attributes][:languages_description]).to eq(@race3.languages_description)
+                    expect(last_race[:attributes][:languages].first[:language_name]).to eq(@race3.languages.first["language_name"])
+                end
+            end
+
+            describe "from API" do
+                it "should retrieve all character races from DnD5e API" do
+                    
+                end
             end
         end
 
         describe "GET /api/v1/races/{ID}" do
-            it "should retrieve one character race" do
-                get "/api/v1/races/#{@target_id}"
-                expect(response).to be_successful
+            describe "from DB" do
+                it "should retrieve one character race from DB" do
+                    get "/api/v1/races/#{@target_id}?db=true"
+                    expect(response).to be_successful
 
-                json = JSON.parse(response.body, symbolize_names: true)
+                    json = JSON.parse(response.body, symbolize_names: true)
 
-                target = json[:data].first
+                    target = json[:data].first
 
-                expect(target[:id]).to eq(@race2.id)
-                expect(target[:attributes][:name]).to eq(@race2.name)
-                expect(target[:attributes][:description]).to eq(@race2.description)
-                expect(target[:attributes][:speed]).to eq(@race2.speed)
-                expect(target[:attributes][:size]).to eq(@race2.size)
-                expect(target[:attributes][:ability_bonuses].first[:skill_name]).to eq(@race2.ability_bonuses.first["skill_name"])
-                expect(target[:attributes][:age_description]).to eq(@race2.age_description)
-                expect(target[:attributes][:alignment_description]).to eq(@race2.alignment_description)
-                expect(target[:attributes][:size_description]).to eq(@race2.size_description)
-                expect(target[:attributes][:languages_description]).to eq(@race2.languages_description)
-                expect(target[:attributes][:languages].first[:language_name]).to eq(@race2.languages.first["language_name"])
+                    expect(target[:id]).to eq(@race2.id)
+                    expect(target[:attributes][:name]).to eq(@race2.name)
+                    expect(target[:attributes][:description]).to eq(@race2.description)
+                    expect(target[:attributes][:speed]).to eq(@race2.speed)
+                    expect(target[:attributes][:size]).to eq(@race2.size)
+                    expect(target[:attributes][:ability_bonuses].first[:skill_name]).to eq(@race2.ability_bonuses.first["skill_name"])
+                    expect(target[:attributes][:age_description]).to eq(@race2.age_description)
+                    expect(target[:attributes][:alignment_description]).to eq(@race2.alignment_description)
+                    expect(target[:attributes][:size_description]).to eq(@race2.size_description)
+                    expect(target[:attributes][:languages_description]).to eq(@race2.languages_description)
+                    expect(target[:attributes][:languages].first[:language_name]).to eq(@race2.languages.first["language_name"])
+                end
+            end
+
+            describe "from API" do
+                it "should retrieve one character race from DnD5e API" do
+
+                end
             end
         end
     end
