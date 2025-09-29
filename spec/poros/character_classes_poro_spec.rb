@@ -10,10 +10,10 @@ RSpec.describe "Character Class PORO" do
         skill_proficiencies: [
           {
             "choose" => 2,
-            "skills" => ["acrobatics", "athletics", "history", "insight", "religion", "stealth"]
+            "skills" => [ "acrobatics", "athletics", "history", "insight", "religion", "stealth" ]
           }
         ],
-        saving_throw_proficiencies: ["str", "dex"]
+        saving_throw_proficiencies: [ "str", "dex" ]
       }
 
       monk = CharacterClassPoro.new(test_json)
