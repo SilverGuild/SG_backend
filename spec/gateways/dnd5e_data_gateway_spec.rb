@@ -62,7 +62,7 @@ RSpec.describe Dnd5eDataGateway do
     end
 
      it "should make a request to D&D 5e API and return a single language by id" do
-      VCR.use_cassette("single_character_race") do
+      VCR.use_cassette("single_language") do
         target_id = "celestial"
         language = Dnd5eDataGateway.fetch_dnd_data("languages", target_id)
 

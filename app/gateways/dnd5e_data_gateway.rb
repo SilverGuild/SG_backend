@@ -13,11 +13,11 @@ class Dnd5eDataGateway
 
   def self.fetch_dnd_data(category, id = "")
     conn = connect()
-  
-    response = conn.get("api/2014/#{category}")
-  
+    endpoint = id.empty? ? "api/2014/#{category}" : "api/2014/#{category}/#{id}"
+    response = conn.get(endpoint)
+    
     json = JSON.parse(response.body, symbolize_names: true)
-    results = json[:results]
+    results = id.empty? ? json[:results] : json
     
     results
   end
