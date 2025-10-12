@@ -11,7 +11,7 @@ class Dnd5eDataGateway
     fetch_dnd_data("languages", id)
   end
 
-  def self.fetch_dnd_data(category, id)
+  def self.fetch_dnd_data(category, id = "")
     conn = connect()
     endpoint = id.empty? ? "api/2014/#{category}" : "api/2014/#{category}/#{id}"
     response = conn.get(endpoint)
