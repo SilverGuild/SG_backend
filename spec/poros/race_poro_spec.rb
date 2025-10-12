@@ -49,7 +49,7 @@ RSpec.describe "Race PORO" do
 
       expect(human).to be_an_instance_of RacePoro
       expect(human.name).to eq(test_json[:name])
-    #   expect(human.description).to eq(test_json[:description])
+      #   expect(human.description).to eq(test_json[:description])
       expect(human.speed).to eq(test_json[:speed])
       expect(human.size).to eq(test_json[:size])
       expect(human.ability_bonuses.first[:skill_name]).to eq(test_json[:ability_bonuses].first["skill_name"])

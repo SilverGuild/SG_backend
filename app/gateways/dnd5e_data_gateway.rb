@@ -4,7 +4,7 @@ class Dnd5eDataGateway
   end
 
   def self.fetch_races(id = "")
-    fetch_dnd_data("races", id) 
+    fetch_dnd_data("races", id)
   end
 
   def self.fetch_langauges(id = "")

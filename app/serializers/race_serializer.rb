@@ -15,7 +15,7 @@ class RaceSerializer
     race.url
   end
 
-  DETAILED_ATTRIBUTES = [ 
+  DETAILED_ATTRIBUTES = [
               # :description,
               :speed,
               :size,
@@ -26,11 +26,10 @@ class RaceSerializer
               :language_description,
               :languages
   ]
-  
+
   DETAILED_ATTRIBUTES.each do |attr|
     attribute attr, if: Proc.new { |record, params|
       params && params[:detailed] == true
     }
   end
-              
 end

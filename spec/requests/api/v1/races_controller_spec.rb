@@ -3,7 +3,7 @@ require "rails_helper"
 RSpec.describe "races endpoints", type: :request do
     describe "RESTful endpoints" do
         before(:each) do
-            @dragonborn = { 
+            @dragonborn = {
                 index: "dragonborn",
                 name: "Dragonborn",
                 speed: 30,
@@ -31,7 +31,7 @@ RSpec.describe "races endpoints", type: :request do
                 ]
             }
 
-            @tiefling = {   
+            @tiefling = {
                 index: "tiefling",
                 name: "Tiefling",
                 speed: 30,
@@ -60,7 +60,7 @@ RSpec.describe "races endpoints", type: :request do
                 ]
             }
 
-            @half_orc = { 
+            @half_orc = {
                 index: "half-orc",
                 name: "Half-Orc",
                 speed: 30,
@@ -106,7 +106,7 @@ RSpec.describe "races endpoints", type: :request do
                     expect(first_race[:type]).to eq("race")
                     expect(first_race[:id]).to eq(@dragonborn[:index])
                     expect(first_race[:attributes][:name]).to eq(@dragonborn[:name])
-                   
+
                     expect(last_race[:type]).to eq("race")
                     expect(last_race[:id]).to eq(@tiefling[:index])
                     expect(last_race[:attributes][:name]).to eq(@tiefling[:name])
