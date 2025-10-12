@@ -15,7 +15,7 @@ RSpec.describe Dnd5eDataGateway do
     end
 
      it "should make a request to D&D 5e API and return a single character class by id" do
-      VCR.use_cassette("single_character_class") do
+      VCR.use_cassette("single_character_class_sorcerer") do
         character_class = Dnd5eDataGateway.fetch_dnd_data("classes", "sorcerer")
 
         expect(character_class).not_to be_empty
@@ -38,7 +38,7 @@ RSpec.describe Dnd5eDataGateway do
     end
 
     it "should make a request to D&D 5e API and return a single character race by id" do
-      VCR.use_cassette("single_character_race") do
+      VCR.use_cassette("single_character_race_halfling") do
         target_id = "halfling"
         character_race = Dnd5eDataGateway.fetch_dnd_data("races", target_id)
 
