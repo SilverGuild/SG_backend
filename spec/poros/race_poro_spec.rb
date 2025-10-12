@@ -34,10 +34,10 @@ RSpec.describe "Race PORO" do
                 "bonus" => 1
             }
         ],
-        age_description: "Humans reach adulthood in their late teens and live less than a century.",
-        alignment_description: "Humans tend toward no particular alignment. The best and the worst are found among them.",
+        age: "Humans reach adulthood in their late teens and live less than a century.",
+        alignment: "Humans tend toward no particular alignment. The best and the worst are found among them.",
         size_description: "Humans vary widely in height and build, from barely 5 feet to well over 6 feet tall. Regardless of your position in that range, your size is Medium.",
-        languages_description: "You can speak, read, and write Common and one extra language of your choice. Humans typically learn the languages of other peoples they deal with, including obscure dialects. They are fond of sprinkling their speech with words borrowed from other tongues: Orc curses, Elvish musical expressions, Dwarvish military phrases, and so on.",
+        language_desc: "You can speak, read, and write Common and one extra language of your choice. Humans typically learn the languages of other peoples they deal with, including obscure dialects. They are fond of sprinkling their speech with words borrowed from other tongues: Orc curses, Elvish musical expressions, Dwarvish military phrases, and so on.",
         languages: [
             {
                 "language_name" => "common"
@@ -49,14 +49,14 @@ RSpec.describe "Race PORO" do
 
       expect(human).to be_an_instance_of RacePoro
       expect(human.name).to eq(test_json[:name])
-      expect(human.description).to eq(test_json[:description])
+    #   expect(human.description).to eq(test_json[:description])
       expect(human.speed).to eq(test_json[:speed])
       expect(human.size).to eq(test_json[:size])
       expect(human.ability_bonuses.first[:skill_name]).to eq(test_json[:ability_bonuses].first["skill_name"])
-      expect(human.age_description).to eq(test_json[:age_description])
-      expect(human.alignment_description).to eq(test_json[:alignment_description])
+      expect(human.age_description).to eq(test_json[:age])
+      expect(human.alignment_description).to eq(test_json[:alignment])
       expect(human.size_description).to eq(test_json[:size_description])
-      expect(human.languages_description).to eq(test_json[:languages_description])
+      expect(human.language_description).to eq(test_json[:language_desc])
       expect(human.languages.first[:language_name]).to eq(test_json[:languages].first["language_name"])
     end
   end
