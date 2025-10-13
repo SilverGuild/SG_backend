@@ -1,5 +1,8 @@
 module PoroTransformations
   def json_to_array(data, key_mapping = nil) # Transform an array json into a poro attribute which is an array of the hashes
+    # If no data is provided, return nil
+    return nil if data.nil?
+
     # If no mapping provided, auto-detect from the first hash
     key_mapping ||= auto_detect_mapping(data.first) if data.any?
 
