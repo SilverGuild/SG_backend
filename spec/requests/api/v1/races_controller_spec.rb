@@ -90,8 +90,8 @@ RSpec.describe "races endpoints", type: :request do
         end
 
         describe "GET /api/v1/races" do
-            it "should retrieve all character races directly from dnd5eapi" do
-                VCR.use_cassette("character_racees") do
+            it "should retrieve all character races directly from dnd5e api" do
+                VCR.use_cassette("character_races") do
                     get "/api/v1/races"
                     expect(response).to be_successful
 
@@ -125,7 +125,7 @@ RSpec.describe "races endpoints", type: :request do
                     json = JSON.parse(response.body, symbolize_names: true)
 
                     target = json[:data]
-                    # require "pry"; binding.pry
+                    
                     expect(target[:type]).to eq("race")
                     expect(target[:id]).to eq(@half_orc[:index])
                     expect(target[:attributes][:name]).to eq(@half_orc[:name])
