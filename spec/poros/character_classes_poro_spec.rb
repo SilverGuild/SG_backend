@@ -16,7 +16,7 @@ RSpec.describe "Character Class PORO" do
         expect(monk.skill_proficiencies.length).to eq(2)
         expect(monk.skill_proficiencies[:choose]).to eq(2)
         expect(monk.skill_proficiencies[:skills]).to eq([ "acrobatics", "athletics", "history", "insight", "religion", "stealth" ])
-        expect(monk.saving_throw_proficiencies).to eq([ "str", "dex" ])      
+        expect(monk.saving_throw_proficiencies).to eq([ "str", "dex" ])
       end
     end
   end
