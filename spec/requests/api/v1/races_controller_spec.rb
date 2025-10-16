@@ -125,7 +125,6 @@ RSpec.describe "races endpoints", type: :request do
                     json = JSON.parse(response.body, symbolize_names: true)
 
                     target = json[:data]
-                    
                     expect(target[:type]).to eq("race")
                     expect(target[:id]).to eq(@half_orc[:index])
                     expect(target[:attributes][:name]).to eq(@half_orc[:name])
