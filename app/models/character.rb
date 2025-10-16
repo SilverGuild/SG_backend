@@ -1,10 +1,4 @@
 class Character < ApplicationRecord
-  # Many-to-many with races
-  has_many :characters_races
-  has_many :races, through: :characters_races
-  # Many-to-many with classes
-  has_many :character_char_classes
-  has_many :classes, through: :characters_char_classes
   # One-to-many with users
   belongs_to :user
 
@@ -15,4 +9,8 @@ class Character < ApplicationRecord
   validates :alignment, presence: true
   validates :background, presence: true
   validates :user_id, presence: true
+  validates :character_class_name, presence: true
+  validates :subclass_name, presence: true
+  validates :race_name, presence: true
+  validates :subrace_name, presence: true
 end
