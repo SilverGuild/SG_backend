@@ -16,15 +16,15 @@ class RaceSerializer
   end
 
   DETAILED_ATTRIBUTES = [
-              # :description,
-              :speed,
-              :size,
-              :ability_bonuses,
-              :age_description,
-              :alignment_description,
-              :size_description,
-              :language_description,
-              :languages
+    # :description,
+    :speed,
+    :size,
+    :ability_bonuses,
+    :age_description,
+    :alignment_description,
+    :size_description,
+    :language_description,
+    :languages
   ]
 
   DETAILED_ATTRIBUTES.each do |attr|

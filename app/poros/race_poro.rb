@@ -15,7 +15,6 @@ class RacePoro
               :languages
 
   def initialize(race_data)
-    # require "pry"; binding.pry
     @id                     = race_data[:index]&.downcase
     @name                   = race_data[:name]
     @url                    = race_data[:url]

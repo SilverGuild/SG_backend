@@ -1,13 +1,11 @@
 class Api::V1::CharacterClassesController < ApplicationController
   def index
-    character_classes = CharacterClass.all
-
-    render json: CharacterClassSerializer.new(character_classes).serializable_hash
+    character_classes = Dnd5eDataGateway.fetch_character_classes.map { |char_class_data|  CharacterClassPoro.new(char_class_data) }
+    render json: CharacterClassSerializer.new(character_classes, params: { detailed: false }).serializable_hash
   end
 
   def show
-    character_class = CharacterClass.find(params[:id])
-
-    render json: CharacterClassSerializer.new(character_class).serializable_hash
+    character_class = CharacterClassPoro.new(Dnd5eDataGateway.fetch_character_classes(params[:id]))
+    render json: CharacterClassSerializer.new(character_class, params: { detailed: true }).serializable_hash
   end
 end

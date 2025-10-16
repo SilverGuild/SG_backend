@@ -3,28 +3,21 @@ require "rails_helper"
 RSpec.describe "Character Class PORO" do
   describe "happy paths" do
     it "should create a new character class poro with all attributes accessible" do
-      test_json = {
-        name: "monk",
-        description: "Meditate on it",
-        hit_die: 8,
-        skill_proficiencies: [
-          {
-            "choose" => 2,
-            "skills" => [ "acrobatics", "athletics", "history", "insight", "religion", "stealth" ]
-          }
-        ],
-        saving_throw_proficiencies: [ "str", "dex" ]
-      }
+      VCR.use_cassette("monk_class") do
+        response = Faraday.get("https://www.dnd5eapi.co/api/2014/classes/monk")
+        test_response = JSON.parse(response.body, symbolize_names: true)
 
-      monk = CharacterClassPoro.new(test_json)
+        monk = CharacterClassPoro.new(test_response)
 
-      expect(monk).to be_an_instance_of CharacterClassPoro
-      expect(monk.name).to eq(test_json[:name])
-      expect(monk.description).to eq(test_json[:description])
-      expect(monk.hit_die).to eq(test_json[:hit_die])
-      expect(monk.skill_proficiencies.first[:choose]).to eq(test_json[:skill_proficiencies].first["choose"])
-      expect(monk.skill_proficiencies.first[:skills]).to eq(test_json[:skill_proficiencies].first["skills"])
-      expect(monk.saving_throw_proficiencies).to eq(test_json[:saving_throw_proficiencies])
+        expect(monk).to be_an_instance_of CharacterClassPoro
+        expect(monk.name).to eq("Monk")
+        expect(monk.url).to eq("/api/2014/classes/monk")
+        expect(monk.hit_die).to eq(8)
+        expect(monk.skill_proficiencies.length).to eq(2)
+        expect(monk.skill_proficiencies[:choose]).to eq(2)
+        expect(monk.skill_proficiencies[:skills]).to eq([ "acrobatics", "athletics", "history", "insight", "religion", "stealth" ])
+        expect(monk.saving_throw_proficiencies).to eq([ "str", "dex" ])
+      end
     end
   end
 end
