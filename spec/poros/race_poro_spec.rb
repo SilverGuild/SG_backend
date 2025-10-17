@@ -51,7 +51,7 @@ RSpec.describe "Race PORO" do
             test_response = JSON.parse(response.body, symbolize_names: true)
 
             human = RacePoro.new(test_response)
-            
+
             expect(human).to be_an_instance_of RacePoro
             expect(human.id).to eq(expected_poro[:id])
             expect(human.name).to eq(expected_poro[:name])

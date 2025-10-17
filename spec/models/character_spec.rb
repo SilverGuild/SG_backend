@@ -5,7 +5,7 @@ RSpec.describe Character, type: :model do
     before(:each) do
       @user =  @user1 = User.create!(username: "user1", email: "user1@gmail.com")
 
-      @character = Character.create!( name: "Kaelynn Thornwick",
+      @character = Character.create!(name: "Kaelynn Thornwick",
                                       level: 1,
                                       experience_points: 0,
                                       alignment: "Neutral Good",
@@ -49,7 +49,7 @@ RSpec.describe Character, type: :model do
       it "fetches character race details and returns a PORO" do
         VCR.use_cassette("model_character_race_details_gnome") do
           test_race = @character.race
-          
+
           expect(test_race).to be_an_instance_of RacePoro
           expect(test_race.id).to eq("gnome")
           expect(test_race.name).to eq("Gnome")
