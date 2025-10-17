@@ -49,19 +49,19 @@ RSpec.describe Character, type: :model do
       it "fetches character race details and returns a PORO" do
         VCR.use_cassette("model_character_race_details_gnome") do
           test_race = @character.race
-          require "pry"; binding.pry
+          
           expect(test_race).to be_an_instance_of RacePoro
           expect(test_race.id).to eq("gnome")
           expect(test_race.name).to eq("Gnome")
           expect(test_race.speed).to eq(25)
           expect(test_race.size).to eq("Small")
-          expect(test_race.ability_bonuses.first[:skill_name]).to eq("int")
+          expect(test_race.ability_bonuses.first[:ability_score][:index]).to eq("int")
           expect(test_race.ability_bonuses.first[:bonus]).to eq(2)
           expect(test_race.age_description).to eq("Gnomes mature at the same rate humans do, and most are expected to settle down into an adult life by around age 40. They can live 350 to almost 500 years.")
           expect(test_race.alignment_description).to eq("Gnomes are most often good. Those who tend toward law are sages, engineers, researchers, scholars, investigators, or inventors. Those who tend toward chaos are minstrels, tricksters, wanderers, or fanciful jewelers. Gnomes are good-hearted, and even the tricksters among them are more playful than vicious.")
           expect(test_race.size_description).to eq("Gnomes are between 3 and 4 feet tall and average about 40 pounds. Your size is Small.")
           expect(test_race.language_description).to eq("You can speak, read, and write Common and Gnomish. The Gnomish language, which uses the Dwarvish script, is renowned for its technical treatises and its catalogs of knowledge about the natural world.")
-          expect(test_race.languages.first[:language_name]).to eq([ "gnomish", "common" ])
+          expect(test_race.languages.first[:index]).to eq("common")
         end
       end
     end
