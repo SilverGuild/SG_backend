@@ -10,19 +10,25 @@ RSpec.describe "characters endpoints", type: :request do
                                       experience_points: 0,
                                       alignment: "Neutral Good",
                                       background: "Hermit",
-                                      user_id: @user.id)
+                                      user_id: @user.id,
+                                      character_class_name: "druid",
+                                      race_name: "gnome")
       @character2 = Character.create!(name: "Theren Nightblade",
                                       level: 5,
                                       experience_points: 500,
                                       alignment: "Lawful Evil",
                                       background: "Aristocrate",
-                                      user_id: @user.id)
+                                      user_id: @user.id,
+                                      character_class_name: "paladin",
+                                      race_name: "dragonborn")
       @character3 = Character.create!(name: "Mira Stormhaven",
                                       level: 8,
                                       experience_points: 853,
                                       alignment: "Chaotic Neutral",
                                       background: "Acolyte",
-                                      user_id: @user.id)
+                                      user_id: @user.id,
+                                      character_class_name: "fighter",
+                                      race_name: "halfling")
 
       @target_id = @character2.id
     end
@@ -85,7 +91,9 @@ RSpec.describe "characters endpoints", type: :request do
           experience_points: 345,
           alignment: "Good Chaotic",
           background: "Folk Hero",
-          user_id: @user.id
+          user_id: @user.id,
+          character_class_name: "wizard",
+          race_name: "half-elf"
         }
 
         post "/api/v1/characters", params: test_params, as: :json
@@ -101,6 +109,8 @@ RSpec.describe "characters endpoints", type: :request do
         expect(test_character[:alignment]).to eq(test_character[:alignment])
         expect(test_character[:background]).to eq(test_character[:background])
         expect(test_character[:user_id]).to eq(test_character[:user_id])
+        expect(test_character[:character_class_name]).to eq(test_character[:character_class_name])
+        expect(test_character[:race_name]).to eq(test_character[:race_name])
 
         # Show that test_character has been added to the existing lsit of characters
         characters = Character.all
