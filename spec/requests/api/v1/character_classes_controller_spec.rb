@@ -64,7 +64,7 @@ RSpec.describe "character_classes endpoints", type: :request do
       end
     end
 
-    describe "GET /api/v1/character_classe/{ID}" do
+    describe "GET /api/v1/character_class/{ID}" do
       it "should retrieve one character class" do
         VCR.use_cassette("character_class_warlock") do
           target_id = "warlock"
