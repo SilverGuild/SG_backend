@@ -33,11 +33,11 @@ RSpec.describe Character, type: :model do
     describe "helper methods" do
       it "fetches character class details and returns a PORO" do
         VCR.use_cassette("model_character_class_details_druid") do
-          test_id = @character.character_class_name
-          test_class = Character.character_class(test_id)
+          test_class = @character.character_class
 
           expect(test_class).to be_an_instance_of CharacterClassPoro
-          expect(test_class.name).to eq("druid")
+          expect(test_class.id).to eq("druid")
+          expect(test_class.name).to eq("Druid")
           expect(test_class.url).to eq("/api/2014/classes/druid")
           expect(test_class.hit_die).to eq(8)
           expect(test_class.skill_proficiencies[:choose]).to eq(2)
@@ -48,11 +48,11 @@ RSpec.describe Character, type: :model do
 
       it "fetches character race details and returns a PORO" do
         VCR.use_cassette("model_character_race_details_gnome") do
-          test_id = @character.race_name
-          test_race = Character.race(test_id)
-
+          test_race = @character.race
+          require "pry"; binding.pry
           expect(test_race).to be_an_instance_of RacePoro
-          expect(test_race.name).to eq("gnome")
+          expect(test_race.id).to eq("gnome")
+          expect(test_race.name).to eq("Gnome")
           expect(test_race.speed).to eq(25)
           expect(test_race.size).to eq("Small")
           expect(test_race.ability_bonuses.first[:skill_name]).to eq("int")
