@@ -11,7 +11,6 @@ class CharacterClassPoro
 
   def initialize(class_data)
     @id                         = class_data[:index]&.downcase
-    # require "pry"; binding.pry
     @name                       = class_data[:name]
     @url                        = class_data[:url]
     # @description                = class_data[:description]
@@ -23,7 +22,8 @@ class CharacterClassPoro
   private
 
   def list_skill_proficiencies(skills)
-    skills.map { |skill|  skill[:item][:index].split("-").last }
+    # require "pry"; binding.pry
+    skills.map { |skill|  skill[:item][:index].sub("skill-", "") }
   end
 
   def list_proficiencies(proficiencies)
