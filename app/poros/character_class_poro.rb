@@ -22,7 +22,6 @@ class CharacterClassPoro
   private
 
   def list_skill_proficiencies(skills)
-    # require "pry"; binding.pry
     skills.map { |skill|  skill[:item][:index].sub("skill-", "") }
   end
 
