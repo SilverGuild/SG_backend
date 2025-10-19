@@ -5,7 +5,7 @@ RSpec.describe User, type: :model do
     before(:each) do
        @user =  @user1 = User.create!(username: "user1", email: "user1@gmail.com")
 
-       @character = Character.create!(name: "Kaelynn Thornwick",
+       @character = Character.create!(name: "Lynn Thorn",
                                       level: 3,
                                       experience_points: 320,
                                       alignment: "Neutral Neutral",
@@ -15,8 +15,17 @@ RSpec.describe User, type: :model do
                                       race_name: "half-elf")
     end
 
-    describe "relationships" do
-      it { should have_many(:characters) }
+    describe "associations" do
+      it { should have_many(:characters).dependent(:destroy) }
+
+      it "destroys associated characters when user is destroyed" do
+        expect(@user.characters.count).to eq(1)
+        expect(@user.characters.pluck(:id)).to include(@character.id)
+
+        expect { @user.destroy }.to change { Character.count }.by(-1)
+
+        expect(Character.exists?(@character.id)).to be false
+      end
     end
 
     describe "validations" do
