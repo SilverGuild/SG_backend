@@ -43,12 +43,12 @@ RSpec.describe "races endpoints", type: :request do
                     expect(target[:attributes][:name]).to eq("Half-Orc")
                     expect(target[:attributes][:speed]).to eq(30)
                     expect(target[:attributes][:size]).to eq("Medium")
-                    expect(target[:attributes][:ability_bonuses].first[:ability_score][:name]).to eq("str")
+                    expect(target[:attributes][:ability_bonuses].first[:ability_score][:name]).to eq("STR")
                     expect(target[:attributes][:age_description]).to eq("Half-orcs mature a little faster than humans, reaching adulthood around age 14. They age noticeably faster and rarely live longer than 75 years.")
                     expect(target[:attributes][:alignment_description]).to eq("Half-orcs inherit a tendency toward chaos from their orc parents and are not strongly inclined toward good. Half-orcs raised among orcs and willing to live out their lives among them are usually evil.")
                     expect(target[:attributes][:size_description]).to eq("Half-orcs are somewhat larger and bulkier than humans, and they range from 5 to well over 6 feet tall. Your size is Medium.")
                     expect(target[:attributes][:language_description]).to eq("You can speak, read, and write Common and Orc. Orc is a harsh, grating language with hard consonants. It has no script of its own but is written in the Dwarvish script.")
-                    expect(target[:attributes][:languages].first[:name]).to eq("common")
+                    expect(target[:attributes][:languages].first[:name]).to eq("Common")
                 end
             end
         end
