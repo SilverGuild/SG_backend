@@ -17,12 +17,12 @@ RSpec.describe "races endpoints", type: :request do
                     last_race = races.last
 
                     expect(first_race[:type]).to eq("race")
-                    expect(first_race[:id]).to eq(@dragonborn[:index])
-                    expect(first_race[:attributes][:name]).to eq(@dragonborn[:name])
+                    expect(first_race[:id]).to eq("dragonborn")
+                    expect(first_race[:attributes][:name]).to eq("Dragonborn")
 
                     expect(last_race[:type]).to eq("race")
-                    expect(last_race[:id]).to eq(@tiefling[:index])
-                    expect(last_race[:attributes][:name]).to eq(@tiefling[:name])
+                    expect(last_race[:id]).to eq("tiefling")
+                    expect(last_race[:attributes][:name]).to eq("Tiefling")
                 end
             end
         end
@@ -39,16 +39,16 @@ RSpec.describe "races endpoints", type: :request do
 
                     target = json[:data]
                     expect(target[:type]).to eq("race")
-                    expect(target[:id]).to eq(@half_orc[:index])
-                    expect(target[:attributes][:name]).to eq(@half_orc[:name])
-                    expect(target[:attributes][:speed]).to eq(@half_orc[:speed])
-                    expect(target[:attributes][:size]).to eq(@half_orc[:size])
-                    expect(target[:attributes][:ability_bonuses].first[:ability_score][:name]).to eq(@half_orc[:ability_bonuses].first["skill_name"])
-                    expect(target[:attributes][:age_description]).to eq(@half_orc[:age_description])
-                    expect(target[:attributes][:alignment_description]).to eq(@half_orc[:alignment_description])
-                    expect(target[:attributes][:size_description]).to eq(@half_orc[:size_description])
-                    expect(target[:attributes][:language_description]).to eq(@half_orc[:language_description])
-                    expect(target[:attributes][:languages].first[:name]).to eq(@half_orc[:languages].first["language_name"])
+                    expect(target[:id]).to eq("half-orc")
+                    expect(target[:attributes][:name]).to eq("Half-Orc")
+                    expect(target[:attributes][:speed]).to eq(30)
+                    expect(target[:attributes][:size]).to eq("Medium")
+                    expect(target[:attributes][:ability_bonuses].first[:ability_score][:name]).to eq("str")
+                    expect(target[:attributes][:age_description]).to eq("Half-orcs mature a little faster than humans, reaching adulthood around age 14. They age noticeably faster and rarely live longer than 75 years.")
+                    expect(target[:attributes][:alignment_description]).to eq("Half-orcs inherit a tendency toward chaos from their orc parents and are not strongly inclined toward good. Half-orcs raised among orcs and willing to live out their lives among them are usually evil.")
+                    expect(target[:attributes][:size_description]).to eq("Half-orcs are somewhat larger and bulkier than humans, and they range from 5 to well over 6 feet tall. Your size is Medium.")
+                    expect(target[:attributes][:language_description]).to eq("You can speak, read, and write Common and Orc. Orc is a harsh, grating language with hard consonants. It has no script of its own but is written in the Dwarvish script.")
+                    expect(target[:attributes][:languages].first[:name]).to eq("common")
                 end
             end
         end
