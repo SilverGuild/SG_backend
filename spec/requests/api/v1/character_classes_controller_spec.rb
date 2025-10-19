@@ -2,43 +2,6 @@ require "rails_helper"
 
 RSpec.describe "character_classes endpoints", type: :request do
   describe "RESTful endpoints" do
-    before(:each) do
-      @barbarian = {
-        index: "barbarian",
-        name: "Barbarian",
-        hit_die: 12,
-        skill_proficiencies: [ {
-          "choose" => 2,
-          "skills" => [ "animal-handling", "athletics", "intimidation", "nature", "perception", "survival" ]
-        } ],
-        saving_throw_proficiencies: [ "str", "con" ]
-      }
-
-      @wizard = {
-        index: "wizard",
-        name: "Wizard",
-        hit_die: 6,
-        skill_proficiencies: [ {
-          "choose" => 2,
-          "skills" => [ "arcana", "history", "insight", "investigation", "medicine", "religion" ]
-
-        } ],
-        saving_throw_proficiencies: [ "int", "wis" ]
-      }
-
-      @warlock = {
-        index: "warlock",
-        name: "Warlock",
-        hit_die: 8,
-        skill_proficiencies: [ {
-          "choose" => 2,
-          "skills" => [ "arcana", "deception", "history", "intimidation", "investigation", "nature", "religion" ]
-
-        } ],
-        saving_throw_proficiencies: [ "wis", "cha" ]
-      }
-    end
-
     describe "GET /api/v1/character_classes" do
       it "should retrieve all character classes directly from dnd5e api" do
         VCR.use_cassette("character_classes") do
