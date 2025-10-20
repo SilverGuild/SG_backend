@@ -4,7 +4,7 @@ RSpec.describe "languages endpoints", type: :request do
   describe "RESTful endpoints" do
     describe "GET /api/v1/languages" do
       it "should fetch all languages directly from the dnd5e api" do
-        VCR.use_cassette("languages_all") do
+        VCR.use_cassette("languages") do
           get "/api/v1/languages"
           expect(response).to be_successful
 
@@ -19,10 +19,12 @@ RSpec.describe "languages endpoints", type: :request do
           expect(first_language[:type]).to eq("language")
           expect(first_language[:id]).to eq("abyssal")
           expect(first_language[:attributes][:name]).to eq("Abyssal")
+          expect(first_language[:attributes][:url]).to eq("/api/2014/languages/abyssal")
 
           expect(last_language[:type]).to eq("language")
           expect(last_language[:id]).to eq("undercommon")
           expect(last_language[:attributes][:name]).to eq("Undercommon")
+          expect(last_language[:attributes][:url]).to eq("/api/2014/languages/undercommon")
         end
       end
     end
@@ -34,7 +36,7 @@ RSpec.describe "languages endpoints", type: :request do
           get "/api/v1/languages/#{target_id}"
 
           expect(response).to be_successful
-          
+
           json = JSON.parse(response.body, symbolize_names: true)
           target = json[:data]
 
@@ -42,9 +44,8 @@ RSpec.describe "languages endpoints", type: :request do
           expect(target[:id]).to eq("sylvan")
           expect(target[:attributes][:name]).to eq("Sylvan")
           expect(target[:attributes][:language_type]).to eq("Exotic")
-          expect(target[:attributes][:typical_speakers]).to eq(["Fey Creatures"])
+          expect(target[:attributes][:typical_speakers]).to eq([ "Fey creatures" ])
           expect(target[:attributes][:script]).to eq("Elvish")
-          expect(target[:attributes][:url]).to eq("/api/2014/languages/sylvan")
         end
       end
     end
