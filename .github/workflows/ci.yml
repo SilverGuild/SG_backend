@@ -3,7 +3,7 @@ name: "CI"
 on:
   pull_request:
   push:
-    branches: [ "main" ]
+    branches: [ main ]
 
 jobs:
   scan_and_lint:
@@ -36,13 +36,12 @@ jobs:
 
   test:
     runs-on: ubuntu-latest
-    needs: scan_and_lint
     
     services:
       postgres:
-        image: postgres:11-alpine
+        image: postgres:14-alpine
         ports:
-          - "5432:5432"
+          - 5432:5432
         env:
           POSTGRES_DB: rails_test
           POSTGRES_USER: postgres
@@ -54,9 +53,9 @@ jobs:
           --health-retries 5
           
       redis:
-        image: redis
+        image: redis:7-alpine
         ports:
-          - "6379:6379"
+          - 6379:6379
         options: >-
           --health-cmd "redis-cli ping"
           --health-interval 10s
@@ -65,8 +64,8 @@ jobs:
           
     env:
       RAILS_ENV: test
-      DATABASE_URL: "postgres://postgres:postgres@localhost:5432/rails_test"
-      REDIS_URL: "redis://localhost:6379/0"
+      DATABASE_URL: postgres://postgres:postgres@localhost:5432/rails_test
+      REDIS_URL: redis://localhost:6379/0
       
     steps:
       - name: Install system dependencies
@@ -80,13 +79,10 @@ jobs:
         with:
           ruby-version: .ruby-version
           bundler-cache: true
-          
-      - name: Set up database schema
+
+      - name: Setup test database
         run: bin/rails db:schema:load
-        
-      - name: Prepare test database
-        run: bin/rails db:test:prepare
-        
+
       - name: Run tests
         run: bin/rails test test:system
         
@@ -97,3 +93,4 @@ jobs:
           name: screenshots
           path: ${{ github.workspace }}/tmp/screenshots
           if-no-files-found: ignore
+          retention-days: 7
