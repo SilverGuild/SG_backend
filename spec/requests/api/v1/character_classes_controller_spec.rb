@@ -43,8 +43,8 @@ RSpec.describe "character_classes endpoints", type: :request do
           expect(target[:attributes][:name]).to eq("Warlock")
           expect(target[:attributes][:hit_die]).to eq(8)
           expect(target[:attributes][:skill_proficiencies][:choose]).to eq(2)
-          expect(target[:attributes][:skill_proficiencies][:skills]).to eq(["arcana", "deception", "history", "intimidation", "investigation", "nature", "religion"])
-          expect(target[:attributes][:saving_throw_proficiencies]).to eq(["wis", "cha"])
+          expect(target[:attributes][:skill_proficiencies][:skills]).to eq([ "arcana", "deception", "history", "intimidation", "investigation", "nature", "religion" ])
+          expect(target[:attributes][:saving_throw_proficiencies]).to eq([ "wis", "cha" ])
         end
       end
     end
