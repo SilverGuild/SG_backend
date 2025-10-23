@@ -107,7 +107,7 @@ jobs:
           CI_NODE_TOTAL: ${{ matrix.ci_node_total }}
           CI_NODE_INDEX: ${{ matrix.ci_node_index }}
         run: | 
-          bin/rails test -- --format documentation --format RspecJunitFormatter --out tmp/rspec-results-${{ matrix.ci_node_index }}.xml \
+          bundle exec rspec --format documentation --format RspecJunitFormatter --out tmp/rspec-results-${{ matrix.ci_node_index }}.xml \
           $(bin/rails test -- --dry-run --format json | \
           jq -r ".examples[].id" | \
           awk "NR % ${CI_NODE_TOTAL} == ${CI_NODE_INDEX}")
