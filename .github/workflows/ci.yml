@@ -21,7 +21,13 @@ jobs:
           
       - name: Generate binstubs
         run: bundle binstubs bundler-audit brakeman rubocop --force
-        
+      
+      - name: Security audit
+        run: bin/bundler-audit --update
+
+      - name: Security scan
+        run: bin/brakeman -q -w2
+  
       - name: Lint Ruby files
         run: bin/rubocop -f github --parallel
 
