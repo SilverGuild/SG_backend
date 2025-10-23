@@ -12,7 +12,11 @@ require 'simplecov'
 require 'vcr'
 # require 'shoulda/matchers'
 
-SimpleCov.start
+SimpleCov.start 'rails' do
+  add_filter '/spec/'
+  add_filter '/config/'
+  add_filter '/vendor/'
+end
 # Add additional requires below this line. Rails is not loaded until this point!
 
 # Requires supporting ruby files with custom matchers and macros, etc, in
@@ -93,4 +97,6 @@ VCR.configure do |config|
     match_requests_on: [ :method, :uri ],
     record: :once
   }
+
+   config.allow_http_connections_when_no_cassette = false if ENV['CI']
 end

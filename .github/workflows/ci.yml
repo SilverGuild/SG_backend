@@ -12,7 +12,7 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v5
-        
+
       - name: Install Ruby and gems
         uses: ruby/setup-ruby@v1
         with:
@@ -21,12 +21,23 @@ jobs:
           
       - name: Generate binstubs
         run: bundle binstubs bundler-audit brakeman rubocop --force
-        
+      
+      - name: Security audit
+        run: bin/bundler-audit --update
+
+      - name: Security scan
+        run: bin/brakeman -q -w2
+  
       - name: Lint Ruby files
         run: bin/rubocop -f github --parallel
 
   test:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+          ci_node_total: [4]
+          ci_node_index: [0, 1, 2, 3]
     
     services:
       postgres:
@@ -57,6 +68,8 @@ jobs:
       RAILS_ENV: test
       DATABASE_URL: postgres://postgres:postgres@localhost:5432/rails_test
       REDIS_URL: redis://localhost:6379/0
+      DISABLE_SPRING: 1
+      CI: true
       
     steps:
       - name: Install system dependencies
@@ -64,6 +77,14 @@ jobs:
         
       - name: Checkout code
         uses: actions/checkout@v5
+
+      - name: Cache VCR cassettes
+        uses: actions/cache@v4
+        with:
+          path: spec/vcr_cassettes
+          key: vcr-cassettes-${{ hashFiles('spec/vcr_cassettes/**/*.yml') }}
+          restore-keys: |
+            vcr-cassettes-
         
       - name: Install Ruby and gems
         uses: ruby/setup-ruby@v1
@@ -78,12 +99,36 @@ jobs:
       - name: Setup test database
         run: bin/rails db:schema:load
 
-      - name: Run system tests
-        run: bin/rails test:system
+      - name: Run system tests 
+        run: bin/rails test:system 
 
       - name: Run tests
-        run: bin/rails test
+        env:
+          CI_NODE_TOTAL: ${{ matrix.ci_node_total }}
+          CI_NODE_INDEX: ${{ matrix.ci_node_index }}
+        run: | 
+          bundle exec rspec --format documentation --format RspecJunitFormatter --out tmp/rspec-results-${{ matrix.ci_node_index }}.xml \
+          $(bin/rails test -- --dry-run --format json | \
+          jq -r ".examples[].id" | \
+          awk "NR % ${CI_NODE_TOTAL} == ${CI_NODE_INDEX}")
         
+      - name: Upload coverage
+        uses: codecov/codecov-action@v4
+        if: always()
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: ./coverage/.resultset.json
+          flags: unittests
+          fail_ci_if_error: false
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: rspec-results-${{ matrix.ci_node_index }}
+          path: tmp/rspec-results-*.xml
+          retention-days: 7
+
       - name: Keep screenshots from failed system tests
         uses: actions/upload-artifact@v4
         if: failure()
