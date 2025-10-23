@@ -3,14 +3,16 @@ require "rails_helper"
 RSpec.describe "characters endpoints", type: :request do
   describe "RESTful endpoints" do
     before(:each) do
-      @user =  @user1 = User.create!(username: "user1", email: "user1@gmail.com")
+      @user1 = User.create!(username: "user1", email: "user1@gmail.com")
+      
+      @user2 = User.create!(username: "user2", email: "user2@outlook.com")
 
       @character1 = Character.create!(name: "Kaelynn Thornwick",
                                       level: 1,
                                       experience_points: 0,
                                       alignment: "Neutral Good",
                                       background: "Hermit",
-                                      user_id: @user.id,
+                                      user_id: @user1.id,
                                       character_class_name: "druid",
                                       race_name: "gnome")
       @character2 = Character.create!(name: "Theren Nightblade",
@@ -18,7 +20,7 @@ RSpec.describe "characters endpoints", type: :request do
                                       experience_points: 500,
                                       alignment: "Lawful Evil",
                                       background: "Aristocrate",
-                                      user_id: @user.id,
+                                      user_id: @user1.id,
                                       character_class_name: "paladin",
                                       race_name: "dragonborn")
       @character3 = Character.create!(name: "Mira Stormhaven",
@@ -26,9 +28,18 @@ RSpec.describe "characters endpoints", type: :request do
                                       experience_points: 853,
                                       alignment: "Chaotic Neutral",
                                       background: "Acolyte",
-                                      user_id: @user.id,
+                                      user_id: @user1.id,
                                       character_class_name: "fighter",
                                       race_name: "halfling")
+
+      @character4 = Character.create!(name: "Thalorin Emberwick",
+                                      level: 7,
+                                      experience_points: 755,
+                                      alignment: "Lawful Good",
+                                      background: "Sage",
+                                      user_id: @user2.id,
+                                      character_class_name: "cleric",
+                                      race_name: "half-elf")
 
       @target_id = @character2.id
     end
@@ -54,17 +65,17 @@ RSpec.describe "characters endpoints", type: :request do
         expect(first_character[:attributes][:background]).to eq(@character1[:background])
         expect(first_character[:attributes][:user_id]).to eq(@character1[:user_id])
 
-        expect(last_character[:id]).to eq(@character3[:id])
-        expect(last_character[:attributes][:name]).to eq(@character3[:name])
-        expect(last_character[:attributes][:level]).to eq(@character3[:level])
-        expect(last_character[:attributes][:experience_points]).to eq(@character3[:experience_points])
-        expect(last_character[:attributes][:alignment]).to eq(@character3[:alignment])
-        expect(last_character[:attributes][:background]).to eq(@character3[:background])
-        expect(last_character[:attributes][:user_id]).to eq(@character3[:user_id])
+        expect(last_character[:id]).to eq(@character4[:id])
+        expect(last_character[:attributes][:name]).to eq(@character4[:name])
+        expect(last_character[:attributes][:level]).to eq(@character4[:level])
+        expect(last_character[:attributes][:experience_points]).to eq(@character4[:experience_points])
+        expect(last_character[:attributes][:alignment]).to eq(@character4[:alignment])
+        expect(last_character[:attributes][:background]).to eq(@character4[:background])
+        expect(last_character[:attributes][:user_id]).to eq(@character4[:user_id])
       end
     end
 
-     describe "GET /api/v1/users/{ID}" do
+     describe "GET /api/v1/characters/{ID}" do
       it "should retrieve one character" do
         get "/api/v1/characters/#{@target_id}"
         expect(response).to be_successful
