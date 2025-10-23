@@ -27,6 +27,11 @@ jobs:
 
   test:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+          ci_node_total: [4]
+          ci_node_index: [0, 1, 2, 3]
     
     services:
       postgres:
@@ -90,14 +95,21 @@ jobs:
         run: bin/rails test:system 
 
       - name: Run tests
-        run: bin/rails test -- --format documentation --format RspecJunitFormatter --out tmp/rspec-results.xml
+        env:
+          CI_NODE_TOTAL: ${{ matrix.ci_node_total }}
+          CI_NODE_INDEX: ${{ matrix.ci_node_index }}
+        run: | 
+          bin/rails test -- --format documentation --format RspecJunitFormatter --out tmp/rspec-results-${{ matrix.ci_node_index }}.xml \
+          $(bin/rails test -- --dry-run --format json | \
+          jq -r ".examples[].id" | \
+          awk "NR % ${CI_NODE_TOTAL} == ${CI_NODE_INDEX}")
         
       - name: Upload test results
         uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: rspec-results
-          path: tmp/rspec-results.xml
+          name: rspec-results-${{ matrix.ci_node_index }}
+          path: tmp/rspec-results-*.xml
           retention-days: 7
 
       - name: Keep screenshots from failed system tests
