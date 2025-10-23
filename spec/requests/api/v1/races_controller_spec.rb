@@ -27,7 +27,7 @@ RSpec.describe "races endpoints", type: :request do
             end
         end
 
-        describe "GET /api/v1/races/{ID}" do
+        describe "GET /api/v1/races/:id" do
             it "should retrieve one character race and detailed information" do
                 VCR.use_cassette("single_character_race_half_orc") do
                     target_id = "half-orc"

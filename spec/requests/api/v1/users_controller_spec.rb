@@ -33,7 +33,7 @@ RSpec.describe "users endpoints", type: :request do
       end
     end
 
-    describe "GET /api/v1/users/{ID}" do
+    describe "GET /api/v1/users/:id" do
       it "should retrieve one user" do
         get "/api/v1/users/#{@target_id}"
 
@@ -73,7 +73,7 @@ RSpec.describe "users endpoints", type: :request do
       end
     end
 
-    describe "PATCH /api/v1/users/{ID}" do
+    describe "PATCH /api/v1/users/:id" do
       it "should updaate a user entry in the db and return successful status" do
         user = User.find(@target_id)
 
@@ -99,7 +99,7 @@ RSpec.describe "users endpoints", type: :request do
       end
     end
 
-    describe "DELETE /api/v1/users/{ID}" do
+    describe "DELETE /api/v1/users/:id" do
       it "should destroy a user by id and return an empty response body" do
         expect {
           delete "/api/v1/users/#{@target_id}"
