@@ -93,4 +93,6 @@ VCR.configure do |config|
     match_requests_on: [ :method, :uri ],
     record: :once
   }
+
+   config.allow_http_connections_when_no_cassette = false if ENV['CI']
 end
