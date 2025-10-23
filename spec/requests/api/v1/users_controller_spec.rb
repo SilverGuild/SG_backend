@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "users endpoints", type: :request do
+RSpec.describe "API::V1::Users", type: :request do
   describe "RESTful endpoints" do
     before(:each) do
       @user1 = User.create!(username: "user1", email: "user1@gmail.com")

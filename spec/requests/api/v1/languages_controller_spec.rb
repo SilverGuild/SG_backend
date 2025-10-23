@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "languages endpoints", type: :request do
+RSpec.describe "API::V1::Languages", type: :request do
   describe "RESTful endpoints" do
     describe "GET /api/v1/languages" do
       it "should fetch all languages directly from the dnd5e api" do

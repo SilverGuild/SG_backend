@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "races endpoints", type: :request do
+RSpec.describe "API::V1::Races", type: :request do
     describe "RESTful endpoints" do
         describe "GET /api/v1/races" do
             it "should retrieve all character races directly from dnd5e api" do
