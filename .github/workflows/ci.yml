@@ -86,12 +86,20 @@ jobs:
       - name: Setup test database
         run: bin/rails db:schema:load
 
-      - name: Run system tests
-        run: bin/rails test:system
+      - name: Run system tests 
+        run: bin/rails test:system 
 
       - name: Run tests
-        run: bin/rails test
+        run: bin/rails test -- --format documentation --format RspecJunitFormatter --out tmp/rspec-results.xml
         
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: rspec-results
+          path: tmp/rspec-results.xml
+          retention-days: 7
+
       - name: Keep screenshots from failed system tests
         uses: actions/upload-artifact@v4
         if: failure()
