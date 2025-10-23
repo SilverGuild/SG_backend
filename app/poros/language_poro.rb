@@ -3,7 +3,8 @@ class LanguagePoro
               :name,
               :language_type,
               :typical_speakers,
-              :script
+              :script,
+              :url
 
   def initialize(language_data)
     @id               = language_data[:index]
@@ -11,5 +12,6 @@ class LanguagePoro
     @language_type    = language_data[:type]
     @typical_speakers = language_data[:typical_speakers]
     @script           = language_data[:script]
+    @url              = language_data[:url]
   end
 end
