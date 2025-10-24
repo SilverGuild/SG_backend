@@ -30,6 +30,7 @@ RSpec.describe "API::V1::Users::Characters", type: :request do
                                       character_class_name: "fighter",
                                       race_name: "halfling")
     end
+
     describe "GET /api/v1/users/:id/characters" do
       it "should retrieve all a users characters" do
         get "/api/v1/users/#{@user.id}/characters"
@@ -69,7 +70,6 @@ RSpec.describe "API::V1::Users::Characters", type: :request do
           experience_points: 345,
           alignment: "Chaotic Good",
           background: "Folk Hero",
-          user_id: @user.id,
           character_class_name: "wizard",
           race_name: "half-elf"
         }
@@ -85,7 +85,7 @@ RSpec.describe "API::V1::Users::Characters", type: :request do
         expect(test_character[:experience_points]).to eq(test_params[:experience_points])
         expect(test_character[:alignment]).to eq(test_params[:alignment])
         expect(test_character[:background]).to eq(test_params[:background])
-        expect(test_character[:user_id]).to eq(test_params[:user_id])
+        expect(test_character[:user_id]).to eq(@user.id)
         expect(test_character[:character_class_name]).to eq(test_params[:character_class_name])
         expect(test_character[:race_name]).to eq(test_params[:race_name])
 
