@@ -5,6 +5,7 @@ Rails.application.routes.draw do
   namespace :api do
     namespace :v1 do
       resources :character_classes, only: [ :index, :show ]
+      resources :subclasses, only: [ :index, :show ]
       resources :races, only: [ :index, :show ]
       resources :languages, only: [ :index, :show ]
 
