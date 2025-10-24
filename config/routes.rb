@@ -4,15 +4,15 @@ Rails.application.routes.draw do
 
   namespace :api do
     namespace :v1 do
-      resources :users, only: [ :index, :show, :create, :update, :destroy ]
-      resources :characters, only: [ :index, :show, :update, :destroy ]
       resources :character_classes, only: [ :index, :show ]
       resources :races, only: [ :index, :show ]
       resources :languages, only: [ :index, :show ]
 
-      resources :users do
-        resources :characters, only: [ :index, :create ]
+      resources :users, only: [ :index, :show, :create, :update, :destroy ] do
+        resources :characters, only: [ :index, :create ], controller: "users/characters"
       end
+
+      resources :characters, only: [ :index, :show, :update, :destroy ]
     end
   end
 end
