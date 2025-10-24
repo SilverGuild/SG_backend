@@ -5,7 +5,7 @@ RSpec.describe Dnd5eDataGateway do
   describe "GET /api/2014/classes/" do
     it "should make a request to D&D 5e API and return all character classes" do
       VCR.use_cassette("character_classes") do
-        character_classes = Dnd5eDataGateway.fetch_classes
+        character_classes = Dnd5eDataGateway.fetch_character_classes
 
         expect(character_classes).not_to be_empty
         expect(character_classes.count).to eq(12)
@@ -16,7 +16,7 @@ RSpec.describe Dnd5eDataGateway do
 
      it "should make a request to D&D 5e API and return a single character class by id" do
       VCR.use_cassette("single_character_class_sorcerer") do
-        character_class = Dnd5eDataGateway.fetch_classes("sorcerer")
+        character_class = Dnd5eDataGateway.fetch_character_classes("sorcerer")
 
         expect(character_class).not_to be_empty
         expect(character_class[:index]).to eq("sorcerer")
@@ -76,7 +76,7 @@ RSpec.describe Dnd5eDataGateway do
         character_subraces = Dnd5eDataGateway.fetch_subraces
 
         expect(character_subraces).not_to be_empty
-        expect(character_subraces.count).to eq(12)
+        expect(character_subraces.count).to eq(4)
         expect(character_subraces.first[:index]).to eq("high-elf")
         expect(character_subraces.last[:index]).to eq("rock-gnome")
       end
@@ -84,10 +84,10 @@ RSpec.describe Dnd5eDataGateway do
 
     it "should make a request to D&D 5e API and return a single subrace" do
       VCR.use_cassette("character_subrace_lightfoot_halfling") do
-        character_subrace = Dnd5eDataGateway.fetch_subraces("lightfoot_halfling")
+        character_subrace = Dnd5eDataGateway.fetch_subraces("lightfoot-halfling")
 
         expect(character_subrace).not_to be_empty
-        expect(character_subrace[:index]).to eq("lightfoot_halfling")
+        expect(character_subrace[:index]).to eq("lightfoot-halfling")
       end
     end
   end
