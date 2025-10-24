@@ -16,7 +16,6 @@ class Api::V1::Users::CharactersController < ApplicationController
   private
 
   def set_user
-      # require "pry"; binding.pry
     @user = User.find(params[:user_id])
   end
 
