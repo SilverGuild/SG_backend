@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "character_classes endpoints", type: :request do
+RSpec.describe "API::V1::CharacterClasses", type: :request do
   describe "RESTful endpoints" do
     describe "GET /api/v1/character_classes" do
       it "should retrieve all character classes directly from dnd5e api" do
@@ -27,7 +27,7 @@ RSpec.describe "character_classes endpoints", type: :request do
       end
     end
 
-    describe "GET /api/v1/character_class/{ID}" do
+    describe "GET /api/v1/character_class/:id" do
       it "should retrieve one character class" do
         VCR.use_cassette("character_class_warlock") do
           target_id = "warlock"

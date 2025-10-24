@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "languages endpoints", type: :request do
+RSpec.describe "API::V1::Languages", type: :request do
   describe "RESTful endpoints" do
     describe "GET /api/v1/languages" do
       it "should fetch all languages directly from the dnd5e api" do
@@ -29,7 +29,7 @@ RSpec.describe "languages endpoints", type: :request do
       end
     end
 
-    describe "GET /api/v1/languages/{ID}" do
+    describe "GET /api/v1/languages/:id" do
       it "should fetch a single language by id from the dnd5e api" do
         VCR.use_cassette("language_single_sylvan") do
           target_id = "sylvan"

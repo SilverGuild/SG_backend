@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "races endpoints", type: :request do
+RSpec.describe "API::V1::Races", type: :request do
     describe "RESTful endpoints" do
         describe "GET /api/v1/races" do
             it "should retrieve all character races directly from dnd5e api" do
@@ -27,7 +27,7 @@ RSpec.describe "races endpoints", type: :request do
             end
         end
 
-        describe "GET /api/v1/races/{ID}" do
+        describe "GET /api/v1/races/:id" do
             it "should retrieve one character race and detailed information" do
                 VCR.use_cassette("single_character_race_half_orc") do
                     target_id = "half-orc"
