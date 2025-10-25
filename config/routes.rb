@@ -7,6 +7,7 @@ Rails.application.routes.draw do
       resources :character_classes, only: [ :index, :show ]
       resources :subclasses, only: [ :index, :show ]
       resources :races, only: [ :index, :show ]
+      resources :subraces, only: [ :index, :show ]
       resources :languages, only: [ :index, :show ]
 
       resources :users, only: [ :index, :show, :create, :update, :destroy ] do
