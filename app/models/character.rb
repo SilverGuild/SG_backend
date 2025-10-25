@@ -9,21 +9,19 @@ class Character < ApplicationRecord
   validates :alignment, presence: true
   validates :background, presence: true
   validates :user_id, presence: true
-  validates :character_class_name, presence: true
-  # validates :subclass_name, presence: true
-  validates :race_name, presence: true
-  # validates :subrace_name, presence: true
+  validates :character_class_id, presence: true
+  validates :race_id, presence: true
 
   def character_class
     @character_class ||= begin
-      data = Dnd5eDataGateway.fetch_character_classes(character_class_name)
+      data = Dnd5eDataGateway.fetch_character_classes(character_class_id)
       CharacterClassPoro.new(data)
     end
   end
 
   def race
     @race ||= begin
-      data = Dnd5eDataGateway.fetch_races(race_name)
+      data = Dnd5eDataGateway.fetch_races(race_id)
       RacePoro.new(data)
     end
   end
