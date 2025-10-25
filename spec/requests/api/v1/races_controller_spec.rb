@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "races endpoints", type: :request do
+RSpec.describe "API::V1::Races", type: :request do
     describe "RESTful endpoints" do
         describe "GET /api/v1/races" do
             it "should retrieve all character races directly from dnd5e api" do
@@ -27,7 +27,7 @@ RSpec.describe "races endpoints", type: :request do
             end
         end
 
-        describe "GET /api/v1/races/{ID}" do
+        describe "GET /api/v1/races/:id" do
             it "should retrieve one character race and detailed information" do
                 VCR.use_cassette("single_character_race_half_orc") do
                     target_id = "half-orc"
@@ -38,12 +38,14 @@ RSpec.describe "races endpoints", type: :request do
                     json = JSON.parse(response.body, symbolize_names: true)
 
                     target = json[:data]
+
                     expect(target[:type]).to eq("race")
                     expect(target[:id]).to eq("half-orc")
                     expect(target[:attributes][:name]).to eq("Half-Orc")
                     expect(target[:attributes][:speed]).to eq(30)
                     expect(target[:attributes][:size]).to eq("Medium")
                     expect(target[:attributes][:ability_bonuses].first[:ability_score][:name]).to eq("STR")
+                    expect(target[:attributes][:ability_bonuses].first[:bonus]).to eq(2)
                     expect(target[:attributes][:age_description]).to eq("Half-orcs mature a little faster than humans, reaching adulthood around age 14. They age noticeably faster and rarely live longer than 75 years.")
                     expect(target[:attributes][:alignment_description]).to eq("Half-orcs inherit a tendency toward chaos from their orc parents and are not strongly inclined toward good. Half-orcs raised among orcs and willing to live out their lives among them are usually evil.")
                     expect(target[:attributes][:size_description]).to eq("Half-orcs are somewhat larger and bulkier than humans, and they range from 5 to well over 6 feet tall. Your size is Medium.")

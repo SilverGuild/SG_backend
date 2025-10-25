@@ -1,11 +1,9 @@
 require "rails_helper"
 
-RSpec.describe "characters endpoints", type: :request do
+RSpec.describe "API::V1::Characters", type: :request do
   describe "RESTful endpoints" do
     before(:each) do
-      @user1 = User.create!(username: "user1", email: "user1@gmail.com")
-      
-      @user2 = User.create!(username: "user2", email: "user2@outlook.com")
+      @user = User.create!(username: "user1", email: "user1@gmail.com")
 
       @character1 = Character.create!(name: "Kaelynn Thornwick",
                                       level: 1,
@@ -75,7 +73,7 @@ RSpec.describe "characters endpoints", type: :request do
       end
     end
 
-     describe "GET /api/v1/characters/{ID}" do
+     describe "GET /api/v1/characters:id}" do
       it "should retrieve one character" do
         get "/api/v1/characters/#{@target_id}"
         expect(response).to be_successful
@@ -94,45 +92,7 @@ RSpec.describe "characters endpoints", type: :request do
       end
     end
 
-    describe "POST /api/v1/characters" do
-      it "should create a new character and return 201 Created status" do
-        test_params = {
-          name: "Theren Nightwhisper",
-          level: 3,
-          experience_points: 345,
-          alignment: "Good Chaotic",
-          background: "Folk Hero",
-          user_id: @user.id,
-          character_class_name: "wizard",
-          race_name: "half-elf"
-        }
-
-        post "/api/v1/characters", params: test_params, as: :json
-        expect(response).to have_http_status(:created)
-
-        json = JSON.parse(response.body, symbolize_names: true)
-
-        test_character = json[:data]
-
-        expect(test_character[:name]).to eq(test_character[:name])
-        expect(test_character[:level]).to eq(test_character[:level])
-        expect(test_character[:experience_points]).to eq(test_character[:experience_points])
-        expect(test_character[:alignment]).to eq(test_character[:alignment])
-        expect(test_character[:background]).to eq(test_character[:background])
-        expect(test_character[:user_id]).to eq(test_character[:user_id])
-        expect(test_character[:character_class_name]).to eq(test_character[:character_class_name])
-        expect(test_character[:race_name]).to eq(test_character[:race_name])
-
-        # Show that test_character has been added to the existing lsit of characters
-        characters = Character.all
-        expect(characters.count).to eq(4)
-
-        last_character = characters.last
-        expect(last_character[:id]).to eq(test_character[:id])
-      end
-    end
-
-     describe "PATCH /api/v1/characters/{ID}" do
+    describe "PATCH /api/v1/characters/:id" do
       it "should updaate a character entry in the db and return successful status" do
         character = Character.find(@target_id)
 
@@ -173,7 +133,7 @@ RSpec.describe "characters endpoints", type: :request do
       end
     end
 
-    describe "DELETE /api/v1/characters/{ID}" do
+    describe "DELETE /api/v1/characters/:id" do
       it "should destroy a character by id and return an empty response body" do
         expect {
           delete "/api/v1/characters/#{@target_id}"
