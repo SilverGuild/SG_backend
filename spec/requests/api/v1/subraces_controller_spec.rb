@@ -43,7 +43,7 @@ RSpec.describe "API::V1::Subraces", type: :request do
                     expect(target[:type]).to eq("subrace")
                     expect(target[:id]).to eq("hill-dwarf")
                     expect(target[:attributes][:name]).to eq("Hill Dwarf")
-                    expect(target[:attributes][:race_id]).to eq(30)
+                    expect(target[:attributes][:race_id]).to eq("dwarf")
                     expect(target[:attributes][:description]).to eq("As a hill dwarf, you have keen senses, deep intuition, and remarkable resilience.")
                     expect(target[:attributes][:ability_bonuses].first[:ability_score][:name]).to eq("WIS")
                     expect(target[:attributes][:ability_bonuses].first[:bonus]).to eq(1)
