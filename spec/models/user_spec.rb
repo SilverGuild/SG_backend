@@ -15,7 +15,6 @@ RSpec.describe User, type: :model do
                                       race_id: "half-elf",
                                       subclass_id: "",
                                       subrace_id: "")
-
     end
 
     describe "associations" do

@@ -16,7 +16,6 @@ RSpec.describe Character, type: :model do
                                       race_id: "gnome",
                                       subrace_id: "rock-gnome"
                                     )
-
     end
 
     describe "relationships" do
