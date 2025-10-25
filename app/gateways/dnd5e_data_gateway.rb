@@ -6,19 +6,19 @@ class Dnd5eDataGateway
   def self.fetch_subclasses(id = "")
     fetch_dnd_data("subclasses", id)
   end
-  
+
   def self.fetch_races(id = "")
     fetch_dnd_data("races", id)
   end
-  
+
   def self.fetch_subraces(id = "")
     fetch_dnd_data("subraces", id)
   end
-  
+
   def self.fetch_langauges(id = "")
     fetch_dnd_data("languages", id)
   end
-  
+
   def self.fetch_dnd_data(category, id = "")
     conn = connect()
     endpoint = id.empty? ? "api/2014/#{category}" : "api/2014/#{category}/#{id}"
