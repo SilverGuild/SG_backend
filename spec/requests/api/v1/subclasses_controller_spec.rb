@@ -11,8 +11,7 @@ RSpec.describe "API::V1::Subclasses", type: :request do
           json = JSON.parse(response.body, symbolize_names: true)
 
           subclasses = json[:data]
-
-          expect(character_classes.count).to eq(12)
+          expect(subclasses.count).to eq(12)
 
           first_subclass = subclasses.first
           last_subclass = subclasses.last
@@ -20,10 +19,12 @@ RSpec.describe "API::V1::Subclasses", type: :request do
           expect(first_subclass[:type]).to eq("subclass")
           expect(first_subclass[:id]).to eq("berserker")
           expect(first_subclass[:attributes][:name]).to eq("Berserker")
+          expect(first_subclass[:attributes][:url]).to eq("/api/2014/subclasses/berserker")
 
           expect(last_subclass[:type]).to eq("subclass")
           expect(last_subclass[:id]).to eq("thief")
           expect(last_subclass[:attributes][:name]).to eq("Thief")
+          expect(last_subclass[:attributes][:url]).to eq("/api/2014/subclasses/thief")
         end
       end
     end
@@ -45,7 +46,6 @@ RSpec.describe "API::V1::Subclasses", type: :request do
           expect(target[:attributes][:flavor]).to eq("Otherworldly Patron")
           expect(target[:attributes][:class_id]).to eq("warlock")
           expect(target[:attributes][:description]).to eq("You have made a pact with a fiend from the lower planes of existence, a being whose aims are evil, even if you strive against those aims. Such beings desire the corruption or destruction of all things, ultimately including you. Fiends powerful enough to forge a pact include demon lords such as Demogorgon, Orcus, Fraz'Urb-luu, and Baphomet; archdevils such as Asmodeus, Dispater, Mephistopheles, and Belial; pit fiends and balors that are especially mighty; and ultroloths and other lords of the yugoloths.")
-          expect(target[:attributes][:url]).to eq( "/api/2014/subclasses/fiend")
         end
       end
     end
