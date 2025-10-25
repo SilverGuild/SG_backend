@@ -11,24 +11,24 @@ RSpec.describe "API::V1::Characters", type: :request do
                                       alignment: "Neutral Good",
                                       background: "Hermit",
                                       user_id: @user.id,
-                                      character_class_name: "druid",
-                                      race_name: "gnome")
+                                      character_class_id: "druid",
+                                      race_id: "gnome")
       @character2 = Character.create!(name: "Theren Nightblade",
                                       level: 5,
                                       experience_points: 500,
                                       alignment: "Lawful Evil",
                                       background: "Aristocrate",
                                       user_id: @user.id,
-                                      character_class_name: "paladin",
-                                      race_name: "dragonborn")
+                                      character_class_id: "paladin",
+                                      race_id: "dragonborn")
       @character3 = Character.create!(name: "Mira Stormhaven",
                                       level: 8,
                                       experience_points: 853,
                                       alignment: "Chaotic Neutral",
                                       background: "Acolyte",
                                       user_id: @user.id,
-                                      character_class_name: "fighter",
-                                      race_name: "halfling")
+                                      character_class_id: "fighter",
+                                      race_id: "halfling")
 
       @target_id = @character2.id
     end

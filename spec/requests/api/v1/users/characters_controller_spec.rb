@@ -11,24 +11,24 @@ RSpec.describe "API::V1::Users::Characters", type: :request do
                                       alignment: "Neutral Good",
                                       background: "Hermit",
                                       user_id: @user.id,
-                                      character_class_name: "druid",
-                                      race_name: "gnome")
+                                      character_class_id: "druid",
+                                      race_id: "gnome")
       @character2 = Character.create!(name: "Theren Nightblade",
                                       level: 5,
                                       experience_points: 500,
                                       alignment: "Lawful Evil",
                                       background: "Aristocrate",
                                       user_id: @user.id,
-                                      character_class_name: "paladin",
-                                      race_name: "dragonborn")
+                                      character_class_id: "paladin",
+                                      race_id: "dragonborn")
       @character3 = Character.create!(name: "Mira Stormhaven",
                                       level: 8,
                                       experience_points: 853,
                                       alignment: "Chaotic Neutral",
                                       background: "Acolyte",
                                       user_id: @user.id,
-                                      character_class_name: "fighter",
-                                      race_name: "halfling")
+                                      character_class_id: "fighter",
+                                      race_id: "halfling")
     end
 
     describe "GET /api/v1/users/:id/characters" do
@@ -70,8 +70,10 @@ RSpec.describe "API::V1::Users::Characters", type: :request do
           experience_points: 345,
           alignment: "Chaotic Good",
           background: "Folk Hero",
-          character_class_name: "wizard",
-          race_name: "half-elf"
+          character_class_id: "wizard",
+          race_id: "half-elf",
+          subclass_id: "evocation",
+          subrace_id: ""
         }
 
         post "/api/v1/users/#{@user.id}/characters", params: test_params, as: :json
@@ -86,8 +88,10 @@ RSpec.describe "API::V1::Users::Characters", type: :request do
         expect(test_character[:alignment]).to eq(test_params[:alignment])
         expect(test_character[:background]).to eq(test_params[:background])
         expect(test_character[:user_id]).to eq(@user.id)
-        expect(test_character[:character_class_name]).to eq(test_params[:character_class_name])
-        expect(test_character[:race_name]).to eq(test_params[:race_name])
+        expect(test_character[:character_class_id]).to eq(test_params[:character_class_id])
+        expect(test_character[:race_id]).to eq(test_params[:race_id])
+        expect(test_character[:subclass_id]).to eq(test_params[:subclass_id])
+        expect(test_character[:subrace_id]).to eq(test_params[:subrace_id])
 
         # Show that test_character has been added to the existing lsit of characters
         user = User.find(@user.id)
