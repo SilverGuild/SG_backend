@@ -10,19 +10,9 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_09_19_212351) do
+ActiveRecord::Schema[8.0].define(version: 2025_10_16_232925) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
-
-  create_table "character_classes", force: :cascade do |t|
-    t.string "name"
-    t.string "description"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.integer "hit_die"
-    t.json "skill_proficiencies", default: []
-    t.json "saving_throw_proficiencies", default: []
-  end
 
   create_table "characters", force: :cascade do |t|
     t.string "name"
@@ -33,46 +23,13 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_19_212351) do
     t.bigint "user_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "character_class_name"
+    t.string "subclass_name"
+    t.string "race_name"
+    t.string "subrace_name"
+    t.index ["character_class_name"], name: "index_characters_on_character_class_name"
+    t.index ["race_name"], name: "index_characters_on_race_name"
     t.index ["user_id"], name: "index_characters_on_user_id"
-  end
-
-  create_table "characters_char_classes", id: false, force: :cascade do |t|
-    t.bigint "character_id", null: false
-    t.bigint "charClass_id", null: false
-  end
-
-  create_table "characters_races", id: false, force: :cascade do |t|
-    t.bigint "character_id", null: false
-    t.bigint "race_id", null: false
-  end
-
-  create_table "races", force: :cascade do |t|
-    t.string "name"
-    t.string "description"
-    t.integer "speed"
-    t.string "size"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.json "ability_bonuses", default: []
-    t.string "age_description"
-    t.string "alignment_description"
-    t.string "size_description"
-    t.string "languages_description"
-    t.json "languages", default: []
-  end
-
-  create_table "subclasses", force: :cascade do |t|
-    t.string "name"
-    t.string "description"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
-  create_table "subraces", force: :cascade do |t|
-    t.string "name"
-    t.string "description"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
   end
 
   create_table "users", force: :cascade do |t|

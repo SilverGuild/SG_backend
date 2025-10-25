@@ -1,25 +1,24 @@
-class CharacterClassSerializer
+class LanguageSerializer
   include JSONAPI::Serializer
 
-  set_id do |char_class|
-    char_class.id
+  set_id do |lang|
+    lang.id
   end
 
-  attribute :name do |char_class|
-    char_class.name
+  attribute :name do |lang|
+    lang.name
   end
 
   attribute :url, if: Proc.new { |record, params|
     params && params[:detailed] == false
-  } do |char_class|
-    char_class.url
+  } do |lang|
+    lang.url
   end
 
   DETAILED_ATTRIBUTES = [
-    # :description,
-    :hit_die,
-    :skill_proficiencies,
-    :saving_throw_proficiencies
+    :language_type,
+    :typical_speakers,
+    :script
   ]
 
   DETAILED_ATTRIBUTES.each do |attr|

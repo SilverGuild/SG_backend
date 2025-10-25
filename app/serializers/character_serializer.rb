@@ -7,5 +7,7 @@ class CharacterSerializer
               :experience_points,
               :alignment,
               :background,
-              :user_id
+              :user_id,
+              :character_class_name,
+              :race_name
 end

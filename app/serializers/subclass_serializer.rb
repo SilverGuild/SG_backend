@@ -1,25 +1,24 @@
-class CharacterClassSerializer
+class SubclassSerializer
   include JSONAPI::Serializer
 
-  set_id do |char_class|
-    char_class.id
+  set_id do |subclass|
+    subclass.id
   end
 
-  attribute :name do |char_class|
-    char_class.name
+  attribute :name do |subclass|
+    subclass.name
   end
 
   attribute :url, if: Proc.new { |record, params|
     params && params[:detailed] == false
-  } do |char_class|
-    char_class.url
+  } do |subclass|
+    subclass.url
   end
 
   DETAILED_ATTRIBUTES = [
-    # :description,
-    :hit_die,
-    :skill_proficiencies,
-    :saving_throw_proficiencies
+    :class_id,
+    :description,
+    :flavor
   ]
 
   DETAILED_ATTRIBUTES.each do |attr|

@@ -12,7 +12,11 @@ require 'simplecov'
 require 'vcr'
 # require 'shoulda/matchers'
 
-SimpleCov.start
+SimpleCov.start 'rails' do
+  add_filter '/spec/'
+  add_filter '/config/'
+  add_filter '/vendor/'
+end
 # Add additional requires below this line. Rails is not loaded until this point!
 
 # Requires supporting ruby files with custom matchers and macros, etc, in
@@ -76,15 +80,23 @@ RSpec.configure do |config|
   # config.filter_gems_from_backtrace("gem name")
 end
 
-# Shoulda::Matchers.configure do |config|
-#   config.integrate do |with|
-#     with.test_framework :rspec
-#     with.library :rails
-#   end
-# end
+Shoulda::Matchers.configure do |config|
+  config.integrate do |with|
+    with.test_framework :rspec
+    with.library :rails
+  end
+end
 
 VCR.configure do |config|
   config.cassette_library_dir = "spec/fixtures/vcr_cassettes"
   config.hook_into :webmock
   config.configure_rspec_metadata!
+  config.ignore_localhost = true
+
+  config.default_cassette_options = {
+    match_requests_on: [ :method, :uri ],
+    record: :once
+  }
+
+   config.allow_http_connections_when_no_cassette = false if ENV['CI']
 end

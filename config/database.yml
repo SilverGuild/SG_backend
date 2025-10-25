@@ -8,13 +8,15 @@ default: &default
 development:
   <<: *default
   database: silver_guild_development
+  host: localhost
 
 test:
   <<: *default
-  database: silver_guild_test
-  username: <%= ENV.fetch("PGUSER") { "postgres" } %>
-  password: <%= ENV.fetch("PGPASSWORD") { "" } %>
-  host: <%= ENV.fetch("PGHOST") { "localhost" } %>
+  # url: <%= ENV['DATABASE_URL'] %>
+  database: rails_test
+  username: postgres
+  password: postgres
+  host: localhost
 
 production:
   <<: *default
