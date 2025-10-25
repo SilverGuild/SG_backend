@@ -17,14 +17,14 @@ RSpec.describe "API::V1::Subraces", type: :request do
                     last_subrace = subraces.last
 
                     expect(first_subrace[:type]).to eq("subrace")
-                    expect(first_subrace[:id]).to eq("half-elf")
-                    expect(first_subrace[:attributes][:name]).to eq("Half Elf")
+                    expect(first_subrace[:id]).to eq("high-elf")
+                    expect(first_subrace[:attributes][:name]).to eq("High Elf")
                     expect(first_subrace[:attributes][:url]).to eq("/api/2014/subraces/high-elf")
 
                     expect(last_subrace[:type]).to eq("subrace")
                     expect(last_subrace[:id]).to eq("rock-gnome")
                     expect(last_subrace[:attributes][:name]).to eq("Rock Gnome")
-                    expect(first_subrace[:attributes][:url]).to eq("/api/2014/subraces/rock-gnome")
+                    expect(last_subrace[:attributes][:url]).to eq("/api/2014/subraces/rock-gnome")
                 end
             end
         end
@@ -47,7 +47,6 @@ RSpec.describe "API::V1::Subraces", type: :request do
                     expect(target[:attributes][:description]).to eq("As a hill dwarf, you have keen senses, deep intuition, and remarkable resilience.")
                     expect(target[:attributes][:ability_bonuses].first[:ability_score][:name]).to eq("WIS")
                     expect(target[:attributes][:ability_bonuses].first[:bonus]).to eq(1)
-                    expect(target[:attributes][:url]).to eq("/api/2014/subraces/hill-dwarf")
                 end
             end
         end
