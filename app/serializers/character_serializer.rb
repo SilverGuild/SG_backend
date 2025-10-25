@@ -8,6 +8,8 @@ class CharacterSerializer
               :alignment,
               :background,
               :user_id,
-              :character_class_name,
-              :race_name
+              :character_class_id,
+              :race_id,
+              :subclass_id,
+              :subrace_id
 end
