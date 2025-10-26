@@ -11,7 +11,19 @@ class Character < ApplicationRecord
   validates :user_id, presence: true
   validates :character_class_id, presence: true
   validates :race_id, presence: true
+  validates :languages, presence: true
 
+
+  # Helper methods: Attribute management
+  def add_language(*langs)
+    self.languages ||= []
+
+    self.languages = (self.languages + langs.flatten.compact).uniq.sort
+
+    save
+  end
+
+  # Retrieve details on character attributes
   def character_class
     @character_class ||= begin
       data = Dnd5eDataGateway.fetch_character_classes(character_class_id)
@@ -37,6 +49,13 @@ class Character < ApplicationRecord
     @subrace ||= begin
       data = Dnd5eDataGateway.fetch_subraces(subrace_id)
       SubracePoro.new(data)
+    end
+  end
+
+  def language(lang)
+    @language ||= begin
+      data = Dnd5eDataGateway.fetch_langauges(lang)
+      LanguagePoro.new(data)
     end
   end
 end
