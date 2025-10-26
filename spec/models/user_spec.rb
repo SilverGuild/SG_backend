@@ -11,8 +11,10 @@ RSpec.describe User, type: :model do
                                       alignment: "Neutral Neutral",
                                       background: "Artisan",
                                       user_id: @user.id,
-                                      character_class_name: "rogue",
-                                      race_name: "half-elf")
+                                      character_class_id: "rogue",
+                                      race_id: "half-elf",
+                                      subclass_id: "",
+                                      subrace_id: "")
     end
 
     describe "associations" do
