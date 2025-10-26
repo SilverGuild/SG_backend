@@ -73,7 +73,8 @@ RSpec.describe "API::V1::Users::Characters", type: :request do
           character_class_id: "wizard",
           race_id: "half-elf",
           subclass_id: "evocation",
-          subrace_id: ""
+          subrace_id: "",
+          languages: [ "common", "elvish" ]
         }
 
         post "/api/v1/users/#{@user.id}/characters", params: test_params, as: :json
@@ -92,6 +93,7 @@ RSpec.describe "API::V1::Users::Characters", type: :request do
         expect(test_character[:race_id]).to eq(test_params[:race_id])
         expect(test_character[:subclass_id]).to eq(test_params[:subclass_id])
         expect(test_character[:subrace_id]).to eq(test_params[:subrace_id])
+        expect(test_character[:languages]).to eq(test_params[:languges])
 
         # Show that test_character has been added to the existing lsit of characters
         user = User.find(@user.id)
