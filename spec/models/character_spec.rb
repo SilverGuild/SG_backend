@@ -43,9 +43,9 @@ RSpec.describe Character, type: :model do
 
           expect(@character.languages.count).to eq(2)
           expect(@character.languages).to eq([ "common", "gnomish" ])
-          
+
           @character.add_language(learned_through_companion, divine_gift)
-          
+
           updated_languages = @character.languages
 
           expect(updated_languages.count).to eq(5)
@@ -119,16 +119,16 @@ RSpec.describe Character, type: :model do
         end
 
         it "LANGUAGE: fetches character language details and returns a PORO" do
-          VCR.use_casssette("model_language_details_goblin") do
+          VCR.use_cassette("model_language_details_goblin") do
             language = @character.languages.last
             test_language = @character.language(language)
 
-            expect(test_language[:type]).to eq("language")
-            expect(test_language[:id]).to eq("gnomish")
-            expect(test_language[:attributes][:name]).to eq("Gnomish")
-            expect(test_language[:attributes][:language_type]).to eq("Standard")
-            expect(test_language[:attributes][:typical_speakers]).to eq([ "Gnomes" ])
-            expect(test_language[:attributes][:script]).to eq("Dwarvish")
+            expect(test_language).to be_an_instance_of LanguagePoro
+            expect(test_language.id).to eq("gnomish")
+            expect(test_language.name).to eq("Gnomish")
+            expect(test_language.language_type).to eq("Standard")
+            expect(test_language.typical_speakers).to eq([ "Gnomes" ])
+            expect(test_language.script).to eq("Dwarvish")
           end
         end
       end

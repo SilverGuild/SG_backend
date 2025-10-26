@@ -61,7 +61,7 @@ RSpec.describe "API::V1::Characters", type: :request do
         json = JSON.parse(response.body, symbolize_names: true)
 
         characters = json[:data]
-        expect(characters.count).to eq(3)
+        expect(characters.count).to eq(4)
 
         first_character = characters.first
         last_character = characters.last
@@ -91,7 +91,6 @@ RSpec.describe "API::V1::Characters", type: :request do
         expect(last_character[:attributes][:subclass_id]).to eq(@character4[:subclass_id])
         expect(last_character[:attributes][:subrace_id]).to eq(@character4[:subrace_id])
         expect(last_character[:attributes][:languages]).to eq(@character4[:languages])
-
       end
     end
 
@@ -160,11 +159,12 @@ RSpec.describe "API::V1::Characters", type: :request do
 
         # Verify db has updated specific attributes
         character.reload
-        expect(character[:attributes][:level]).to eq(updated_params[:level])
-        expect(character[:attributes][:experience_points]).to eq(updated_params[:experience_points])
+
+        expect(character[:level]).to eq(updated_params[:level])
+        expect(character[:experience_points]).to eq(updated_params[:experience_points])
       end
     end
-    
+
     describe "DELETE /api/v1/characters/:id" do
       it "should destroy a character by id and return an empty response body" do
         expect {
