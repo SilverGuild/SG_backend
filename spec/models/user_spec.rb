@@ -14,7 +14,8 @@ RSpec.describe User, type: :model do
                                       character_class_id: "rogue",
                                       race_id: "half-elf",
                                       subclass_id: "",
-                                      subrace_id: "")
+                                      subrace_id: "",
+                                      languages: [ "common", "elvish" ])
     end
 
     describe "associations" do
