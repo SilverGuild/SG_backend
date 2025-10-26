@@ -8,6 +8,7 @@ class Api::V1::Users::CharactersController < ApplicationController
 
   def create
     character = @user.characters.build(character_params)
+
     if character.save
       render json: { message: "Character created successfully!", data: character }, status: :created
     end
@@ -20,6 +21,6 @@ class Api::V1::Users::CharactersController < ApplicationController
   end
 
   def character_params
-    params.permit(:name, :level, :experience_points, :alignment, :background, :character_class_id, :race_id, :subclass_id, :subrace_id)
+    params.permit(:name, :level, :experience_points, :alignment, :background, :character_class_id, :race_id, :subclass_id, :subrace_id, languages: [])
   end
 end
