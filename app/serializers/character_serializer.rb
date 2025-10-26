@@ -11,5 +11,6 @@ class CharacterSerializer
               :character_class_id,
               :race_id,
               :subclass_id,
-              :subrace_id
+              :subrace_id,
+              :languages
 end

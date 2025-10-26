@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_10_25_033405) do
+ActiveRecord::Schema[8.1].define(version: 2025_10_26_202310) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -20,6 +20,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_10_25_033405) do
     t.string "character_class_id"
     t.datetime "created_at", null: false
     t.integer "experience_points"
+    t.string "languages", default: [], array: true
     t.integer "level"
     t.string "name"
     t.string "race_id"

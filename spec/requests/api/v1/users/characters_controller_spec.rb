@@ -12,7 +12,10 @@ RSpec.describe "API::V1::Users::Characters", type: :request do
                                       background: "Hermit",
                                       user_id: @user.id,
                                       character_class_id: "druid",
-                                      race_id: "gnome")
+                                      race_id: "gnome",
+                                      subclass_id: "land",
+                                      subrace_id: "rock-gnome",
+                                      languages: [ "common", "gnomish" ])
       @character2 = Character.create!(name: "Theren Nightblade",
                                       level: 5,
                                       experience_points: 500,
@@ -20,7 +23,10 @@ RSpec.describe "API::V1::Users::Characters", type: :request do
                                       background: "Aristocrate",
                                       user_id: @user.id,
                                       character_class_id: "paladin",
-                                      race_id: "dragonborn")
+                                      race_id: "dragonborn",
+                                      subclass_id: "devotion",
+                                      subrace_id: "",
+                                      languages: [ "common", "draconic" ])
       @character3 = Character.create!(name: "Mira Stormhaven",
                                       level: 8,
                                       experience_points: 853,
@@ -28,7 +34,10 @@ RSpec.describe "API::V1::Users::Characters", type: :request do
                                       background: "Acolyte",
                                       user_id: @user.id,
                                       character_class_id: "fighter",
-                                      race_id: "halfling")
+                                      race_id: "halfling",
+                                      subclass_id: "champion",
+                                      subrace_id: "lightfoot-halfling",
+                                      languages: [ "common", "halfling" ])
     end
 
     describe "GET /api/v1/users/:id/characters" do
@@ -51,6 +60,11 @@ RSpec.describe "API::V1::Users::Characters", type: :request do
         expect(first_character[:attributes][:alignment]).to eq(@character1[:alignment])
         expect(first_character[:attributes][:background]).to eq(@character1[:background])
         expect(first_character[:attributes][:user_id]).to eq(@character1[:user_id])
+        expect(first_character[:attributes][:character_class_id]).to eq(@character1[:character_class_id])
+        expect(first_character[:attributes][:race_id]).to eq(@character1[:race_id])
+        expect(first_character[:attributes][:subclass_id]).to eq(@character1[:subclass_id])
+        expect(first_character[:attributes][:subrace_id]).to eq(@character1[:subrace_id])
+        expect(first_character[:attributes][:languages]).to eq(@character1[:languages])
 
         expect(last_character[:id]).to eq(@character3[:id])
         expect(last_character[:attributes][:name]).to eq(@character3[:name])
@@ -59,6 +73,11 @@ RSpec.describe "API::V1::Users::Characters", type: :request do
         expect(last_character[:attributes][:alignment]).to eq(@character3[:alignment])
         expect(last_character[:attributes][:background]).to eq(@character3[:background])
         expect(last_character[:attributes][:user_id]).to eq(@character3[:user_id])
+        expect(last_character[:attributes][:character_class_id]).to eq(@character3[:character_class_id])
+        expect(last_character[:attributes][:race_id]).to eq(@character3[:race_id])
+        expect(last_character[:attributes][:subclass_id]).to eq(@character3[:subclass_id])
+        expect(last_character[:attributes][:subrace_id]).to eq(@character3[:subrace_id])
+        expect(last_character[:attributes][:languages]).to eq(@character3[:languages])
       end
     end
 
@@ -73,7 +92,8 @@ RSpec.describe "API::V1::Users::Characters", type: :request do
           character_class_id: "wizard",
           race_id: "half-elf",
           subclass_id: "evocation",
-          subrace_id: ""
+          subrace_id: "",
+          languages: [ "common", "elvish" ]
         }
 
         post "/api/v1/users/#{@user.id}/characters", params: test_params, as: :json
@@ -92,6 +112,7 @@ RSpec.describe "API::V1::Users::Characters", type: :request do
         expect(test_character[:race_id]).to eq(test_params[:race_id])
         expect(test_character[:subclass_id]).to eq(test_params[:subclass_id])
         expect(test_character[:subrace_id]).to eq(test_params[:subrace_id])
+        expect(test_character[:languages]).to eq(test_params[:languages])
 
         # Show that test_character has been added to the existing lsit of characters
         user = User.find(@user.id)
