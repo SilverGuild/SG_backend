@@ -15,7 +15,7 @@ RSpec.describe "API::V1::Characters", type: :request do
                                       race_id: "gnome",
                                       subclass_id: "land",
                                       subrace_id: "rock-gnome",
-                                      languges: [ "common", "gnomish" ])
+                                      languages: [ "common", "gnomish" ])
       @character2 = Character.create!(name: "Theren Nightblade",
                                       level: 5,
                                       experience_points: 500,
@@ -26,7 +26,7 @@ RSpec.describe "API::V1::Characters", type: :request do
                                       race_id: "dragonborn",
                                       subclass_id: "devotion",
                                       subrace_id: "",
-                                      languges: [ "common", "draconic" ])
+                                      languages: [ "common", "draconic" ])
       @character3 = Character.create!(name: "Mira Stormhaven",
                                       level: 8,
                                       experience_points: 853,
@@ -37,18 +37,18 @@ RSpec.describe "API::V1::Characters", type: :request do
                                       race_id: "halfling",
                                       subclass_id: "champion",
                                       subrace_id: "lightfoot-halfling",
-                                      languges: [ "common", "halfling" ])
+                                      languages: [ "common", "halfling" ])
       @character4 = Character.create!(name: "Thalorin Emberwick",
                                       level: 7,
                                       experience_points: 755,
                                       alignment: "Lawful Good",
                                       background: "Sage",
-                                      user_id: @user2.id,
-                                      character_class_name: "cleric",
-                                      race_name: "half-elf",
+                                      user_id: @user.id,
+                                      character_class_id: "cleric",
+                                      race_id: "half-elf",
                                       subclass_id: "life",
                                       subrace_id: "",
-                                      languges: [ "common", "elvish" ])
+                                      languages: [ "common", "elvish" ])
 
       @target_id = @character2.id
     end
@@ -134,7 +134,7 @@ RSpec.describe "API::V1::Characters", type: :request do
           race_id: "dragonborn",
           subclass_id: "devotion",
           subrace_id: "",
-          languges: [ "common", "draconic" ]
+          languages: [ "common", "draconic" ]
         }
 
         patch "/api/v1/characters/#{@target_id}", params: updated_params

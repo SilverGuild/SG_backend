@@ -93,7 +93,7 @@ RSpec.describe "API::V1::Users::Characters", type: :request do
         expect(test_character[:race_id]).to eq(test_params[:race_id])
         expect(test_character[:subclass_id]).to eq(test_params[:subclass_id])
         expect(test_character[:subrace_id]).to eq(test_params[:subrace_id])
-        expect(test_character[:languages]).to eq(test_params[:languges])
+        expect(test_character[:languages]).to eq(test_params[:languages])
 
         # Show that test_character has been added to the existing lsit of characters
         user = User.find(@user.id)

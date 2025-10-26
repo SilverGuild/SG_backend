@@ -42,9 +42,11 @@ RSpec.describe Character, type: :model do
           divine_gift = "sylvan"
 
           expect(@character.languages.count).to eq(2)
-          expect(@character.languges).to eq([ "common", "gnomish" ])
-
-          updated_languages = @character.add_language(learned_through_companion, divine_gift)
+          expect(@character.languages).to eq([ "common", "gnomish" ])
+          
+          @character.add_language(learned_through_companion, divine_gift)
+          
+          updated_languages = @character.languages
 
           expect(updated_languages.count).to eq(5)
           expect(updated_languages).to eq([ "common", "elvish", "gnomish", "halfling", "sylvan" ])
