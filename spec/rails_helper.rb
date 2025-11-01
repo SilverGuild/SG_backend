@@ -9,8 +9,10 @@ abort("The Rails environment is running in production mode!") if Rails.env.produ
 # return unless Rails.env.test?
 require 'rspec/rails'
 require 'simplecov'
+require 'webmock/rspec'
 require 'vcr'
-# require 'shoulda/matchers'
+require 'shoulda/matchers'
+
 
 SimpleCov.start 'rails' do
   add_filter '/spec/'
