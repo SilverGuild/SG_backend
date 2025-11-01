@@ -5,7 +5,12 @@ class Api::V1::SubracesController < ApplicationController
   end
 
   def show
-    subrace = SubracePoro.new(Dnd5eDataGateway.fetch_subraces(params[:id]))
-    render json: SubraceSerializer.new(subrace, params: { detailed: true }).serializable_hash
+    subrace = Dnd5eDataGateway.fetch_subraces(params[:id])
+
+    if subrace
+      render json: SubraceSerializer.new(SubracePoro.new(subrace), params: { detailed: true }).serializable_hash
+    else
+      render json: { error: "Subrace not found" }, status: :not_found
+    end
   end
 end

@@ -5,7 +5,12 @@ class Api::V1::SubclassesController < ApplicationController
   end
 
   def show
-    subclass = SubclassPoro.new(Dnd5eDataGateway.fetch_subclasses(params[:id]))
-    render json: SubclassSerializer.new(subclass, params: { detailed: true }).serializable_hash
+    subclass = Dnd5eDataGateway.fetch_subclasses(params[:id])
+
+    if subclass
+      render json: SubclassSerializer.new(SubclassPoro.new(subclass), params: { detailed: true }).serializable_hash
+    else
+      render json: { error: "Subclass not found" }, status: :not_found
+    end
   end
 end

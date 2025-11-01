@@ -23,8 +23,17 @@ class Dnd5eDataGateway
     conn = connect()
     endpoint = id.empty? ? "api/2014/#{category}" : "api/2014/#{category}/#{id}"
     response = conn.get(endpoint)
-    json = JSON.parse(response.body, symbolize_names: true)
-    results = id.empty? ? json[:results] : json
+
+    case response.status
+    when 200
+      json = JSON.parse(response.body, symbolize_names: true)
+      results = id.empty? ? json[:results] : json
+    when 404
+      nil
+    else
+      raise StandardError, "Unexpected API response: #{ response.status }"
+    end
+
     results
   end
 

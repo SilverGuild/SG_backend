@@ -28,23 +28,38 @@ RSpec.describe "API::V1::CharacterClasses", type: :request do
     end
 
     describe "GET /api/v1/character_classes/:id" do
-      it "should retrieve one character class" do
-        VCR.use_cassette("character_class_warlock") do
-          target_id = "warlock"
-          get "/api/v1/character_classes/#{target_id}"
+      describe "happy paths" do
+        it "should retrieve one character class" do
+          VCR.use_cassette("character_class_warlock") do
+            target_id = "warlock"
+            get "/api/v1/character_classes/#{target_id}"
 
-          expect(response).to be_successful
+            expect(response).to be_successful
 
-          json = JSON.parse(response.body, symbolize_names: true)
-          target = json[:data]
+            json = JSON.parse(response.body, symbolize_names: true)
+            target = json[:data]
 
-          expect(target[:type]).to eq("character_class")
-          expect(target[:id]).to eq("warlock")
-          expect(target[:attributes][:name]).to eq("Warlock")
-          expect(target[:attributes][:hit_die]).to eq(8)
-          expect(target[:attributes][:skill_proficiencies][:choose]).to eq(2)
-          expect(target[:attributes][:skill_proficiencies][:skills]).to eq([ "arcana", "deception", "history", "intimidation", "investigation", "nature", "religion" ])
-          expect(target[:attributes][:saving_throw_proficiencies]).to eq([ "wis", "cha" ])
+            expect(target[:type]).to eq("character_class")
+            expect(target[:id]).to eq("warlock")
+            expect(target[:attributes][:name]).to eq("Warlock")
+            expect(target[:attributes][:hit_die]).to eq(8)
+            expect(target[:attributes][:skill_proficiencies][:choose]).to eq(2)
+            expect(target[:attributes][:skill_proficiencies][:skills]).to eq([ "arcana", "deception", "history", "intimidation", "investigation", "nature", "religion" ])
+            expect(target[:attributes][:saving_throw_proficiencies]).to eq([ "wis", "cha" ])
+          end
+        end
+      end
+
+      describe "sad paths" do
+        before do
+          stub_request(:get, "https://www.dnd5eapi.co/api/2014/classes/test").to_return(status: 404, body: { error: "Not found" }.to_json)
+        end
+
+        it "returns a 404 status when target character class does not exist" do
+          get "/api/v1/character_classes/test"
+
+          expect(response).to have_http_status(:not_found)
+          expect(JSON.parse(response.body)).to include("error" => "Character class not found")
         end
       end
     end

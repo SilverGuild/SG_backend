@@ -30,23 +30,38 @@ RSpec.describe "API::V1::Subraces", type: :request do
         end
 
         describe "GET /api/v1/subraces/:id" do
-            it "should retrieve one character subrace and detailed information" do
-                VCR.use_cassette("single_subrace_hill_dwarf") do
-                    target_id = "hill-dwarf"
-                    get "/api/v1/subraces/#{target_id}"
+            describe "happy paths" do
+                it "should retrieve one character subrace and detailed information" do
+                    VCR.use_cassette("single_subrace_hill_dwarf") do
+                        target_id = "hill-dwarf"
+                        get "/api/v1/subraces/#{target_id}"
 
-                    expect(response).to be_successful
+                        expect(response).to be_successful
 
-                    json = JSON.parse(response.body, symbolize_names: true)
+                        json = JSON.parse(response.body, symbolize_names: true)
 
-                    target = json[:data]
-                    expect(target[:type]).to eq("subrace")
-                    expect(target[:id]).to eq("hill-dwarf")
-                    expect(target[:attributes][:name]).to eq("Hill Dwarf")
-                    expect(target[:attributes][:race_id]).to eq("dwarf")
-                    expect(target[:attributes][:description]).to eq("As a hill dwarf, you have keen senses, deep intuition, and remarkable resilience.")
-                    expect(target[:attributes][:ability_bonuses].first[:ability_score][:name]).to eq("WIS")
-                    expect(target[:attributes][:ability_bonuses].first[:bonus]).to eq(1)
+                        target = json[:data]
+                        expect(target[:type]).to eq("subrace")
+                        expect(target[:id]).to eq("hill-dwarf")
+                        expect(target[:attributes][:name]).to eq("Hill Dwarf")
+                        expect(target[:attributes][:race_id]).to eq("dwarf")
+                        expect(target[:attributes][:description]).to eq("As a hill dwarf, you have keen senses, deep intuition, and remarkable resilience.")
+                        expect(target[:attributes][:ability_bonuses].first[:ability_score][:name]).to eq("WIS")
+                        expect(target[:attributes][:ability_bonuses].first[:bonus]).to eq(1)
+                    end
+                end
+            end
+
+            describe "sad paths" do
+                before do
+                    stub_request(:get, "https://www.dnd5eapi.co/api/2014/subraces/test").to_return(status: 404, body: { error: "Not found" }.to_json)
+                end
+
+                it "returns a 404 status when target subrace does not exist" do
+                    get "/api/v1/subraces/test"
+
+                    expect(response).to have_http_status(:not_found)
+                    expect(JSON.parse(response.body)).to include("error" => "Subrace not found")
                 end
             end
         end
