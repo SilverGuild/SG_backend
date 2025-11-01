@@ -56,7 +56,7 @@ RSpec.describe "API::V1::Subclasses", type: :request do
           stub_request(:get, "https://www.dnd5eapi.co/api/2014/subclasses/test").to_return(status: 404, body: { error: "Not found" }.to_json)
         end
 
-        it "returns a 404 status when target race does not exist" do
+        it "returns a 404 status when target subclass does not exist" do
           get "/api/v1/subclasses/test"
 
           expect(response).to have_http_status(:not_found)
