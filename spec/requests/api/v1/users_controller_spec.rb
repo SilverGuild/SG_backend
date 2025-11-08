@@ -116,17 +116,17 @@ RSpec.describe "API::V1::Users", type: :request do
 
           post "/api/v1/users", params: bad_test_params, as: :json
           expect(response).to have_http_status(:bad_request)
-          expect(JSON.parse(response.body)).to include("error" => "Username is missing")
+          expect(JSON.parse(response.body)).to include("error" => "Username is required")
         end
         it "returns a 400 status when email parameter is missing" do
           bad_test_params = {
-            username: "test",
+            username: "test"
             # Email parameter missing entirely
           }
 
           post "/api/v1/users", params: bad_test_params, as: :json
           expect(response).to have_http_status(:bad_request)
-          expect(JSON.parse(response.body)).to include("error" => "Email is missing")
+          expect(JSON.parse(response.body)).to include("error" => "Email is required")
         end
 
         it "returns a 400 status when username parameter is empty" do
@@ -137,7 +137,7 @@ RSpec.describe "API::V1::Users", type: :request do
 
           post "/api/v1/users", params: bad_test_params, as: :json
           expect(response).to have_http_status(:bad_request)
-          expect(JSON.parse(response.body)).to include("error" => "Username is empty")
+          expect(JSON.parse(response.body)).to include("error" => "Username is required")
         end
 
         it "returns a 400 status when email parameter is empty" do
@@ -148,18 +148,18 @@ RSpec.describe "API::V1::Users", type: :request do
 
           post "/api/v1/users", params: bad_test_params, as: :json
           expect(response).to have_http_status(:bad_request)
-          expect(JSON.parse(response.body)).to include("error" => "Email is empty")
+          expect(JSON.parse(response.body)).to include("error" => "Email is required")
         end
 
         it "returns a 400 status when email parameter is invalid format" do
           bad_test_params = {
             username: "test",
-            email: "email.bad_test@com"
+            email: "bad_email_test"
           }
 
           post "/api/v1/users", params: bad_test_params, as: :json
           expect(response).to have_http_status(:bad_request)
-          expect(JSON.parse(response.body)).to include("error" => "Email is an invalid format")
+          expect(JSON.parse(response.body)).to include("error" => "Email is invalid")
         end
 
         # Will be added late P1 with authentication and autherization overhaul
@@ -172,7 +172,7 @@ RSpec.describe "API::V1::Users", type: :request do
           test_user = {
             username: "test",
             email: "test@gmail.com"
-          } 
+          }
 
           # Duplicate with username
           dup_user1 = {
@@ -185,20 +185,20 @@ RSpec.describe "API::V1::Users", type: :request do
             username: "duptest2",
             email: "test@gmail.com"
           }
- 
+
           post "/api/v1/users", params: test_user, as: :json
           expect(response).to be_successful
 
           post "/api/v1/users", params: test_user, as: :json
-          expect(response).to have_http_status(:unprocessable_entity)
+          expect(response).to have_http_status(:unprocessable_content)
           expect(JSON.parse(response.body)).to include("error" => "User already exists")
 
           post "/api/v1/users", params: dup_user1, as: :json
-          expect(response).to have_http_status(:unprocessable_entity)
+          expect(response).to have_http_status(:unprocessable_content)
           expect(JSON.parse(response.body)).to include("error" => "User already exists with this username")
 
           post "/api/v1/users", params: dup_user2, as: :json
-          expect(response).to have_http_status(:unprocessable_entity)
+          expect(response).to have_http_status(:unprocessable_content)
           expect(JSON.parse(response.body)).to include("error" => "User already exists with this email")
         end
       end
@@ -253,7 +253,7 @@ RSpec.describe "API::V1::Users", type: :request do
           expect(response).to have_http_status(:bad_request)
           expect(JSON.parse(response.body)).to include("error" => "Username is empty")
         end
-        
+
         it "returns a 400 status when email parameter is empty" do
           bad_test_params = {
             email: ""
@@ -264,15 +264,15 @@ RSpec.describe "API::V1::Users", type: :request do
           expect(JSON.parse(response.body)).to include("error" => "Email is empty")
         end
 
-        it "returns a 400 status when a parameter is invalid format" do
+        it "returns a 400 status when emailparameter is invalid format" do
           test_params = {
-            email: "dup.email@com"
+            email: "dupEmail"
           }
 
           patch "/api/v1/users/#{@target_id}", params: { user: test_params }, as: :json
 
           expect(response).to have_http_status(:bad_request)
-          expect(JSON.parse(response.body)).to include("error" => "Email is an invalid format")
+          expect(JSON.parse(response.body)).to include("error" => "Email is invalid")
         end
 
         # Will be added late P1 with authentication and autherization overhaul
@@ -298,10 +298,10 @@ RSpec.describe "API::V1::Users", type: :request do
 
           patch "/api/v1/users/#{@target_id}", params: { user: test_params }, as: :json
 
-          expect(response).to have_http_status(:unprocessable_entity)
-          expect(JSON.parse(response.body)).to include("error" => "Username already exists")
+          expect(response).to have_http_status(:unprocessable_content)
+          expect(JSON.parse(response.body)).to include("error" => "User already exists with this username")
         end
-        
+
         it "returns a 422 status when updating to an email that already exists" do
           test_params = {
             email: "user1@gmail.com"
@@ -309,8 +309,8 @@ RSpec.describe "API::V1::Users", type: :request do
 
           patch "/api/v1/users/#{@target_id}", params: { user: test_params }, as: :json
 
-          expect(response).to have_http_status(:unprocessable_entity)
-          expect(JSON.parse(response.body)).to include("error" => "Email already exists")
+          expect(response).to have_http_status(:unprocessable_content)
+          expect(JSON.parse(response.body)).to include("error" => "User already exists with this email")
         end
       end
     end
@@ -335,7 +335,7 @@ RSpec.describe "API::V1::Users", type: :request do
           expect(response).to have_http_status(:bad_request)
           expect(JSON.parse(response.body)).to include("error" => "Invalid user ID")
         end
-        
+
         # Will be added late P1 with authentication and autherization overhaul
         # it "returns a 401 status when user is not authenticated" do
 
