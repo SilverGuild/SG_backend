@@ -36,10 +36,15 @@ RSpec.describe "API::V1::Users", type: :request do
       end
 
       context "sad paths" do
-        # Will be added late P1 with authentication and autherization overhaul
+        # Will be added late P1 with authentication and autherization overhaul **********
         # it "returns a 401 status when user is not authenticated" do
 
         # end
+
+        # it "returns a 401 status when user (non-owner) does not have dungeon master access" do
+
+        # end
+        # ***********
       end
     end
 
@@ -66,10 +71,15 @@ RSpec.describe "API::V1::Users", type: :request do
           expect(JSON.parse(response.body)).to include("error" => "Invalid user ID")
         end
 
-        # Will be added late P1 with authentication and autherization overhaul
+        # Will be added late P1 with authentication and autherization overhaul **********
         # it "returns a 401 status when user is not authenticated" do
 
         # end
+
+        # it "returns a 401 status when user (non-owner) does not have dungeon master access" do
+
+        # end
+        # ***********
 
         it "returns a 404 status when target user is not found" do
           get "/api/v1/users/9999999", as: :json
@@ -163,10 +173,15 @@ RSpec.describe "API::V1::Users", type: :request do
           expect(JSON.parse(response.body)).to include("error" => "Email is invalid")
         end
 
-        # Will be added late P1 with authentication and autherization overhaul
+        # Will be added late P1 with authentication and autherization overhaul **********
         # it "returns a 401 status when user is not authenticated" do
 
         # end
+
+        # it "returns a 401 status when user (non-owner) does not have dungeon master access" do
+
+        # end
+        # ***********
 
         it "returns a 422 status when a user already exists in the db" do
           # Original user -> full duplicate
@@ -276,10 +291,15 @@ RSpec.describe "API::V1::Users", type: :request do
           expect(JSON.parse(response.body)).to include("error" => "Email is invalid")
         end
 
-        # Will be added late P1 with authentication and autherization overhaul
+        # Will be added late P1 with authentication and autherization overhaul **********
         # it "returns a 401 status when user is not authenticated" do
 
         # end
+
+        # it "returns a 401 status when user (non-owner) does not have dungeon master access" do
+
+        # end
+        # ***********
 
         it "returns a 404 error when the target user does not exist" do
           test_params = {
@@ -337,10 +357,15 @@ RSpec.describe "API::V1::Users", type: :request do
           expect(JSON.parse(response.body)).to include("error" => "Invalid user ID")
         end
 
-        # Will be added late P1 with authentication and autherization overhaul
+        # Will be added late P1 with authentication and autherization overhaul **********
         # it "returns a 401 status when user is not authenticated" do
 
         # end
+
+        # it "returns a 401 status when user (non-owner) does not have dungeon master access" do
+
+        # end
+        # ***********
 
         it "returns a 404 error when the target user does not exist" do
           delete "/api/v1/users/9999999", as: :json
