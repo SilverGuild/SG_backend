@@ -118,6 +118,7 @@ RSpec.describe "API::V1::Users", type: :request do
           expect(response).to have_http_status(:bad_request)
           expect(JSON.parse(response.body)).to include("error" => "Username is required")
         end
+
         it "returns a 400 status when email parameter is missing" do
           bad_test_params = {
             username: "test"
@@ -264,7 +265,7 @@ RSpec.describe "API::V1::Users", type: :request do
           expect(JSON.parse(response.body)).to include("error" => "Email is empty")
         end
 
-        it "returns a 400 status when emailparameter is invalid format" do
+        it "returns a 400 status when email parameter is invalid format" do
           test_params = {
             email: "dupEmail"
           }
