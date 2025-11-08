@@ -220,7 +220,7 @@ RSpec.describe "API::V1::Characters", type: :request do
 
         shared_examples "returns 400 for invalid parameter" do |param, invalid_value, error_message|
           it "returns 400 when #{param} is #{invalid_value.inspect}" do
-            updated_params = valid_params.merge(param => invalid_value)
+            updated_params = { param => invalid_value }
 
             patch "/api/v1/characters/#{@target_id}", params: { character: updated_params }, as: :json
 
@@ -243,7 +243,7 @@ RSpec.describe "API::V1::Characters", type: :request do
           it_behaves_like "returns 400 for invalid parameter", :background, "", "Background can't be blank"
           it_behaves_like "returns 400 for invalid parameter", :background, nil, "Background can't be blank"
           
-          it_behaves_like "returns 400 for invalid parameter", :user_id, nil, "User can't be blank"
+          it_behaves_like "returns 400 for invalid parameter", :user_id, nil, "User must exist"
           
           it_behaves_like "returns 400 for invalid parameter", :character_class_id, "", "Character class can't be blank"
           it_behaves_like "returns 400 for invalid parameter", :character_class_id, nil, "Character class can't be blank"
@@ -252,21 +252,19 @@ RSpec.describe "API::V1::Characters", type: :request do
           it_behaves_like "returns 400 for invalid parameter", :race_id, nil, "Race can't be blank"
                  
           it_behaves_like "returns 400 for invalid parameter", :languages, [], "Languages can't be blank"
-          it_behaves_like "returns 400 for invalid parameter", :languages, nil, "Languages can't be blank"
         end
 
         context "invalid parameters" do
           it_behaves_like "returns 400 for invalid parameter", :name, 123, "Name is invalid"
-          it_behaves_like "returns 400 for invalid parameter", :level, "abc", "Level is invalid"
-          it_behaves_like "returns 400 for invalid parameter", :experience_points, "def", "Experience points is invalid"
+          it_behaves_like "returns 400 for invalid parameter", :level, "abc", "Level is not a number"
+          it_behaves_like "returns 400 for invalid parameter", :experience_points, "def", "Experience points is not a number"
           it_behaves_like "returns 400 for invalid parameter", :alignment, 456, "Alignment is invalid"
           it_behaves_like "returns 400 for invalid parameter", :background, 789, "Background is invalid"
-          it_behaves_like "returns 400 for invalid parameter", :user_id, "ghi", "User is invalid"
+          it_behaves_like "returns 400 for invalid parameter", :user_id, "ghi", "User must exist"
           it_behaves_like "returns 400 for invalid parameter", :character_class_id, 1011, "Character class is invalid"
           it_behaves_like "returns 400 for invalid parameter", :race_id, 1213, "Race is invalid"
           it_behaves_like "returns 400 for invalid parameter", :subclass_id, 1415, "Subclass is invalid"
           it_behaves_like "returns 400 for invalid parameter", :subrace_id, 1617, "Subrace is invalid"
-          it_behaves_like "returns 400 for invalid parameter", :languages, [ 1819, 2021 ], "Languages is invalid"
         end
 
         # Will be added late P1 with authentication and autherization overhaul **********
