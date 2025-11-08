@@ -1,4 +1,7 @@
 class Api::V1::UsersController < ApplicationController
+  before_action :validate_id_format, only: [ :show, :update, :destroy ]
+  before_action :set_user, only: [ :show, :update, :destroy ]
+
   def index
     users = User.all
 
@@ -12,28 +15,69 @@ class Api::V1::UsersController < ApplicationController
   end
 
   def create
-    user = User.create!(user_params)
-
-    render json: { message: "Account created successfully", data: user }, status: :created
+    @user = User.new(user_params)
+    if @user.save
+      render json: { message: "Account created successfully", data: @user }, status: :created
+    else
+      if @user.errors[:username].include?("has already been taken") && @user.errors[:email].include?("has already been taken")
+        render json: { error: "User already exists" }, status: :unprocessable_content
+      elsif @user.errors[:username].include?("has already been taken")
+        render json: { error: "User already exists with this username" }, status: :unprocessable_content
+      elsif @user.errors[:email].include?("has already been taken")
+        render json: { error: "User already exists with this email" }, status: :unprocessable_content
+      elsif @user.errors[:username].include?("can't be blank")
+        render json: { error: "Username is required" }, status: :bad_request
+      elsif @user.errors[:email].include?("can't be blank")
+        render json: { error: "Email is required" }, status: :bad_request
+      else
+        render json: { error: @user.errors.full_messages.join(", ") }, status: :bad_request
+      end
+    end
   end
 
   def update
-    user = User.find(params[:id])
-
-    user.update(user_params)
-
-    render json: UserSerializer.new(user).serializable_hash
+    if params[:user]&.key?(:username) && params[:user][:username] == ""
+      return render json: { error: "Username is empty" }, status: :bad_request
+    end
+    
+    if params[:user]&.key?(:email) && params[:user][:email] == ""
+      return render json: { error: "Email is empty" }, status: :bad_request
+    end
+    
+    if @user.update(user_params)
+      render json: UserSerializer.new(@user).serializable_hash
+    else
+      if @user.errors[:email].any? { |e| e.match?(/invalid/) }
+        render json: { error: "Email is invalid" }, status: :bad_request
+      elsif @user.errors[:username].include?("has already been taken")
+        render json: { error: "User already exists with this username" }, status: :unprocessable_content
+      elsif @user.errors[:email].include?("has already been taken")
+        render json: { error: "User already exists with this email" }, status: :unprocessable_content
+      else
+        render json: { error: @user.errors.full_messages.join(", ") }, status: :bad_request
+      end
+    end
   end
 
   def destroy
-    user = User.find(params[:id])
-
-    user.destroy
+    @user.destroy
 
     head :no_content
   end
 
   private
+
+  def set_user
+    @user = User.find(params[:id])
+  rescue ActiveRecord::RecordNotFound
+    render json: { error: "User not found" }, status: :not_found
+  end
+
+  def validate_id_format
+    unless params[:id].to_s.match?(/^\d+$/) && params[:id].to_i > 0
+      render json: { error: "Invalid user ID" }, status: :bad_request
+    end
+  end
 
   def user_params
     params.require(:user).permit(:username, :email)
