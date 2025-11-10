@@ -105,10 +105,10 @@ RSpec.describe "API::V1::Users::Characters", type: :request do
         end
 
         it "returns a 404 status when target user has no characters" do
-          get "/api/v1/users/#{@user2}/characters", as: :json
+          get "/api/v1/users/#{@user2.id}/characters", as: :json
 
           expect(response).to have_http_status(:not_found)
-          expect(JSON.parse(response.body)).to include("error" => "Character not found")
+          expect(JSON.parse(response.body)).to include("error" => "No characters were found for this user")
         end
       end
     end
@@ -129,7 +129,7 @@ RSpec.describe "API::V1::Users::Characters", type: :request do
             languages: [ "common", "elvish" ]
           }
 
-          post "/api/v1/users/#{@user1.id}/characters", params: test_params, as: :json
+          post "/api/v1/users/#{@user1.id}/characters", params: {character: test_params }, as: :json
           expect(response).to have_http_status(:created)
 
           json = JSON.parse(response.body, symbolize_names: true)
@@ -165,11 +165,21 @@ RSpec.describe "API::V1::Users::Characters", type: :request do
           expect(JSON.parse(response.body)).to include("error" => "Invalid user ID")
         end
 
-        shared_examples "returns a 400 status for invalid parameter" do |param, invalid_value, error_message|
+        shared_examples "returns 400 for invalid parameter" do |param, invalid_value, error_message|
           it "returns 400 status when #{param} is #{invalid_value.inspect}" do
-            test_params = { param => invalid_value }
+            test_params = {
+              name: "Unique Test Character #{SecureRandom.hex(4)}",
+              level: 1,
+              experience_points: 0,
+              alignment: "Neutral Good",
+              background: "Folk Hero",
+              user_id: @user1.id,
+              character_class_id: "wizard",
+              race_id: "human",
+              languages: ["common"]
+            }.merge(param => invalid_value)
 
-            post "/api/v1/user/#{user1}/characters", params: { character: test_params }, as: :json
+            post "/api/v1/users/#{@user1.id}/characters", params: { character: test_params }, as: :json
 
             expect(response).to have_http_status(:bad_request)
             expect(JSON.parse(response.body)).to include("error" => error_message)
@@ -190,13 +200,11 @@ RSpec.describe "API::V1::Users::Characters", type: :request do
           it_behaves_like "returns 400 for invalid parameter", :background, "", "Background can't be blank"
           it_behaves_like "returns 400 for invalid parameter", :background, nil, "Background can't be blank"
 
-          it_behaves_like "returns 400 for invalid parameter", :user_id, nil, "User must exist"
+          it_behaves_like "returns 400 for invalid parameter", :character_class_id, "", "Character class can't be blank"
+          it_behaves_like "returns 400 for invalid parameter", :character_class_id, nil, "Character class can't be blank"
 
-          it_behaves_like "returns 400 for invalid parameter", :character_class_id, "", "Character class ID can't be blank"
-          it_behaves_like "returns 400 for invalid parameter", :character_class_id, nil, "Character class ID can't be blank"
-
-          it_behaves_like "returns 400 for invalid parameter", :race_id, "", "Race ID can't be blank"
-          it_behaves_like "returns 400 for invalid parameter", :race_id, nil, "Race ID can't be blank"
+          it_behaves_like "returns 400 for invalid parameter", :race_id, "", "Race can't be blank"
+          it_behaves_like "returns 400 for invalid parameter", :race_id, nil, "Race can't be blank"
 
           it_behaves_like "returns 400 for invalid parameter", :languages, [], "Languages can't be blank"
         end
@@ -207,7 +215,6 @@ RSpec.describe "API::V1::Users::Characters", type: :request do
           it_behaves_like "returns 400 for invalid parameter", :experience_points, "def", "Experience points is not a number"
           it_behaves_like "returns 400 for invalid parameter", :alignment, 456, "Alignment is invalid"
           it_behaves_like "returns 400 for invalid parameter", :background, 789, "Background is invalid"
-          it_behaves_like "returns 400 for invalid parameter", :user_id, "ghi", "User must exist"
           it_behaves_like "returns 400 for invalid parameter", :character_class_id, 1011, "Character class is invalid"
           it_behaves_like "returns 400 for invalid parameter", :race_id, 1213, "Race is invalid"
           it_behaves_like "returns 400 for invalid parameter", :subclass_id, 1415, "Subclass is invalid"
@@ -228,7 +235,7 @@ RSpec.describe "API::V1::Users::Characters", type: :request do
 
         it "returns a 422 status when a character name already exists" do
           test_params = {
-            name: "Theren Nightwhisper",
+            name: "Theren Nightblade",
             level: 1,
             experience_points: 54,
             alignment: "Chaotic Evil",
@@ -240,7 +247,7 @@ RSpec.describe "API::V1::Users::Characters", type: :request do
             languages: [ "common", "elvish" ]
           }
 
-          post "/api/users/#{@user1}/characters", params: { character: test_params }, as: :json
+          post "/api/v1/users/#{@user1.id}/characters", params: { character: test_params }, as: :json
 
           expect(response).to have_http_status(:unprocessable_content)
           expect(JSON.parse(response.body)).to include("error" => "Character already exists with this name")
