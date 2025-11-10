@@ -14,7 +14,7 @@ class Api::V1::Users::CharactersController < ApplicationController
 
   def create
     if invalid_string_types?
-      return render json: { error: detect_type_error}, status: :bad_request
+      return render json: { error: detect_type_error }, status: :bad_request
     end
 
     @character = @user.characters.build(character_params)

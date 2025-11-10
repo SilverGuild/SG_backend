@@ -129,7 +129,7 @@ RSpec.describe "API::V1::Users::Characters", type: :request do
             languages: [ "common", "elvish" ]
           }
 
-          post "/api/v1/users/#{@user1.id}/characters", params: {character: test_params }, as: :json
+          post "/api/v1/users/#{@user1.id}/characters", params: { character: test_params }, as: :json
           expect(response).to have_http_status(:created)
 
           json = JSON.parse(response.body, symbolize_names: true)
@@ -176,7 +176,7 @@ RSpec.describe "API::V1::Users::Characters", type: :request do
               user_id: @user1.id,
               character_class_id: "wizard",
               race_id: "human",
-              languages: ["common"]
+              languages: [ "common" ]
             }.merge(param => invalid_value)
 
             post "/api/v1/users/#{@user1.id}/characters", params: { character: test_params }, as: :json
