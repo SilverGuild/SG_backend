@@ -234,23 +234,23 @@ RSpec.describe "API::V1::Characters", type: :request do
           it_behaves_like "returns 400 for invalid parameter", :name, nil, "Name can't be blank"
 
           it_behaves_like "returns 400 for invalid parameter", :level, nil, "Level can't be blank"
-          
+
           it_behaves_like "returns 400 for invalid parameter", :experience_points, nil, "Experience points can't be blank"
-          
+
           it_behaves_like "returns 400 for invalid parameter", :alignment, "", "Alignment can't be blank"
           it_behaves_like "returns 400 for invalid parameter", :alignment, nil, "Alignment can't be blank"
-          
+
           it_behaves_like "returns 400 for invalid parameter", :background, "", "Background can't be blank"
           it_behaves_like "returns 400 for invalid parameter", :background, nil, "Background can't be blank"
-          
+
           it_behaves_like "returns 400 for invalid parameter", :user_id, nil, "User must exist"
-          
+
           it_behaves_like "returns 400 for invalid parameter", :character_class_id, "", "Character class can't be blank"
           it_behaves_like "returns 400 for invalid parameter", :character_class_id, nil, "Character class can't be blank"
-          
+
           it_behaves_like "returns 400 for invalid parameter", :race_id, "", "Race can't be blank"
           it_behaves_like "returns 400 for invalid parameter", :race_id, nil, "Race can't be blank"
-                 
+
           it_behaves_like "returns 400 for invalid parameter", :languages, [], "Languages can't be blank"
         end
 

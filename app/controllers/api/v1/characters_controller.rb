@@ -45,7 +45,7 @@ class Api::V1::CharactersController < ApplicationController
   def set_character
     @character = Character.find(params[:id])
   rescue ActiveRecord::RecordNotFound
-    render json: { error: "Character not found"}, status: :not_found
+    render json: { error: "Character not found" }, status: :not_found
   end
 
   def validate_id_format
@@ -76,13 +76,13 @@ class Api::V1::CharactersController < ApplicationController
 
   def invalid_string_types?
     string_params = [ :name, :alignment, :background ]
-    string_params.any? { |param| params[:character]&.key?(param) && !params[:character][param].is_a?(String) && params[:character][param].present?}
+    string_params.any? { |param| params[:character]&.key?(param) && !params[:character][param].is_a?(String) && params[:character][param].present? }
   end
 
   def detect_type_error
     return "Name is invalid" if params[:character][:name].present? && !params[:character][:name].is_a?(String)
     return "Alignment is invalid" if params[:character][:alignment].present? && !params[:character][:alignment].is_a?(String)
-    return "Background is invalid" if params[:character][:background].present? && !params[:character][:background].is_a?(String)
+    "Background is invalid" if params[:character][:background].present? && !params[:character][:background].is_a?(String)
   end
 
   def character_params

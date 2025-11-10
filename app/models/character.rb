@@ -82,7 +82,7 @@ class Character < ApplicationRecord
       return
     end
 
-    unless languages.all? { |lang| lang.is_a?(String)}
+    unless languages.all? { |lang| lang.is_a?(String) }
       errors.add(:languages, "is invalid")
     end
   end
