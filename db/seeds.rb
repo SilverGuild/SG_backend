@@ -19,15 +19,15 @@ CHARACTER_CLASSES = {
   'wizard' => { subclasses: [ 'evocation', nil ] }
 }
 RACES = {
-  'dragonborn' => { subraces: [ nil ], languages: [ 'common', 'draconic'] },
-  'dwarf' => { subraces: [ 'hill-dwarf', nil ], languages: [ 'common', 'dwarfish'] },
-  'elf' => { subraces: [ 'high-elf', nil ], languages: [ 'common', 'elvish'] },
-  'gnome' => { subraces: [ 'rock-gnome', nil ], languages: [ 'common', 'gnomish'] },
-  'half-elf' => { subraces: [ nil ], languages: [ 'common', 'elvish'] },
-  'half-orc' => { subraces: [ nil ], languages: [ 'common', 'orc'] },
-  'halfling' => { subraces: [ 'lightfoot-halfling', nil ], languages: [ 'common', 'halfling'] },
-  'human' => { subraces: [ nil ], languages: [ 'common'] },
-  'tiefling' => { subraces: [ nil ], languages: [ 'common', 'infernal'] }
+  'dragonborn' => { subraces: [ nil ], languages: [ 'common', 'draconic' ] },
+  'dwarf' => { subraces: [ 'hill-dwarf', nil ], languages: [ 'common', 'dwarfish' ] },
+  'elf' => { subraces: [ 'high-elf', nil ], languages: [ 'common', 'elvish' ] },
+  'gnome' => { subraces: [ 'rock-gnome', nil ], languages: [ 'common', 'gnomish' ] },
+  'half-elf' => { subraces: [ nil ], languages: [ 'common', 'elvish' ] },
+  'half-orc' => { subraces: [ nil ], languages: [ 'common', 'orc' ] },
+  'halfling' => { subraces: [ 'lightfoot-halfling', nil ], languages: [ 'common', 'halfling' ] },
+  'human' => { subraces: [ nil ], languages: [ 'common' ] },
+  'tiefling' => { subraces: [ nil ], languages: [ 'common', 'infernal' ] }
 }
 
 ALIGNMENTS = [
