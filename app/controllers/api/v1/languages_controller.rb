@@ -5,7 +5,12 @@ class Api::V1::LanguagesController < ApplicationController
   end
 
   def show
-    language = LanguagePoro.new(Dnd5eDataGateway.fetch_langauges(params[:id]))
-    render json: LanguageSerializer.new(language, params: { detailed: true }).serializable_hash
+    language = Dnd5eDataGateway.fetch_langauges(params[:id])
+
+    if language
+      render json: LanguageSerializer.new(LanguagePoro.new(language), params: { detailed: true }).serializable_hash
+    else
+      render json: { error: "Language not found" }, status: :not_found
+    end
   end
 end

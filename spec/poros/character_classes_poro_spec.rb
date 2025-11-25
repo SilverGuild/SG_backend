@@ -10,6 +10,7 @@ RSpec.describe "Character Class PORO" do
         monk = CharacterClassPoro.new(test_response)
 
         expect(monk).to be_an_instance_of CharacterClassPoro
+        expect(monk.id).to eq("monk")
         expect(monk.name).to eq("Monk")
         expect(monk.url).to eq("/api/2014/classes/monk")
         expect(monk.hit_die).to eq(8)

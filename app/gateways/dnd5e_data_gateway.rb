@@ -3,8 +3,16 @@ class Dnd5eDataGateway
     fetch_dnd_data("classes", id)
   end
 
+  def self.fetch_subclasses(id = "")
+    fetch_dnd_data("subclasses", id)
+  end
+
   def self.fetch_races(id = "")
     fetch_dnd_data("races", id)
+  end
+
+  def self.fetch_subraces(id = "")
+    fetch_dnd_data("subraces", id)
   end
 
   def self.fetch_langauges(id = "")
@@ -16,8 +24,15 @@ class Dnd5eDataGateway
     endpoint = id.empty? ? "api/2014/#{category}" : "api/2014/#{category}/#{id}"
     response = conn.get(endpoint)
 
-    json = JSON.parse(response.body, symbolize_names: true)
-    results = id.empty? ? json[:results] : json
+    case response.status
+    when 200
+      json = JSON.parse(response.body, symbolize_names: true)
+      results = id.empty? ? json[:results] : json
+    when 404
+      nil
+    else
+      raise StandardError, "Unexpected API response: #{ response.status }"
+    end
 
     results
   end

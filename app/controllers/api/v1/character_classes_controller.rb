@@ -5,7 +5,12 @@ class Api::V1::CharacterClassesController < ApplicationController
   end
 
   def show
-    character_class = CharacterClassPoro.new(Dnd5eDataGateway.fetch_character_classes(params[:id]))
-    render json: CharacterClassSerializer.new(character_class, params: { detailed: true }).serializable_hash
+    character_class = Dnd5eDataGateway.fetch_character_classes(params[:id])
+
+    if character_class
+      render json: CharacterClassSerializer.new(CharacterClassPoro.new(character_class), params: { detailed: true }).serializable_hash
+    else
+      render json: { error: "Character class not found" }, status: :not_found
+    end
   end
 end

@@ -5,7 +5,11 @@ class Api::V1::RacesController < ApplicationController
   end
 
   def show
-    race = RacePoro.new(Dnd5eDataGateway.fetch_races(params[:id]))
-    render json: RaceSerializer.new(race, params: { detailed: true }).serializable_hash
+    race = Dnd5eDataGateway.fetch_races(params[:id])
+    if race
+      render json: RaceSerializer.new(RacePoro.new(race), params: { detailed: true }).serializable_hash
+    else
+      render json: { error: "Race not found" }, status: :not_found
+    end
   end
 end

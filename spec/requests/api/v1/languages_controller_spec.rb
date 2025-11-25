@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "languages endpoints", type: :request do
+RSpec.describe "API::V1::Languages", type: :request do
   describe "RESTful endpoints" do
     describe "GET /api/v1/languages" do
       it "should fetch all languages directly from the dnd5e api" do
@@ -29,23 +29,38 @@ RSpec.describe "languages endpoints", type: :request do
       end
     end
 
-    describe "GET /api/v1/languages/{ID}" do
-      it "should fetch a single language by id from the dnd5e api" do
-        VCR.use_cassette("language_single_sylvan") do
-          target_id = "sylvan"
-          get "/api/v1/languages/#{target_id}"
+    describe "GET /api/v1/languages/:id" do
+      describe "happy paths" do
+        it "should fetch a single language by id from the dnd5e api" do
+          VCR.use_cassette("language_single_sylvan") do
+            target_id = "sylvan"
+            get "/api/v1/languages/#{target_id}"
 
-          expect(response).to be_successful
+            expect(response).to be_successful
 
-          json = JSON.parse(response.body, symbolize_names: true)
-          target = json[:data]
+            json = JSON.parse(response.body, symbolize_names: true)
+            target = json[:data]
 
-          expect(target[:type]).to eq("language")
-          expect(target[:id]).to eq("sylvan")
-          expect(target[:attributes][:name]).to eq("Sylvan")
-          expect(target[:attributes][:language_type]).to eq("Exotic")
-          expect(target[:attributes][:typical_speakers]).to eq([ "Fey creatures" ])
-          expect(target[:attributes][:script]).to eq("Elvish")
+            expect(target[:type]).to eq("language")
+            expect(target[:id]).to eq("sylvan")
+            expect(target[:attributes][:name]).to eq("Sylvan")
+            expect(target[:attributes][:language_type]).to eq("Exotic")
+            expect(target[:attributes][:typical_speakers]).to eq([ "Fey creatures" ])
+            expect(target[:attributes][:script]).to eq("Elvish")
+          end
+        end
+      end
+
+      describe "sad paths" do
+        before do
+          stub_request(:get, "https://www.dnd5eapi.co/api/2014/languages/test").to_return(status: 404, body: { error: "Not found" }.to_json)
+        end
+
+        it "returns a 404 status when target language does not exist" do
+          get "/api/v1/languages/test"
+
+          expect(response).to have_http_status(:not_found)
+          expect(JSON.parse(response.body)).to include("error" => "Language not found")
         end
       end
     end
