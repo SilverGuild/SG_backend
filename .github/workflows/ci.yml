@@ -5,10 +5,17 @@ on:
   push:
     branches: [ main ]
 
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
 jobs:
   scan_and_lint:
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
@@ -18,27 +25,19 @@ jobs:
         with:
           ruby-version: .ruby-version
           bundler-cache: true
-          
-      - name: Generate binstubs
-        run: bundle binstubs bundler-audit brakeman rubocop --force
-      
-      - name: Security audit
-        run: bin/bundler-audit --update
 
-      - name: Security scan
-        run: bin/brakeman -q -w2
-  
-      - name: Lint Ruby files
-        run: bin/rubocop -f github --parallel
+      - name: Security audit (dependencies)
+        run: bundle exec bundle-audit check --update
+
+      - name: Security scan (Brakeman)
+        run: bundle exec brakeman -q -w2
+
+      - name: Lint (RuboCop)
+        run: bundle exec rubocop -f github --parallel
 
   test:
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-          ci_node_total: [4]
-          ci_node_index: [0, 1, 2, 3]
-    
+
     services:
       postgres:
         image: postgres:14-alpine
@@ -53,7 +52,7 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
-          
+
       redis:
         image: redis:7-alpine
         ports:
@@ -63,29 +62,25 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
-          
+
     env:
       RAILS_ENV: test
       DATABASE_URL: postgres://postgres:postgres@localhost:5432/rails_test
       REDIS_URL: redis://localhost:6379/0
-      DISABLE_SPRING: 1
       CI: true
-      
+
     steps:
-      - name: Install system dependencies
-        run: sudo apt-get update && sudo apt-get install --no-install-recommends -y google-chrome-stable curl libjemalloc2 libvips sqlite3
-        
       - name: Checkout code
         uses: actions/checkout@v6
 
       - name: Cache VCR cassettes
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: spec/vcr_cassettes
           key: vcr-cassettes-${{ hashFiles('spec/vcr_cassettes/**/*.yml') }}
           restore-keys: |
             vcr-cassettes-
-        
+
       - name: Install Ruby and gems
         uses: ruby/setup-ruby@v1
         with:
@@ -93,44 +88,29 @@ jobs:
           bundler-cache: true
 
       - name: Verify database connection
-        run: |
-          psql $DATABASE_URL -c "SELECT version();"
-    
-      - name: Setup test database
+        run: psql "$DATABASE_URL" -c "SELECT version();"
+
+      - name: Load test schema
         run: bin/rails db:schema:load
 
-      - name: Run system tests 
-        run: bin/rails test:system 
-
       - name: Run tests
-        env:
-          CI_NODE_TOTAL: ${{ matrix.ci_node_total }}
-          CI_NODE_INDEX: ${{ matrix.ci_node_index }}
-        run: | 
-          bundle exec rspec --format documentation --format RspecJunitFormatter --out tmp/rspec-results-${{ matrix.ci_node_index }}.xml \
-          $(bin/rails test -- --dry-run --format json | \
-          jq -r ".examples[].id" | \
-          awk "NR % ${CI_NODE_TOTAL} == ${CI_NODE_INDEX}")
-        
-      - name: Upload coverage
-        uses: codecov/codecov-action@v5
-        if: always()
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          files: ./coverage/.resultset.json
-          flags: unittests
-          fail_ci_if_error: false
+        run: |
+          mkdir -p tmp
+          bundle exec rspec \
+            --format documentation \
+            --format RspecJunitFormatter \
+            --out tmp/rspec-results.xml
 
       - name: Upload test results
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v7
         if: always()
         with:
-          name: rspec-results-${{ matrix.ci_node_index }}
-          path: tmp/rspec-results-*.xml
+          name: rspec-results
+          path: tmp/rspec-results.xml
           retention-days: 7
 
       - name: Keep screenshots from failed system tests
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v7
         if: failure()
         with:
           name: screenshots
