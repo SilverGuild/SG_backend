@@ -102,9 +102,18 @@ jobs:
             --out tmp/rspec-results.xml
 
       - name: Upload test results
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v7
         if: always()
         with:
           name: rspec-results
           path: tmp/rspec-results.xml
+          retention-days: 7
+
+      - name: Keep screenshots from failed system tests
+        uses: actions/upload-artifact@v7
+        if: failure()
+        with:
+          name: screenshots
+          path: ${{ github.workspace }}/tmp/screenshots
+          if-no-files-found: ignore
           retention-days: 7
