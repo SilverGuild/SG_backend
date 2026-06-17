@@ -55,7 +55,7 @@ A character stored in SilverGuild holds only the lightweight 5e *slugs* (for exa
 | Concern | Choice |
 | --- | --- |
 | Framework | Ruby on Rails `~> 8.1.1` |
-| Language | Ruby 3.2+ _(Rails 8.1 minimum; confirm exact version via `.ruby-version`)_ |
+| Language | Ruby 3.4+ _(Rails 8.1 minimum; confirm exact version via `.ruby-version`)_ |
 | Web server | [Puma](https://github.com/puma/puma) |
 | Database | PostgreSQL (`pg ~> 1.6`) |
 | Cross-origin | [`rack-cors`](https://github.com/cyu/rack-cors) — for the separate-origin Next.js frontend |
