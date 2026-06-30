@@ -83,9 +83,9 @@ RSpec.describe "API::V1::Users", type: :request do
           expect(response).to have_http_status(:created)
 
           json = JSON.parse(response.body, symbolize_names: true)
-          test_user = json[:data]
-          expect(test_user[:username]).to eq(test_params[:username])
-          expect(test_user[:email]).to eq(test_params[:email])
+          test_user = json[:data].first
+          expect(test_user[:attributes][:username]).to eq(test_params[:username])
+          expect(test_user[:attributes][:email]).to eq(test_params[:email])
 
           # Show that the new user is added to existing list of users in the db
           users = User.all
@@ -94,7 +94,15 @@ RSpec.describe "API::V1::Users", type: :request do
 
           last_user = users.last
 
-          expect(last_user[:id]).to eq(test_user[:id])
+          expect(last_user[:id]).to eq(test_user[:id].to_i)
+        end
+
+        it "does not expose the password digest" do
+          test_params = { username: "test", email: "test@gmail.com", password: password }
+
+          post "/api/v1/users", params: { user: test_params }, as: :json
+
+          expect(response.body).not_to include("password_digest")
         end
       end
 
