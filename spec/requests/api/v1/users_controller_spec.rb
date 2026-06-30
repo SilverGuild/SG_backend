@@ -2,10 +2,12 @@ require "rails_helper"
 
 RSpec.describe "API::V1::Users", type: :request do
   describe "RESTful endpoints" do
+    let(:password) { "password123" }
+
     before(:each) do
-      @user1 = User.create!(username: "user1", email: "user1@gmail.com")
-      @user2 = User.create!(username: "user2", email: "user2@gmail.com")
-      @user3 = User.create!(username: "user3", email: "user3@gmail.com")
+      @user1 = User.create!(username: "user1", email: "user1@gmail.com", password: password)
+      @user2 = User.create!(username: "user2", email: "user2@gmail.com", password: password)
+      @user3 = User.create!(username: "user3", email: "user3@gmail.com", password: password)
 
       @target_id = @user2.id
     end
@@ -34,18 +36,6 @@ RSpec.describe "API::V1::Users", type: :request do
           expect(last_user[:attributes][:email]).to eq(@user3[:email])
         end
       end
-
-      context "sad paths" do
-        # Will be added late P1 with authentication and autherization overhaul **********
-        # it "returns a 401 status when user is not authenticated" do
-
-        # end
-
-        # it "returns a 401 status when user (non-owner) does not have dungeon master access" do
-
-        # end
-        # ***********
-      end
     end
 
     describe "GET /api/v1/users/:id" do
@@ -71,16 +61,6 @@ RSpec.describe "API::V1::Users", type: :request do
           expect(JSON.parse(response.body)).to include("error" => "Invalid user ID")
         end
 
-        # Will be added late P1 with authentication and autherization overhaul **********
-        # it "returns a 401 status when user is not authenticated" do
-
-        # end
-
-        # it "returns a 401 status when user (non-owner) does not have dungeon master access" do
-
-        # end
-        # ***********
-
         it "returns a 404 status when target user is not found" do
           get "/api/v1/users/9999999", as: :json
 
@@ -95,16 +75,17 @@ RSpec.describe "API::V1::Users", type: :request do
         it "returns 201 status when a new user is created" do
           test_params = {
             username: "test",
-            email: "test@gmail.com"
+            email: "test@gmail.com",
+            password: password
           }
 
-          post "/api/v1/users", params: test_params, as: :json
+          post "/api/v1/users", params: { user: test_params }, as: :json
           expect(response).to have_http_status(:created)
 
           json = JSON.parse(response.body, symbolize_names: true)
-          test_user = json[:data]
-          expect(test_user[:username]).to eq(test_params[:username])
-          expect(test_user[:email]).to eq(test_params[:email])
+          test_user = json[:data].first
+          expect(test_user[:attributes][:username]).to eq(test_params[:username])
+          expect(test_user[:attributes][:email]).to eq(test_params[:email])
 
           # Show that the new user is added to existing list of users in the db
           users = User.all
@@ -113,7 +94,15 @@ RSpec.describe "API::V1::Users", type: :request do
 
           last_user = users.last
 
-          expect(last_user[:id]).to eq(test_user[:id])
+          expect(last_user[:id]).to eq(test_user[:id].to_i)
+        end
+
+        it "does not expose the password digest" do
+          test_params = { username: "test", email: "test@gmail.com", password: password }
+
+          post "/api/v1/users", params: { user: test_params }, as: :json
+
+          expect(response.body).not_to include("password_digest")
         end
       end
 
@@ -121,32 +110,47 @@ RSpec.describe "API::V1::Users", type: :request do
         it "returns a 400 status when username parameter is missing" do
           bad_test_params = {
             # Username parameter missing entirely
-            email: "test@gmail.com"
+            email: "test@gmail.com",
+            password: password
           }
 
-          post "/api/v1/users", params: bad_test_params, as: :json
+          post "/api/v1/users", params: { user: bad_test_params }, as: :json
           expect(response).to have_http_status(:bad_request)
           expect(JSON.parse(response.body)).to include("error" => "Username is required")
         end
 
         it "returns a 400 status when email parameter is missing" do
           bad_test_params = {
-            username: "test"
+            username: "test",
             # Email parameter missing entirely
+            password: password
           }
 
-          post "/api/v1/users", params: bad_test_params, as: :json
+          post "/api/v1/users", params: { user: bad_test_params }, as: :json
           expect(response).to have_http_status(:bad_request)
           expect(JSON.parse(response.body)).to include("error" => "Email is required")
+        end
+
+        it "returns a 400 status when password parameter is missing" do
+          bad_test_params = {
+            username: "test",
+            email: "test@gmail.com"
+            # password missing entirely
+          }
+
+          post "/api/v1/users", params: { user: bad_test_params }, as: :json
+          expect(response).to have_http_status(:bad_request)
+          expect(JSON.parse(response.body)).to include("error" => "Password is required")
         end
 
         it "returns a 400 status when username parameter is empty" do
           bad_test_params = {
             username: "",
-            email: "test@gmail.com"
+            email: "test@gmail.com",
+            password: password
           }
 
-          post "/api/v1/users", params: bad_test_params, as: :json
+          post "/api/v1/users", params: { user: bad_test_params }, as: :json
           expect(response).to have_http_status(:bad_request)
           expect(JSON.parse(response.body)).to include("error" => "Username is required")
         end
@@ -154,10 +158,11 @@ RSpec.describe "API::V1::Users", type: :request do
         it "returns a 400 status when email parameter is empty" do
           bad_test_params = {
             username: "test",
-            email: ""
+            email: "",
+            password: password
           }
 
-          post "/api/v1/users", params: bad_test_params, as: :json
+          post "/api/v1/users", params: { user: bad_test_params }, as: :json
           expect(response).to have_http_status(:bad_request)
           expect(JSON.parse(response.body)).to include("error" => "Email is required")
         end
@@ -165,55 +170,61 @@ RSpec.describe "API::V1::Users", type: :request do
         it "returns a 400 status when email parameter is invalid format" do
           bad_test_params = {
             username: "test",
-            email: "bad_email_test"
+            email: "bad_email_test",
+            password: password
           }
 
-          post "/api/v1/users", params: bad_test_params, as: :json
+          post "/api/v1/users", params: { user: bad_test_params }, as: :json
           expect(response).to have_http_status(:bad_request)
           expect(JSON.parse(response.body)).to include("error" => "Email is invalid")
         end
 
-        # Will be added late P1 with authentication and autherization overhaul **********
-        # it "returns a 401 status when user is not authenticated" do
+        it "returns a 400 status when password parameter is empty" do
+          bad_test_params = {
+            username: "test",
+            email: "test@gmail.com",
+            password: ""
+          }
 
-        # end
-
-        # it "returns a 401 status when user (non-owner) does not have dungeon master access" do
-
-        # end
-        # ***********
+          post "/api/v1/users", params: { user: bad_test_params }, as: :json
+          expect(response).to have_http_status(:bad_request)
+          expect(JSON.parse(response.body)).to include("error" => "Password is required")
+        end
 
         it "returns a 422 status when a user already exists in the db" do
           # Original user -> full duplicate
           test_user = {
             username: "test",
-            email: "test@gmail.com"
+            email: "test@gmail.com",
+            password: password
           }
 
           # Duplicate with username
           dup_user1 = {
             username: "test",
-            email: "duptest1@gmail.com"
+            email: "duptest1@gmail.com",
+            password: password
           }
 
           # Duplicate with email
           dup_user2 = {
             username: "duptest2",
-            email: "test@gmail.com"
+            email: "test@gmail.com",
+            password: password
           }
 
-          post "/api/v1/users", params: test_user, as: :json
+          post "/api/v1/users", params: { user: test_user }, as: :json
           expect(response).to be_successful
 
-          post "/api/v1/users", params: test_user, as: :json
+          post "/api/v1/users", params: { user: test_user }, as: :json
           expect(response).to have_http_status(:unprocessable_content)
           expect(JSON.parse(response.body)).to include("error" => "User already exists")
 
-          post "/api/v1/users", params: dup_user1, as: :json
+          post "/api/v1/users", params: { user: dup_user1 }, as: :json
           expect(response).to have_http_status(:unprocessable_content)
           expect(JSON.parse(response.body)).to include("error" => "User already exists with this username")
 
-          post "/api/v1/users", params: dup_user2, as: :json
+          post "/api/v1/users", params: { user: dup_user2 }, as: :json
           expect(response).to have_http_status(:unprocessable_content)
           expect(JSON.parse(response.body)).to include("error" => "User already exists with this email")
         end
@@ -227,7 +238,8 @@ RSpec.describe "API::V1::Users", type: :request do
 
           updated_params = {
             username: "user2",
-            email: "user2_0@gmail.com"
+            email: "user2_0@gmail.com",
+            password: password
           }
 
           patch "/api/v1/users/#{@target_id}", params: { user: updated_params }, as: :json
@@ -251,7 +263,8 @@ RSpec.describe "API::V1::Users", type: :request do
         it "returns a 400 status when user ID is invalid format" do
           updated_params = {
             username: "user2",
-            email: "user2_0@gmail.com"
+            email: "user2_0@gmail.com",
+            password: password
           }
 
           patch "/api/v1/users/invalid", params: { user: updated_params }, as: :json
@@ -291,16 +304,6 @@ RSpec.describe "API::V1::Users", type: :request do
           expect(JSON.parse(response.body)).to include("error" => "Email is invalid")
         end
 
-        # Will be added late P1 with authentication and autherization overhaul **********
-        # it "returns a 401 status when user is not authenticated" do
-
-        # end
-
-        # it "returns a 401 status when user (non-owner) does not have dungeon master access" do
-
-        # end
-        # ***********
-
         it "returns a 404 error when the target user does not exist" do
           test_params = {
             email: "dupped@gmail.com"
@@ -312,7 +315,7 @@ RSpec.describe "API::V1::Users", type: :request do
           expect(JSON.parse(response.body)).to include("error" => "User not found")
         end
 
-         it "returns a 422 status when updating to a username that already exists" do
+        it "returns a 422 status when updating to a username that already exists" do
           test_params = {
             username: "user1"
           }
@@ -356,16 +359,6 @@ RSpec.describe "API::V1::Users", type: :request do
           expect(response).to have_http_status(:bad_request)
           expect(JSON.parse(response.body)).to include("error" => "Invalid user ID")
         end
-
-        # Will be added late P1 with authentication and autherization overhaul **********
-        # it "returns a 401 status when user is not authenticated" do
-
-        # end
-
-        # it "returns a 401 status when user (non-owner) does not have dungeon master access" do
-
-        # end
-        # ***********
 
         it "returns a 404 error when the target user does not exist" do
           delete "/api/v1/users/9999999", as: :json

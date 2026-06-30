@@ -2,8 +2,10 @@ require 'rails_helper'
 
 RSpec.describe User, type: :model do
   describe "happy paths" do
+    let(:password) { "password123" }
+
     before(:each) do
-       @user =  @user1 = User.create!(username: "user1", email: "user1@gmail.com")
+       @user = User.create!(username: "user1", email: "user1@gmail.com", password: password)
 
        @character = Character.create!(name: "Lynn Thorn",
                                       level: 3,
@@ -34,6 +36,7 @@ RSpec.describe User, type: :model do
     describe "validations" do
       it { should validate_presence_of(:username) }
       it { should validate_presence_of(:email) }
+      it { should validate_presence_of(:password) }
     end
   end
 end

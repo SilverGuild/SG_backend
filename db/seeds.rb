@@ -63,7 +63,8 @@ Rails.logger.info "Creating test users with Faker..."
 10.times do
   User.create!(
     username: Faker::Internet.unique.username(specifier: 5..12),
-    email: Faker::Internet.unique.email
+    email: Faker::Internet.unique.email,
+    password: Faker::Internet.password
   )
 end
 
