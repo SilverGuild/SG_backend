@@ -68,6 +68,8 @@ class Api::V1::UsersController < ApplicationController
       render json: { error: "Username is required" }, status: :bad_request
     elsif @user.errors[:email].include?("can't be blank")
       render json: { error: "Email is required" }, status: :bad_request
+    elsif @user.errors[:password].include?("can't be blank")
+      render json: { error: "Password is required" }, status: :bad_request
     elsif @user.errors[:email].include?("is invalid")
       render json: { error: "Email is invalid" }, status: :bad_request
     else
@@ -76,6 +78,6 @@ class Api::V1::UsersController < ApplicationController
   end
 
   def user_params
-    params.require(:user).permit(:username, :email)
+    params.require(:user).permit(:username, :email, :password, :password_confirmation)
   end
 end
