@@ -98,4 +98,11 @@ User.all.each do |user|
       languages: RACES[race][:languages]
     )
   end
+
+  Rails.logger.info "Creating admin account for development"
+  User.create!(
+    username: "sg_admin",
+    email: "sg_admin@gmail.com",
+    password: "dnd4life"
+  )
 end
