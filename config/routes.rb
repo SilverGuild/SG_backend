@@ -15,6 +15,11 @@ Rails.application.routes.draw do
       end
 
       resources :characters, only: [ :index, :show, :update, :destroy ]
+
+      # Auth
+      post "login", to: "sessions#create"
+      delete "logout", to: "sessions#destroy"
+      get "current", to: "sessions#current"
     end
   end
 end
