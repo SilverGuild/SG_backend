@@ -18,7 +18,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Install Ruby and gems
         uses: ruby/setup-ruby@v1
@@ -71,10 +71,10 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Cache VCR cassettes
-        uses: actions/cache@v5
+        uses: actions/cache@v6
         with:
           path: spec/vcr_cassettes
           key: vcr-cassettes-${{ hashFiles('spec/vcr_cassettes/**/*.yml') }}
