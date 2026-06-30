@@ -2,8 +2,10 @@ require 'rails_helper'
 
 RSpec.describe Character, type: :model do
   describe "happy paths" do
+    let(:password) { "password123" }
+
     before(:each) do
-      @user =  @user1 = User.create!(username: "user1", email: "user1@gmail.com")
+      @user =  @user1 = User.create!(username: "user1", email: "user1@gmail.com", password: password)
 
       @character = Character.create!(name: "Kaelynn Thornwick",
                                       level: 1,
