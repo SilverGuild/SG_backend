@@ -19,6 +19,6 @@ module ApiErrorHandler
 
   # Generic envelope - every controller renders errors the same way
   def render_error(message, status)
-    render json: { error: message}, status: status
+    render json: { error: message }, status: status
   end
 end

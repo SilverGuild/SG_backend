@@ -3,7 +3,7 @@ class User < ApplicationRecord
   has_many :characters, dependent: :destroy
 
   has_secure_password
-  normalizes :email, with: ->(e) {e.strip.downcase}
+  normalizes :email, with: ->(e) { e.strip.downcase }
 
   # Attribute validations
   validates :username, presence: true, uniqueness: true

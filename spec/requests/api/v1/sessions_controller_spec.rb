@@ -53,17 +53,17 @@ RSpec.describe "API::V1::Sessions", type: :request do
         post "/api/v1/login", params: { session: { username: "ghost", password: password } }, as: :json
 
         expect(response).to have_http_status(:unauthorized)
-        
+
         json = JSON.parse(response.body)
-        
+
         # identical message to the wrong-password case - must not reveal whether the user exists
         expect(json).to include("error" => "Invalid username or password")
         expect(session[:user_id]).to be_nil
       end
-      
+
       it "is case-sensitive on username" do
         post "/api/v1/login", params: { session: { username: @user.username.upcase, password: password } }, as: :json
-        
+
         expect(response).to have_http_status(:unauthorized)
       end
 
@@ -78,7 +78,7 @@ RSpec.describe "API::V1::Sessions", type: :request do
   describe "GET /api/v1/current" do
     context "happy paths" do
       it "returns the current user when a session is active" do
-          post "/api/v1/login", params: { session: { username: @user.username,password: password } }, as: :json
+          post "/api/v1/login", params: { session: { username: @user.username, password: password } }, as: :json
 
           get "/api/v1/current", as: :json
 
@@ -102,7 +102,7 @@ RSpec.describe "API::V1::Sessions", type: :request do
     context "happy paths" do
       it "clears the session and returns 204" do
         post "/api/v1/login", params: { session: { username: @user.username, password: password } }, as: :json
-        
+
         expect(session[:user_id]).to eq(@user.id)
 
         delete "/api/v1/logout", as: :json
@@ -123,5 +123,5 @@ RSpec.describe "API::V1::Sessions", type: :request do
         expect(response).to have_http_status(:unauthorized)
       end
     end
-  end 
+  end
 end
