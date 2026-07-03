@@ -10,6 +10,14 @@ class Api::V1::SessionsController < ApplicationController
     if user&.authenticate(session_params[:password])
       reset_session
       session[:user_id] = user.id
+
+      cookies[:sg_logged_in] = {
+        value: "1",
+        same_site: :lax,
+        secure: Rails.env.production?,
+        expires: 14.days.from_now
+      }
+
       render json: UserSerializer.new(user).serializable_hash, status: :ok
     else
       render json: { error: "Invalid username or password" }, status: :unauthorized
@@ -18,6 +26,7 @@ class Api::V1::SessionsController < ApplicationController
 
   def destroy
     reset_session
+    cookies.delete(:sg_logged_in)
     head :no_content
   end
 
