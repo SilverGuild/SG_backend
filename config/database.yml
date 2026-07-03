@@ -8,6 +8,8 @@ default: &default
 development:
   <<: *default
   database: silver_guild_development
+  username: postgres
+  password: postgres
   host: localhost
 
 test:
