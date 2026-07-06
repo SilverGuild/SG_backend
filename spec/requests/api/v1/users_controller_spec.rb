@@ -70,7 +70,7 @@ RSpec.describe "API::V1::Users", type: :request do
       end
     end
 
-    describe "POST /api/v1/users" do
+    describe "POST /api/v1/signup" do
       context "happy paths" do
         it "returns 201 status when a new user is created" do
           test_params = {
@@ -79,7 +79,7 @@ RSpec.describe "API::V1::Users", type: :request do
             password: password
           }
 
-          post "/api/v1/users", params: { user: test_params }, as: :json
+          post "/api/v1/signup", params: { user: test_params }, as: :json
           expect(response).to have_http_status(:created)
 
           json = JSON.parse(response.body, symbolize_names: true)
@@ -100,7 +100,7 @@ RSpec.describe "API::V1::Users", type: :request do
         it "does not expose the password digest" do
           test_params = { username: "test", email: "test@gmail.com", password: password }
 
-          post "/api/v1/users", params: { user: test_params }, as: :json
+          post "/api/v1/signup", params: { user: test_params }, as: :json
 
           expect(response.body).not_to include("password_digest")
         end
@@ -114,7 +114,7 @@ RSpec.describe "API::V1::Users", type: :request do
             password: password
           }
 
-          post "/api/v1/users", params: { user: bad_test_params }, as: :json
+          post "/api/v1/signup", params: { user: bad_test_params }, as: :json
           expect(response).to have_http_status(:bad_request)
           expect(JSON.parse(response.body)).to include("error" => "Username is required")
         end
@@ -126,7 +126,7 @@ RSpec.describe "API::V1::Users", type: :request do
             password: password
           }
 
-          post "/api/v1/users", params: { user: bad_test_params }, as: :json
+          post "/api/v1/signup", params: { user: bad_test_params }, as: :json
           expect(response).to have_http_status(:bad_request)
           expect(JSON.parse(response.body)).to include("error" => "Email is required")
         end
@@ -138,7 +138,7 @@ RSpec.describe "API::V1::Users", type: :request do
             # password missing entirely
           }
 
-          post "/api/v1/users", params: { user: bad_test_params }, as: :json
+          post "/api/v1/signup", params: { user: bad_test_params }, as: :json
           expect(response).to have_http_status(:bad_request)
           expect(JSON.parse(response.body)).to include("error" => "Password is required")
         end
@@ -150,7 +150,7 @@ RSpec.describe "API::V1::Users", type: :request do
             password: password
           }
 
-          post "/api/v1/users", params: { user: bad_test_params }, as: :json
+          post "/api/v1/signup", params: { user: bad_test_params }, as: :json
           expect(response).to have_http_status(:bad_request)
           expect(JSON.parse(response.body)).to include("error" => "Username is required")
         end
@@ -162,7 +162,7 @@ RSpec.describe "API::V1::Users", type: :request do
             password: password
           }
 
-          post "/api/v1/users", params: { user: bad_test_params }, as: :json
+          post "/api/v1/signup", params: { user: bad_test_params }, as: :json
           expect(response).to have_http_status(:bad_request)
           expect(JSON.parse(response.body)).to include("error" => "Email is required")
         end
@@ -174,7 +174,7 @@ RSpec.describe "API::V1::Users", type: :request do
             password: password
           }
 
-          post "/api/v1/users", params: { user: bad_test_params }, as: :json
+          post "/api/v1/signup", params: { user: bad_test_params }, as: :json
           expect(response).to have_http_status(:bad_request)
           expect(JSON.parse(response.body)).to include("error" => "Email is invalid")
         end
@@ -186,7 +186,7 @@ RSpec.describe "API::V1::Users", type: :request do
             password: ""
           }
 
-          post "/api/v1/users", params: { user: bad_test_params }, as: :json
+          post "/api/v1/signup", params: { user: bad_test_params }, as: :json
           expect(response).to have_http_status(:bad_request)
           expect(JSON.parse(response.body)).to include("error" => "Password is required")
         end
@@ -213,18 +213,18 @@ RSpec.describe "API::V1::Users", type: :request do
             password: password
           }
 
-          post "/api/v1/users", params: { user: test_user }, as: :json
+          post "/api/v1/signup", params: { user: test_user }, as: :json
           expect(response).to be_successful
 
-          post "/api/v1/users", params: { user: test_user }, as: :json
+          post "/api/v1/signup", params: { user: test_user }, as: :json
           expect(response).to have_http_status(:unprocessable_content)
           expect(JSON.parse(response.body)).to include("error" => "User already exists")
 
-          post "/api/v1/users", params: { user: dup_user1 }, as: :json
+          post "/api/v1/signup", params: { user: dup_user1 }, as: :json
           expect(response).to have_http_status(:unprocessable_content)
           expect(JSON.parse(response.body)).to include("error" => "User already exists with this username")
 
-          post "/api/v1/users", params: { user: dup_user2 }, as: :json
+          post "/api/v1/signup", params: { user: dup_user2 }, as: :json
           expect(response).to have_http_status(:unprocessable_content)
           expect(JSON.parse(response.body)).to include("error" => "User already exists with this email")
         end

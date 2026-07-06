@@ -1,9 +1,4 @@
 class Api::V1::SessionsController < ApplicationController
-  # Cookie based login.  The SameSite=Lax session cookie is the CSRF control for
-  # these JSON endpoints, so token-based forgery protection is skipped here.
-  # raise: false makes this safe whether or not the callbakc is in the chain
-  skip_before_action :verify_authenticity_token, raise: false
-
   def create
     user = User.find_by(username: session_params[:username])
 
