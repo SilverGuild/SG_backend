@@ -98,11 +98,39 @@ User.all.each do |user|
       languages: RACES[race][:languages]
     )
   end
+end
 
-  Rails.logger.info "Creating admin account for development"
-  User.create!(
-    username: "sg_admin",
-    email: "sg_admin@gmail.com",
-    password: "dnd4life"
+Rails.logger.info "Creating admin account for development"
+admin = User.create!(
+  username: "sg_admin",
+  email: "sg_admin@gmail.com",
+  password: "dnd4life"
+)
+
+8.times do
+  # Handle random class associated subclass assignment
+  character_class = CHARACTER_CLASSES.keys.sample
+  subclass = CHARACTER_CLASSES[character_class][:subclasses].sample
+
+  # Handle random race associated subrace assignment
+  race = RACES.keys.sample
+  subrace = RACES[race][:subraces].sample
+
+  # Ensure that experience points are generated randomly based on the level
+  level = rand(1..10)
+  xp_thresholds = [ 0, 300, 900, 2700, 6500, 14000, 23000, 34000, 48000, 64000, 85000 ]
+  experience_points = xp_thresholds[level - 1] + rand(0..(xp_thresholds[level] - xp_thresholds[level - 1]))
+
+  admin.characters.create!(
+    name: Faker::Games::ElderScrolls.name,
+    level: level,
+    experience_points: experience_points,
+    alignment: ALIGNMENTS.sample,
+    background: BACKGROUNDS.sample,
+    character_class_id: character_class,
+    race_id: race,
+    subclass_id: subclass,
+    subrace_id: subrace,
+    languages: RACES[race][:languages]
   )
 end
