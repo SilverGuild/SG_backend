@@ -69,7 +69,7 @@ class Character < ApplicationRecord
 
   def language(lang)
     @language ||= begin
-      data = Dnd5eDataGateway.fetch_langauges(lang)
+      data = Dnd5eDataGateway.fetch_languages(lang)
       LanguagePoro.new(data)
     end
   end

@@ -1,4 +1,8 @@
 class Dnd5eDataGateway
+  class UnavailableError < StandardError; end
+
+  CACHE_EXPIRY = 1.week
+
   def self.fetch_character_classes(id = "")
     fetch_dnd_data("classes", id)
   end
@@ -15,31 +19,47 @@ class Dnd5eDataGateway
     fetch_dnd_data("subraces", id)
   end
 
-  def self.fetch_langauges(id = "")
+  def self.fetch_languages(id = "")
     fetch_dnd_data("languages", id)
   end
 
   def self.fetch_dnd_data(category, id = "")
-    conn = connect()
+    Rails.cache.fetch(cache_key(category, id), expires_in: CACHE_EXPIRY) do 
+      fetch_from_api(category, id)
+    end
+  end
+  
+  # Bypass the cache and write a fresh value into the cache.
+  # Used by a schedueld refresh job - errors NOT rescued here,
+  # failed refresh leaves the previous cache value in place rather
+  # than overwriting with nothing
+  def self.refresh(category, id = "")
+    Rails.cache.write(cache_key(category, id), fetch_from_api(category, id), expires_in: CACHE_EXPIRY)
+  end
+
+  def self.cache_key(category, id)
+    id.empty? ? "dnd5e/#{category}" : "dnd5e/#{category}/#{id}"
+  end
+  
+  def self.fetch_from_api(category, id = "")
     endpoint = id.empty? ? "api/2014/#{category}" : "api/2014/#{category}/#{id}"
-    response = conn.get(endpoint)
+    response = connect.get(endpoint)
 
     case response.status
     when 200
       json = JSON.parse(response.body, symbolize_names: true)
-      results = id.empty? ? json[:results] : json
+      id.empty? ? json[:results] : json
     when 404
       nil
     else
-      raise StandardError, "Unexpected API response: #{ response.status }"
+      raise UnavailableError, "Unexpected API response: #{ response.status }"
     end
-
-    results
+  rescue Faraday::TimeoutError, Faraday::ConnectionFailed, Faraday::SSLError => e
+    raise UnavailableError, "5e API unreachable: #{e.class}"
   end
-
-  private
 
   def self.connect
     Faraday.new(url: "https://www.dnd5eapi.co/")
   end
+  private_class_method :connect
 end

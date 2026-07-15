@@ -1,9 +1,9 @@
 production:
-  refresh_dnd53_cache:
-    class: Dnd53CacheRefreshJob
+  refresh_dnd5e_cache:
+    class: Dnd5eCacheRefreshJob
     schedule: every day at 3am
 
-developement:
-  refresh_dnd53_cache:
-    class: Dnd53CacheRefreshJob
+development:
+  refresh_dnd5e_cache:
+    class: Dnd5eCacheRefreshJob
     schedule: every 6 hours
