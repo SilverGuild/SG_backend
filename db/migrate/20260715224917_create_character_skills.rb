@@ -5,7 +5,7 @@ class CreateCharacterSkills < ActiveRecord::Migration[8.1]
       t.string :skill_id
       t.boolean :proficient, default: false
       t.boolean :expertise, default: false
-      
+
       t.timestamps
     end
 
