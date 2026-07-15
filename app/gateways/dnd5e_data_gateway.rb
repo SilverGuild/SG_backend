@@ -24,11 +24,11 @@ class Dnd5eDataGateway
   end
 
   def self.fetch_dnd_data(category, id = "")
-    Rails.cache.fetch(cache_key(category, id), expires_in: CACHE_EXPIRY) do 
+    Rails.cache.fetch(cache_key(category, id), expires_in: CACHE_EXPIRY) do
       fetch_from_api(category, id)
     end
   end
-  
+
   # Bypass the cache and write a fresh value into the cache.
   # Used by a schedueld refresh job - errors NOT rescued here,
   # failed refresh leaves the previous cache value in place rather
@@ -40,7 +40,7 @@ class Dnd5eDataGateway
   def self.cache_key(category, id)
     id.empty? ? "dnd5e/#{category}" : "dnd5e/#{category}/#{id}"
   end
-  
+
   def self.fetch_from_api(category, id = "")
     endpoint = id.empty? ? "api/2014/#{category}" : "api/2014/#{category}/#{id}"
     response = connect.get(endpoint)

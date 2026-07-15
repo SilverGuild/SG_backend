@@ -4,8 +4,8 @@ namespace :dnd5e do
          "Usage: bin/rails dnd5e:cache:refresh " \
          "or bin/rails 'dnd5e:cache:refresh[races]' " \
          "or bin/rails 'dnd5e:cache:refresh[races,gnome]'"
-    task :refresh, [:category, :id] => :environment do |_t, args|
-      categories = args[:category] ? [args[:category]] : Dnd5eCacheRefreshJob::CATEGORIES
+    task :refresh, [ :category, :id ] => :environment do |_t, args|
+      categories = args[:category] ? [ args[:category] ] : Dnd5eCacheRefreshJob::CATEGORIES
       id = args[:id] || ""
 
       categories.each do |category|
@@ -20,8 +20,8 @@ namespace :dnd5e do
     desc  "Delete cached D&D 5e data without re-fetching - next read will be a miss. " \
           "Usage: bin/rails dnd5e:cache:clear " \
           "or bin/rails 'dnd5e:cache:clear[races]' or 'dnd5e:cache:clear[races, gnome]' "
-    task :clear, [:category, :id] => :environment do |_t, args|
-      categories = args[:category] ? [args[:category]] : Dnd5eCacheRefreshJob::CATEGORIES
+    task :clear, [ :category, :id ] => :environment do |_t, args|
+      categories = args[:category] ? [ args[:category] ] : Dnd5eCacheRefreshJob::CATEGORIES
       id = args[:id] || ""
 
       categories.each do |category|
