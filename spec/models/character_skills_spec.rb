@@ -36,20 +36,20 @@ RSpec.describe CharacterSkill, type: :model do
   describe "custom validations" do
     it "rejects expertise without proficiency" do
       skill = CharacterSkill.new(character: character, skill_id: "stealth", proficient: false, expertise: true)
-      
+
       expect(skill).not_to be_valid
       expect(skill.errors[:expertise]).to include("can't be true without proficiency in the skill first")
     end
-    
+
     it "allows expertise when proficient is also true" do
       skill = CharacterSkill.new(character: character, skill_id: "stealth", proficient: true, expertise: true)
-      
+
       expect(skill).to be_valid
     end
-    
+
     it "allows proficiency without expertise" do
       skill = CharacterSkill.new(character: character, skill_id: "stealth", proficient: true, expertise: false)
-      
+
       expect(skill).to be_valid
     end
   end
