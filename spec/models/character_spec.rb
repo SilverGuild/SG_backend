@@ -24,6 +24,7 @@ RSpec.describe Character, type: :model do
     describe "relationships" do
       it { should belong_to(:user) }
       it { should have_many(:skills).class_name("CharacterSkill").dependent(:destroy) }
+      it { should have_many(:ability_scores).class_name("CharacterAbilityScore").dependent(:destroy) }
     end
 
     describe "validations" do
@@ -146,6 +147,16 @@ RSpec.describe Character, type: :model do
         @character.destroy
 
         expect(CharacterSkill.exists?(skill.id)).to be false
+      end
+
+      it "destroys associated ability scores when the character is destroyed" do
+        ability_score = @character.ability_scores.create!(ability_id: "wis", score: 14)
+
+        expect(CharacterAbilityScore.exists?(ability_score.id)).to be true
+
+        @character.destroy
+
+        expect(CharacterAbilityScore.exists?(ability_score.id)).to be false
       end
     end
   end
