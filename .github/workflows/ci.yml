@@ -80,7 +80,9 @@ jobs:
         run: psql "$DATABASE_URL" -c "SELECT version();"
 
       - name: Prepare test database
-        run: bin/rails db:prepare
+        run: |
+          bin/rails db:create
+          bin/rails db:schema:load
 
       - name: Run tests
         run: |
