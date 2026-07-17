@@ -5,6 +5,7 @@ class Character < ApplicationRecord
 
   has_many :skills, class_name: "CharacterSkill", dependent: :destroy
   has_many :ability_scores, class_name: "CharacterAbilityScore", dependent: :destroy
+  has_many :combat_stats, class_name: "CharacterCombatStats", dependent: :destroy
 
   # Presence validations
   validates :name, presence: true

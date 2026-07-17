@@ -161,7 +161,7 @@ RSpec.describe Character, type: :model do
       end
 
       it "destroys associated combat stats when the character is destroyed" do
-        combat_stats = @character.combat_stats.create!(current_hp: 10, max_hp: 10, armor_class: 12)
+        combat_stats = @character.combat_stats.create!(current_hp: 10, max_hp: 10, hit_dice_remaining: @character.level, armor_class: 12)
 
         expect(CharacterCombatStats.exists?(combat_stats.id)).to be true
 

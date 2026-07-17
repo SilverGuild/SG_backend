@@ -28,6 +28,9 @@ RSpec.describe CharacterCombatStats, type: :model do
 
     it { should validate_numericality_of(:temporary_hp).only_integer.is_greater_than_or_equal_to(0) }
 
+    it { should validate_presence_of(:hit_dice_remaining) }
+    it { should validate_numericality_of(:hit_dice_remaining).only_integer.is_greater_than_or_equal_to(0) }
+
     it { should validate_numericality_of(:death_save_successes).only_integer.is_greater_than_or_equal_to(0).is_less_than_or_equal_to(3) }
     it { should validate_numericality_of(:death_save_failures).only_integer.is_greater_than_or_equal_to(0).is_less_than_or_equal_to(3) }
 
@@ -35,7 +38,9 @@ RSpec.describe CharacterCombatStats, type: :model do
     it { should validate_numericality_of(:armor_class).only_integer.is_greater_than_or_equal_to(0) }
 
     it "rejects a second combat stats row for the same character" do
-      CharacterCombatStats.create!(character: character, current_hp: 30, max_hp: 38, armor_class: 15)
+      CharacterCombatStats.create!(character: character, current_hp: 30, max_hp: 38, hit_dice_remaining: 5, armor_class: 15)
+
+      duplicate = CharacterCombatStats.new(character: character, current_hp: 10, max_hp: 38, hit_dice_remaining: 5, armor_class: 15)
 
       expect(duplicate).not_to be_valid
       expect(duplicate.errors[:character_id]).to include("has already been taken")
@@ -61,7 +66,7 @@ RSpec.describe CharacterCombatStats, type: :model do
 
     it "rejects hit_dice_remaining greater than character level" do
       subject.hit_dice_remaining = character.level + 1
-      expect(subject).not_be be_valid
+      expect(subject).not_to be_valid
       expect(subject.errors[:hit_dice_remaining]).to include("can't exceed character level")
     end
 
