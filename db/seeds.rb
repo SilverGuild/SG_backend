@@ -82,7 +82,7 @@ def assign_combat_skills(character)
   con_modifier = (character.ability_scores.find_by!(ability_id: "con").score - 10) / 2
   dex_modifier = (character.ability_scores.find_by!(ability_id: "dex").score - 10) / 2
 
-  max_hp = [ hit_die + con_modifier, 1].max
+  max_hp = [ hit_die + con_modifier, 1 ].max
   (2..character.level).each do
     max_hp += [ rand(1..hit_die) + con_modifier, 1 ].max
   end

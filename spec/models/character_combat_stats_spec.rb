@@ -46,7 +46,7 @@ RSpec.describe CharacterCombatStats, type: :model do
       expect(duplicate.errors[:character_id]).to include("has already been taken")
     end
 
-    it "is invalid when stable is nil" do 
+    it "is invalid when stable is nil" do
       subject.stable = nil
       expect(subject).not_to be_valid
     end
