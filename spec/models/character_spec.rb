@@ -25,6 +25,7 @@ RSpec.describe Character, type: :model do
       it { should belong_to(:user) }
       it { should have_many(:skills).class_name("CharacterSkill").dependent(:destroy) }
       it { should have_many(:ability_scores).class_name("CharacterAbilityScore").dependent(:destroy) }
+      it { should have_many(:combat_stats).class_name("CharacterCombatStats").dependent(:destroy) }
     end
 
     describe "validations" do
@@ -157,6 +158,16 @@ RSpec.describe Character, type: :model do
         @character.destroy
 
         expect(CharacterAbilityScore.exists?(ability_score.id)).to be false
+      end
+
+      it "destroys associated combat stats when the character is destroyed" do
+        combat_stats = @character.combat_stats.create!(current_hp: 10, max_hp: 10, armor_class: 12)
+
+        expect(CharacterCombatStats.exists?(combat_stats.id)).to be true
+
+        @character.destroy
+
+        expect(CharacterCombatStats.exists?(combat_stats.id)).to be false
       end
     end
   end
