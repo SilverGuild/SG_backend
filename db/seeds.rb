@@ -5,19 +5,20 @@ Character.destroy_all
 
 # Sample Character_Classes, Races (embedded Subclasses, Subraces, and languages), Alignments, and Backgrounds
 CHARACTER_CLASSES = {
-  'barbarian' => { subclasses: [ 'berserker', nil ] },
-  'bard' => { subclasses: [ 'lore', nil ] },
-  'cleric' => { subclasses: [ 'life', nil ] },
-  'druid' => { subclasses: [ 'land', nil ] },
-  'fighter' => { subclasses: [ 'champion', nil ] },
-  'monk' => { subclasses: [ 'open-hand', nil ] },
-  'paladin' => { subclasses: [ 'devotion', nil ] },
-  'ranger' => { subclasses: [ 'hunter', nil ] },
-  'rogue' => { subclasses: [ 'thief', nil ] },
-  'sorcerer' => { subclasses: [ 'draconic', nil ] },
-  'warlock' => { subclasses: [ 'fiend', nil ] },
-  'wizard' => { subclasses: [ 'evocation', nil ] }
+  'barbarian' => { subclasses: [ 'berserker', nil ], hit_die: 12 },
+  'bard' => { subclasses: [ 'lore', nil ], hit_die: 8 },
+  'cleric' => { subclasses: [ 'life', nil ], hit_die: 8 },
+  'druid' => { subclasses: [ 'land', nil ], hit_die: 8 },
+  'fighter' => { subclasses: [ 'champion', nil ], hit_die: 10 },
+  'monk' => { subclasses: [ 'open-hand', nil ], hit_die: 8 },
+  'paladin' => { subclasses: [ 'devotion', nil ], hit_die: 10 },
+  'ranger' => { subclasses: [ 'hunter', nil ], hit_die: 10 },
+  'rogue' => { subclasses: [ 'thief', nil ], hit_die: 8 },
+  'sorcerer' => { subclasses: [ 'draconic', nil ], hit_die: 6 },
+  'warlock' => { subclasses: [ 'fiend', nil ], hit_die: 8 },
+  'wizard' => { subclasses: [ 'evocation', nil ], hit_die: 6 }
 }
+
 RACES = {
   'dragonborn' => { subraces: [ nil ], languages: [ 'common', 'draconic' ] },
   'dwarf' => { subraces: [ 'hill-dwarf', nil ], languages: [ 'common', 'dwarfish' ] },
@@ -46,6 +47,10 @@ SKILLS = %w[
   performance persuasion religion sleight-of-hand stealth survival
 ].freeze
 
+CONDITIONS = %w[
+
+].freeze
+
 def assign_ability_scores(character)
   saving_throw_ids = ABILITIES.sample(2)
 
@@ -69,6 +74,25 @@ def assign_skills(character)
       expertise: expertise_skill_ids.include?(skill_id)
     )
   end
+end
+
+def assign_combat_skills(character)
+  hit_die = CHARACTER_CLASSES.fetch(character.character_class_id)[:hit_die]
+
+  con_modifier = (character.ability_scores.find_by!(ability_id: "con").score - 10) / 2
+  dex_modifier = (character.ability_scores.find_by!(ability_id: "dex").score - 10) / 2
+
+  max_hp = [ hit_die + con_modifier, 1 ].max
+  (2..character.level).each do
+    max_hp += [ rand(1..hit_die) + con_modifier, 1 ].max
+  end
+
+  character.create_combat_stats!(
+    current_hp: max_hp,
+    max_hp: max_hp,
+    hit_dice_remaining: character.level,
+    armor_class: 10 + dex_modifier + rand(0..2)
+  )
 end
 
 # Create test users with Faker
@@ -111,8 +135,10 @@ User.all.each do |user|
       languages: RACES[race][:languages]
     )
 
+    # Assign character ability scores and skills
     assign_ability_scores(character)
     assign_skills(character)
+    assign_combat_skills(character)
   end
 end
 
@@ -153,4 +179,5 @@ Rails.logger.info "Create test characters for admin account"
 
   assign_ability_scores(character)
   assign_skills(character)
+  assign_combat_skills(character)
 end
