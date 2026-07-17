@@ -30,33 +30,32 @@ RACES = {
   'tiefling' => { subraces: [ nil ], languages: [ 'common', 'infernal' ] }
 }
 
-ALIGNMENTS = [
-  'Lawful Good',
-  'Neutral Good',
-  'Chaotic Good',
-  'Lawful Neutral',
-  'True Neutral',
-  'Chaotic Neutral',
-  'Lawful Evil',
-  'Neutral Evil',
-  'Chaotic Evil'
-]
+ALIGNMENTS = %w[
+  lawful-good neutral-good chaotic-good lawful-neutral true-neutral chaotic-neutral lawful-evil neutral-evil chaotic-evil
+].freeze
 
-BACKGROUNDS = [
-  'Acolyte',
-  'Charlatan',
-  'Criminal',
-  'Entertainer',
-  'Folk Hero',
-  'Guild Artisan',
-  'Hermit',
-  'Noble',
-  'Outlander',
-  'Sage',
-  'Sailor',
-  'Soldier',
-  'Urchin'
-]
+BACKGROUNDS = %w[
+  acolyte charlatan criminal entertainer folk hero guild artisan hermit noble outlander sage sailor soldier urchin
+].freeze
+
+SKILLS = %w[
+  acrobatics animal-handling arcana athletics deception history
+  insight intimidation investigation medicine nature perception
+  performance persuasion religion sleight-of-hand stealth survival
+].freeze
+
+def assign_random_skills(character)
+  proficient_skill_ids = SKILLS.sample(rand(2..4))
+  expertise_skill_ids = rand < 0.3 ? proficient_skill_ids.sample(1) : []
+
+  SKILLS.each do |skill_id|
+    character.skills.create!(
+      skill_id: skill_id,
+      proficient: true,
+      expertise: expertise_skill_ids.include?(skill_id)
+    )
+  end
+end
 
 # Create test users with Faker
 Rails.logger.info "Creating test users with Faker..."
@@ -85,7 +84,7 @@ User.all.each do |user|
     xp_thresholds = [ 0, 300, 900, 2700, 6500, 14000, 23000, 34000, 48000, 64000, 85000 ]
     experience_points = xp_thresholds[level - 1] + rand(0..(xp_thresholds[level] - xp_thresholds[level - 1]))
 
-    user.characters.create!(
+    character = user.characters.create!(
       name: Faker::Games::ElderScrolls.name,
       level: level,
       experience_points: experience_points,
@@ -97,6 +96,8 @@ User.all.each do |user|
       subrace_id: subrace,
       languages: RACES[race][:languages]
     )
+
+    assign_random_skills(character)
   end
 end
 
@@ -107,6 +108,7 @@ admin = User.create!(
   password: "dnd4life"
 )
 
+Rails.logger.info "Create test characters for admin account"
 8.times do
   # Handle random class associated subclass assignment
   character_class = CHARACTER_CLASSES.keys.sample
@@ -121,7 +123,7 @@ admin = User.create!(
   xp_thresholds = [ 0, 300, 900, 2700, 6500, 14000, 23000, 34000, 48000, 64000, 85000 ]
   experience_points = xp_thresholds[level - 1] + rand(0..(xp_thresholds[level] - xp_thresholds[level - 1]))
 
-  admin.characters.create!(
+  character = admin.characters.create!(
     name: Faker::Games::ElderScrolls.name,
     level: level,
     experience_points: experience_points,
@@ -133,4 +135,6 @@ admin = User.create!(
     subrace_id: subrace,
     languages: RACES[race][:languages]
   )
+
+  assign_random_skills(character)
 end

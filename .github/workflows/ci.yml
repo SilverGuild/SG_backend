@@ -53,20 +53,9 @@ jobs:
           --health-timeout 5s
           --health-retries 5
 
-      redis:
-        image: redis:7-alpine
-        ports:
-          - 6379:6379
-        options: >-
-          --health-cmd "redis-cli ping"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-
     env:
       RAILS_ENV: test
       DATABASE_URL: postgres://postgres:postgres@localhost:5432/rails_test
-      REDIS_URL: redis://localhost:6379/0
       CI: true
 
     steps:
@@ -90,8 +79,10 @@ jobs:
       - name: Verify database connection
         run: psql "$DATABASE_URL" -c "SELECT version();"
 
-      - name: Load test schema
-        run: bin/rails db:schema:load
+      - name: Prepare test database
+        run: |
+          bin/rails db:create
+          bin/rails db:schema:load
 
       - name: Run tests
         run: |

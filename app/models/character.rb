@@ -3,6 +3,8 @@ class Character < ApplicationRecord
   belongs_to :user
   validates :user_id, presence: true
 
+  has_many :skills, class_name: "CharacterSkill", dependent: :destroy
+
   # Presence validations
   validates :name, presence: true
   validates :level, presence: true

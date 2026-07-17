@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe Character, type: :model do
-  describe "happy paths" do
+  context "happy paths" do
     let(:password) { "password123" }
 
     before(:each) do
@@ -23,6 +23,7 @@ RSpec.describe Character, type: :model do
 
     describe "relationships" do
       it { should belong_to(:user) }
+      it { should have_many(:skills).class_name("CharacterSkill").dependent(:destroy) }
     end
 
     describe "validations" do
@@ -133,6 +134,18 @@ RSpec.describe Character, type: :model do
             expect(test_language.script).to eq("Dwarvish")
           end
         end
+      end
+    end
+
+    describe "cascading deletes" do
+      it "destroys associated skills when the character is destroyed" do
+        skill = @character.skills.create!(skill_id: "stealth", proficient: true)
+
+        expect(CharacterSkill.exists?(skill.id)).to be true
+
+        @character.destroy
+
+        expect(CharacterSkill.exists?(skill.id)).to be false
       end
     end
   end
