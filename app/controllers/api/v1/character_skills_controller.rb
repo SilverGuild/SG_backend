@@ -30,12 +30,6 @@ class Api::V1::CharacterSkillsController < ApplicationController
     end
   end
 
-  def skill_exists?
-    character = Character.find(@skill.character_id)
-
-    character.character_skills.inlcude?(params[:skill_id])
-  end
-
   def render_param_errors
     error = @skill.errors.first
     attribute = error.attribute.to_s.humanize
