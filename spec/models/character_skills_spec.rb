@@ -60,7 +60,7 @@ RSpec.describe CharacterSkill, type: :model do
       test_skill.skill_id = "arcana"
 
       expect(test_skill).not_to be_valid
-      expect(test_skill.errors[:skill_id]).to inlcude("can't be hcanged after creation")
+      expect(test_skill.errors[:skill_id]).to include("can't be changed after creation")
     end
 
     it "is valid when skill_id is left untouched" do

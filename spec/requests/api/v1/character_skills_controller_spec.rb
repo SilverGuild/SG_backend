@@ -25,13 +25,13 @@ RSpec.describe "API::V1::CharacterSkills", type: :request do
       @target_id = @skill2.id
     end
     describe "PATCH /api/v1/characterskills/:id" do
-      let(:valid_params) { { proficient: true, expertise: true }}
+      let(:valid_params) { { proficient: true, expertise: true } }
 
       context "happy paths" do
         it "should update a skill entry in the db and return successful status" do
           skill = CharacterSkill.find(@target_id)
 
-          patch "/api/v1/character_skills/#{@target_id}", params: { character_skill: valid_params}, as: :json
+          patch "/api/v1/character_skills/#{@target_id}", params: { character_skill: valid_params }, as: :json
 
           expect(response).to be_successful
 
@@ -53,7 +53,7 @@ RSpec.describe "API::V1::CharacterSkills", type: :request do
 
       context "sad paths" do
         it "returns a 400 status when skill ID is invalid format" do
-            patch "/api/v1/character_skills/invalid", params: { character_skill: valid_params}, as: :json
+            patch "/api/v1/character_skills/invalid", params: { character_skill: valid_params }, as: :json
 
             expect(response).to have_http_status(:bad_request)
             expect(JSON.parse(response.body)).to include("error" => "Invalid skill ID")

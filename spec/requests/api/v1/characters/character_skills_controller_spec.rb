@@ -63,7 +63,7 @@ RSpec.describe "API::V1::Characters::Skills", type: :request do
           json = JSON.parse(response.body, symbolize_names: true)
 
           expect(json[:data].count).to eq(2)
-          expect(json[:data].map { |s| s[:attributes][:skill_id]}).not_to include("athletics")
+          expect(json[:data].map { |s| s[:attributes][:skill_id] }).not_to include("athletics")
         end
       end
 
@@ -101,8 +101,8 @@ RSpec.describe "API::V1::Characters::Skills", type: :request do
         it "should create a new skill for a specific character and return 201 Created Status" do
           test_params = { skill_id: "history", proficient: true, expertise: false }
 
-          post "/api/v1/characters/#{@character1.id}/skills", params: {character_skill: test_params }, as: :json
-         
+          post "/api/v1/characters/#{@character1.id}/skills", params: { character_skill: test_params }, as: :json
+
           expect(response).to have_http_status(:created)
 
           json = JSON.parse(response.body, symbolize_names: true)
@@ -123,7 +123,7 @@ RSpec.describe "API::V1::Characters::Skills", type: :request do
         end
 
         it "allows the same skill_id to exist on a different character" do
-          post "/api/v1/characters/#{@character2.id}/skills", params: { character_skill: { skill_id: "stealth", proficient: true }}, as: :json
+          post "/api/v1/characters/#{@character2.id}/skills", params: { character_skill: { skill_id: "stealth", proficient: true } }, as: :json
 
           expect(response).to have_http_status(:created)
         end
@@ -141,10 +141,10 @@ RSpec.describe "API::V1::Characters::Skills", type: :request do
           it "returns 400 status when #{param} is #{invalid_value.inspect}" do
             test_params = { skill_id: "history", proficient: true, expertise: false }.merge(param => invalid_value)
 
-            post "/api/v1/characters/#{@character1.id}/skills", params: { character_skill: test_params}, as: :json
+            post "/api/v1/characters/#{@character1.id}/skills", params: { character_skill: test_params }, as: :json
 
             expect(response).to have_http_status(:bad_request)
-            expect(JSON.parse(response.body)).to include("error" => error_message )
+            expect(JSON.parse(response.body)).to include("error" => error_message)
           end
         end
 
@@ -160,26 +160,25 @@ RSpec.describe "API::V1::Characters::Skills", type: :request do
         end
 
         it "returns a 400 status when expertise is true without proficiency" do
-          post "/api/v1/characters/#{@character1.id}/skills", params: { character_skill: { skill_id: "history", proficient: false, expertise: true }}, as: :json
+          post "/api/v1/characters/#{@character1.id}/skills", params: { character_skill: { skill_id: "history", proficient: false, expertise: true } }, as: :json
 
           expect(response).to have_http_status(:bad_request)
           expect(JSON.parse(response.body)).to include("error" => "Expertise can't be true without proficiency in the skill first")
         end
 
         xit "returns a 401 status when user is not authenticated" do
-          
         end
 
         it "returns a 404 status when target character is not found" do
           post "/api/v1/characters/999999999/skills", as: :json
-          
+
           expect(response).to have_http_status(:not_found)
           expect(JSON.parse(response.body)).to include("error" => "Character not found")
         end
 
         it "returns a 422 status when a skill already exists on this character" do
-          post "/api/v1/characters/#{@character1.id}/skills", params: { character_skill: { skill_id: "stealth", proficient: true}}, as: :json
-          
+          post "/api/v1/characters/#{@character1.id}/skills", params: { character_skill: { skill_id: "stealth", proficient: true } }, as: :json
+
           expect(response).to have_http_status(:unprocessable_content)
           expect(JSON.parse(response.body)).to include("error" => "Skill already exists for this character")
         end

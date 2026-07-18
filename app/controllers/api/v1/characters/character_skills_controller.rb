@@ -1,7 +1,7 @@
 class Api::V1::Characters::CharacterSkillsController < ApplicationController
   before_action :validate_id_format, only: [ :index, :create ]
   before_action :set_character, only: [ :index, :create ], if: -> { params[:character_id].present? }
-  
+
   def index
     skills = @character.skills
 
@@ -16,7 +16,7 @@ class Api::V1::Characters::CharacterSkillsController < ApplicationController
     @skill = @character.skills.build(skill_params)
 
     if @skill.save
-      render json: { message: "Skill created successfully", data: @skill}, status: :created
+      render json: { message: "Skill created successfully", data: @skill }, status: :created
     else
       render_param_errors
     end

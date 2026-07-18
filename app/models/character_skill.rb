@@ -10,7 +10,7 @@ class CharacterSkill < ApplicationRecord
   validate :expertise_requires_proficiency
 
   private
-  
+
     def skill_id_immutable
       errors.add(:skill_id, "can't be changed after creation") if skill_id_changed?
     end

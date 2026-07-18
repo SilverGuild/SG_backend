@@ -26,7 +26,7 @@ class Api::V1::CharacterSkillsController < ApplicationController
 
   def validate_id_format
     unless params[:id].to_s.match?(/^\d+$/) && params[:id].to_i > 0
-      render json: { error: "Invalid skill ID"}, status: :bad_request
+      render json: { error: "Invalid skill ID" }, status: :bad_request
     end
   end
 
