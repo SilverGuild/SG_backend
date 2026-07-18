@@ -14,7 +14,11 @@ Rails.application.routes.draw do
         resources :characters, only: [ :index, :create ], controller: "users/characters"
       end
 
-      resources :characters, only: [ :index, :show, :update, :destroy ]
+      resources :characters, only: [ :index, :show, :update, :destroy ] do
+        resources :character_skills, only: [ :show, :create ], controller: "characters/character_skills"
+      end
+
+      resources :character_skills, only: [ :update, :destroy ]
 
       # Auth
       post "signup", to: "users#create"
