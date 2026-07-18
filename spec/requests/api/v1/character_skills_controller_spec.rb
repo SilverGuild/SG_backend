@@ -21,7 +21,7 @@ RSpec.describe "API::V1::CharacterSkills", type: :request do
 
       @skill1 = CharacterSkill.create!(character: @character, skill_id: "stealth", proficient: true, expertise: false)
       @skill2 = CharacterSkill.create!(character: @character, skill_id: "arcane", proficient: false, expertise: false)
-      
+
       @target_id = @skill2.id
     end
     describe "PATCH /api/v1/characterskills/:id" do
@@ -31,7 +31,7 @@ RSpec.describe "API::V1::CharacterSkills", type: :request do
         it "should update a skill entry in the db and return successful status" do
           skill = CharacterSkill.find(@target_id)
 
-          patch "/api/v1/character_skills/#{target_id}", params: { character_skill: valid_params}, as: :json
+          patch "/api/v1/character_skills/#{@target_id}", params: { character_skill: valid_params}, as: :json
 
           expect(response).to be_successful
 
@@ -56,14 +56,14 @@ RSpec.describe "API::V1::CharacterSkills", type: :request do
             patch "/api/v1/character_skills/invalid", params: { character_skill: valid_params}, as: :json
 
             expect(response).to have_http_status(:bad_request)
-            expect(JSON.parse(repsonse.body)).to include("error" => "Invalid skill ID")
+            expect(JSON.parse(response.body)).to include("error" => "Invalid skill ID")
         end
 
         shared_examples "returns 400 for invalid parameter" do |param, invalid_value, error_message|
           it "returns 400 when #{param} is #{invalid_value.inspect}" do
             updated_params = { param => invalid_value }
 
-            path "/api/v1/character_skills/#{target_id}", params: { character_skill: updated_params }, as: :json
+            patch "/api/v1/character_skills/#{@target_id}", params: { character_skill: updated_params }, as: :json
 
             expect(response).to have_http_status(:bad_request)
             expect(JSON.parse(response.body)).to include("error" => error_message)
@@ -81,10 +81,10 @@ RSpec.describe "API::V1::CharacterSkills", type: :request do
         end
 
         it "returns a 400 status when expertise is set true without proficiency" do
-          patch "/api/v1/character_skills/#{target_id}", params: { character_skill: { proficient: false, expertise: true } }, as: :json
+          patch "/api/v1/character_skills/#{@target_id}", params: { character_skill: { proficient: false, expertise: true } }, as: :json
 
           expect(response).to have_http_status(:bad_request)
-          expect(JSON.parase(resposne.body)).to include("error" => "Expertise can't be true without proficiency in the skill.")
+          expect(JSON.parse(response.body)).to include("error" => "Expertise can't be true without proficiency in the skill first")
         end
 
         xit "returns a 401 status when user is not authenticated" do
@@ -94,17 +94,17 @@ RSpec.describe "API::V1::CharacterSkills", type: :request do
         end
 
         it "returns a 404 status when target skill is not found" do
-          path "/api/v1/character_skills/99999999999", params: { character_skills: { proficient: true } }, as: :json
+          patch "/api/v1/character_skills/99999999999", params: { character_skills: { proficient: true } }, as: :json
 
           expect(response).to have_http_status(:not_found)
           expect(JSON.parse(response.body)).to include("error" => "Skill not found")
         end
 
-        it "returns a 422 status when updating to a skill_id that already exists on this character" do
-          patch "/api/v1/character_skills/#{target_id}", params: {character_skills: { skill_id: "stealth" }}, as: :json
+        it "returns a 400 status when attempting to change the skill_id" do
+          patch "/api/v1/character_skills/#{@target_id}", params: { character_skill: { skill_id: "hisotry" } }, as: :json
 
-          expect(repsonse).to have_http_status(:unprocessable_content)
-          expect(JSON.parse(response.body)).to include("error" => "Skil already exists on this character")
+          expect(response).to have_http_status(:bad_request)
+          expect(JSON.parse(response.body)).to include("error" => "Skill can't be changed after creation")
         end
       end
     end
@@ -113,7 +113,7 @@ RSpec.describe "API::V1::CharacterSkills", type: :request do
       context "happy paths" do
         it "should destroy a skill by id and return an empty response body" do
           expect {
-            delete "/api/v1/character_skills/#{target_id}"
+            delete "/api/v1/character_skills/#{@target_id}"
         }.to change(CharacterSkill, :count).by(-1)
 
         expect(response).to be_successful
