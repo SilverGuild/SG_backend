@@ -53,4 +53,34 @@ RSpec.describe CharacterSkill, type: :model do
       expect(skill).to be_valid
     end
   end
+
+  describe "skill_id immutablility" do
+    let(:test_skill) { CharacterSkill.create!(character: character, skill_id: "stealth", proficient: true, expertise: false) }
+    it "is invalid when skill_id changes to a different value" do
+      test_skill.skill_id = "arcana"
+
+      expect(test_skill).not_to be_valid
+      expect(test_skill.errors[:skill_id]).to include("can't be changed after creation")
+    end
+
+    it "is valid when skill_id is left untouched" do
+      expect(test_skill).to be_valid
+    end
+
+    it "reports both the immutability error and the format error when changed to an invalid value" do
+      test_skill.skill_id = "Sleight of Hand"
+
+      expect(test_skill).not_to be_valid
+      expect(test_skill.errors[:skill_id]).to include("can't be changed after creation")
+      expect(test_skill.errors[:skill_id]).to include("is invalid")
+    end
+
+    it "reports both the immutability error and the presence error when cleared on update" do
+      test_skill.skill_id = ""
+
+      expect(test_skill).not_to be_valid
+      expect(test_skill.errors[:skill_id]).to include("can't be changed after creation")
+      expect(test_skill.errors[:skill_id]).to include("can't be blank")
+    end
+  end
 end
