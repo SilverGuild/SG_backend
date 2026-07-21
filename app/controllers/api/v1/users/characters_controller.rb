@@ -20,7 +20,7 @@ class Api::V1::Users::CharactersController < ApplicationController
     @character = @user.characters.build(character_params)
 
     if @character.save
-      render json: { message: "Character created successfully!", data: @character }, status: :created
+      render json: CharacterSerializer.new(@character).serializable_hash, status: :created
     else
       render_param_errors
     end

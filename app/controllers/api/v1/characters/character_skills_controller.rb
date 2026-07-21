@@ -16,7 +16,7 @@ class Api::V1::Characters::CharacterSkillsController < ApplicationController
     @skill = @character.skills.build(skill_params)
 
     if @skill.save
-      render json: { message: "Skill created successfully", data: @skill }, status: :created
+      render json: CharacterSkillSerializer.new(@skill).serializable_hash, status: :created
     else
       render_param_errors
     end
