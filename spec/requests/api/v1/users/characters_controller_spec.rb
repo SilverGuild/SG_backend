@@ -135,19 +135,19 @@ RSpec.describe "API::V1::Users::Characters", type: :request do
           expect(response).to have_http_status(:created)
 
           json = JSON.parse(response.body, symbolize_names: true)
-          test_character = json[:data]
+          test_character = json[:data].first
 
-          expect(test_character[:name]).to eq(test_params[:name])
-          expect(test_character[:level]).to eq(test_params[:level])
-          expect(test_character[:experience_points]).to eq(test_params[:experience_points])
-          expect(test_character[:alignment]).to eq(test_params[:alignment])
-          expect(test_character[:background]).to eq(test_params[:background])
-          expect(test_character[:user_id]).to eq(@user1.id)
-          expect(test_character[:character_class_id]).to eq(test_params[:character_class_id])
-          expect(test_character[:race_id]).to eq(test_params[:race_id])
-          expect(test_character[:subclass_id]).to eq(test_params[:subclass_id])
-          expect(test_character[:subrace_id]).to eq(test_params[:subrace_id])
-          expect(test_character[:languages]).to eq(test_params[:languages])
+          expect(test_character[:attributes][:name]).to eq(test_params[:name])
+          expect(test_character[:attributes][:level]).to eq(test_params[:level])
+          expect(test_character[:attributes][:experience_points]).to eq(test_params[:experience_points])
+          expect(test_character[:attributes][:alignment]).to eq(test_params[:alignment])
+          expect(test_character[:attributes][:background]).to eq(test_params[:background])
+          expect(test_character[:attributes][:user_id]).to eq(@user1.id)
+          expect(test_character[:attributes][:character_class_id]).to eq(test_params[:character_class_id])
+          expect(test_character[:attributes][:race_id]).to eq(test_params[:race_id])
+          expect(test_character[:attributes][:subclass_id]).to eq(test_params[:subclass_id])
+          expect(test_character[:attributes][:subrace_id]).to eq(test_params[:subrace_id])
+          expect(test_character[:attributes][:languages]).to eq(test_params[:languages])
 
           # Show that test_character has been added to the existing lsit of characters
           user = User.find(@user1.id)
