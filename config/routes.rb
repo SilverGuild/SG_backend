@@ -15,7 +15,7 @@ Rails.application.routes.draw do
       end
 
       resources :characters, only: [ :index, :show, :update, :destroy ] do
-        resources :skills, only: [ :index, :show, :create ], controller: "characters/character_skills"
+        resources :skills, only: [ :index, :create ], controller: "characters/character_skills"
       end
 
       resources :character_skills, only: [ :update, :destroy ]

@@ -106,12 +106,12 @@ RSpec.describe "API::V1::Characters::Skills", type: :request do
           expect(response).to have_http_status(:created)
 
           json = JSON.parse(response.body, symbolize_names: true)
-          test_skill = json[:data]
+          test_skill = json[:data].first
 
-          expect(test_skill[:character_id]).to eq(@character1.id)
-          expect(test_skill[:skill_id]).to eq(test_params[:skill_id])
-          expect(test_skill[:proficient]).to eq(test_params[:proficient])
-          expect(test_skill[:expertise]).to eq(test_params[:expertise])
+          expect(test_skill[:attributes][:character_id]).to eq(@character1.id)
+          expect(test_skill[:attributes][:skill_id]).to eq(test_params[:skill_id])
+          expect(test_skill[:attributes][:proficient]).to eq(test_params[:proficient])
+          expect(test_skill[:attributes][:expertise]).to eq(test_params[:expertise])
 
           # Show that test skill has been added to the existing list of skills
           character = Character.find(@character1.id)
