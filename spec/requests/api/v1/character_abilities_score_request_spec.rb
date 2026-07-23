@@ -42,8 +42,8 @@ RSpec.describe "API::V1::CharacterAbilityScores", type: :request do
           expect(target[:id]).to eq(score[:id])
           expect(target[:attributes][:character_id]).to eq(score[:character_id])
           expect(target[:attributes][:ability_id]).to eq(score[:ability_id])
-          expect(target[:attributes][:score]).to eq(score[:score])
-          expect(target[:attributes][:saving_throw_proficient]).to eq(score[:saving_throw_proficient])
+          expect(target[:attributes][:score]).to eq(valid_params[:score])
+          expect(target[:attributes][:saving_throw_proficient]).to eq(valid_params[:saving_throw_proficient])
 
           score.reload
 
@@ -57,15 +57,14 @@ RSpec.describe "API::V1::CharacterAbilityScores", type: :request do
           patch "/api/v1/character_ability_scores/invalid", params: { character_ability_score: valid_params }, as: :json
 
           expect(response).to have_http_status(:bad_request)
-          expect(JSON.parse(response.body)).to include("error" => "Invalid ability score ID")
+          expect(JSON.parse(response.body)).to include("error" => "Invalid Ability Score ID")
         end
 
         shared_examples "returns 400 for invalid parameter" do |param, invalid_value, error_message|
           it "returns 400 when #{param} is #{invalid_value.inspect}" do
-            update_params = { param => invalid_value }
+            updated_params = { param => invalid_value }
 
-            patch "/api/v1/character_ability_scores/#{@target_id}", params: {character_ability_score: updated
-           }, as: :json
+            patch "/api/v1/character_ability_scores/#{@target_id}", params: {character_ability_score: updated_params }, as: :json
 
            expect(response).to have_http_status(:bad_request)
            expect(JSON.parse(response.body)).to include("error" => error_message)
@@ -103,11 +102,11 @@ RSpec.describe "API::V1::CharacterAbilityScores", type: :request do
           patch "/api/v1/character_ability_scores/9999999999", params: { character_ability_score: { score: 10 } }, as: :json
 
           expect(response).to have_http_status(:not_found)
-          expect(JSON.parse(response.body)).to include("error" => "Ability score not found")
+          expect(JSON.parse(response.body)).to include("error" => "Ability Score not found")
         end
 
         it "returns a 400 status when attempting to change the ability_id" do
-          patch "/api/v1/character_ability_scores/#{@target_id}", params: { character_ability_score: { ability_id: "con "} }, as: :json
+          patch "/api/v1/character_ability_scores/#{@target_id}", params: { character_ability_score: { ability_id: "con" } }, as: :json
 
           expect(response).to have_http_status(:bad_request)
           expect(JSON.parse(response.body)).to include("error" => "Ability can't be changed after creation")
@@ -133,7 +132,7 @@ RSpec.describe "API::V1::CharacterAbilityScores", type: :request do
           delete "/api/v1/character_ability_scores/invalid"
 
           expect(response).to have_http_status(:bad_request)
-          expect(JSON.parse(response.body)).to include("error" => "Invalid ability score ID")
+          expect(JSON.parse(response.body)).to include("error" => "Invalid Ability Score ID")
         end
 
         xit "returns a 401 status when user is not authenicated" do
@@ -146,7 +145,7 @@ RSpec.describe "API::V1::CharacterAbilityScores", type: :request do
           delete "/api/v1/character_ability_scores/999999999"
           
           expect(response).to have_http_status(:not_found)
-          expect(JSON.parse(response.body)).to include("error" => "Ability score not found")
+          expect(JSON.parse(response.body)).to include("error" => "Ability Score not found")
         end
       end
     end
