@@ -11,9 +11,9 @@ class CharacterSkill < ApplicationRecord
 
   private
 
-    def skill_id_immutable
-      errors.add(:skill_id, "can't be changed after creation") if skill_id_changed?
-    end
+  def skill_id_immutable
+    errors.add(:skill_id, "can't be changed after creation") if skill_id_changed?
+  end
 
   def expertise_requires_proficiency
     if expertise? && !proficient?

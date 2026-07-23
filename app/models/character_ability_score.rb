@@ -9,4 +9,12 @@ class CharacterAbilityScore < ApplicationRecord
   validates :score, numericality: { only_integer: true, greater_than_or_equal_to: 1, less_than_or_equal_to: 30 }
 
   validates :saving_throw_proficient, inclusion: { in: [ true, false ] }
+
+  validate :ability_id_immutable, on: :update
+
+  private
+
+  def ability_id_immutable
+    errors.add(:ability_id, "can't be changed after creation") if ability_id_changed?
+  end
 end
