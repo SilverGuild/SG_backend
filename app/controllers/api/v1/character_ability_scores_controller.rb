@@ -50,7 +50,7 @@ class Api::V1::CharacterAbilityScoresController < ApplicationController
   end
 
   def attribute_label(attribute)
-    { ability_id: "Ability Score" }[attribute] || attribute.to_s.humanize  
+    { ability_id: "Ability Score" }[attribute] || attribute.to_s.humanize
   end
 
   def ability_score_params

@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe "API::V1::CharacterAbilityScores", type: :request do
   describe "RESTful endpoints" do
-    let(:password) { "password123"}
+    let(:password) { "password123" }
 
     before(:each) do
       @user = User.create!(username: "user1", email: "user1@gmail.com", password: password)
@@ -53,7 +53,7 @@ RSpec.describe "API::V1::CharacterAbilityScores", type: :request do
       end
 
       context "sad paths" do
-        it "returns a 400 status when ability score ID is invalid format" do 
+        it "returns a 400 status when ability score ID is invalid format" do
           patch "/api/v1/character_ability_scores/invalid", params: { character_ability_score: valid_params }, as: :json
 
           expect(response).to have_http_status(:bad_request)
@@ -64,7 +64,7 @@ RSpec.describe "API::V1::CharacterAbilityScores", type: :request do
           it "returns 400 when #{param} is #{invalid_value.inspect}" do
             updated_params = { param => invalid_value }
 
-            patch "/api/v1/character_ability_scores/#{@target_id}", params: {character_ability_score: updated_params }, as: :json
+            patch "/api/v1/character_ability_scores/#{@target_id}", params: { character_ability_score: updated_params }, as: :json
 
            expect(response).to have_http_status(:bad_request)
            expect(JSON.parse(response.body)).to include("error" => error_message)
@@ -117,7 +117,7 @@ RSpec.describe "API::V1::CharacterAbilityScores", type: :request do
     describe "DELETE /api/v1/character_ability_scores/:id" do
       context "happy paths" do
         it "should destroy an ability score by id and return an empty response body" do
-          expect{
+          expect {
             delete "/api/v1/character_ability_scores/#{@target_id}"
           }.to change(CharacterAbilityScore, :count).by(-1)
 
@@ -143,7 +143,7 @@ RSpec.describe "API::V1::CharacterAbilityScores", type: :request do
 
         it "returns 404 status when target ability score is not found" do
           delete "/api/v1/character_ability_scores/999999999"
-          
+
           expect(response).to have_http_status(:not_found)
           expect(JSON.parse(response.body)).to include("error" => "Ability Score not found")
         end
