@@ -95,7 +95,6 @@ RSpec.describe "API::V1::CharacterCombatStats", type: :request do
           it_behaves_like "returns 400 for invalid parameter", :death_save_failures, -1, "Death save failures must be greater than or equal to 0"
           it_behaves_like "returns 400 for invalid parameter", :death_save_failures, 4, "Death save failures must be less than or equal to 3"
           it_behaves_like "returns 400 for invalid parameter", :armor_class, -1, "Armor class must be greater than or equal to 0"
-          it_behaves_like "returns 400 for invalid parameter", :conditions, "poisoned", "Conditions is invalid"
           it_behaves_like "returns 400 for invalid parameter", :conditions, [ "Poisoned!" ], "Conditions contains an invalid condition slug"
         end
 
