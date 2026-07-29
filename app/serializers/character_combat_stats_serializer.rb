@@ -10,5 +10,6 @@ class CharacterCombatStatsSerializer
               :death_save_successes,
               :death_save_failures,
               :conditions,
+              :armor_class,
               :stable
 end
