@@ -4,7 +4,7 @@ class Api::V1::Characters::CharacterCombatStatsController < ApplicationControlle
 
   def show
     stats = @character.combat_stats
-    
+
     if stats.present?
       render json: CharacterCombatStatsSerializer.new(stats).serializable_hash
     else
@@ -14,7 +14,7 @@ class Api::V1::Characters::CharacterCombatStatsController < ApplicationControlle
 
   def create
     if @character.combat_stats.present?
-      render json: { "error" => "Combat Stat already exists for this character"}, status: :unprocessable_content
+      render json: { "error" => "Combat Stat already exists for this character" }, status: :unprocessable_content
       return
     end
 

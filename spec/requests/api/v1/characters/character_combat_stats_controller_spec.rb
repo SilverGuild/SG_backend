@@ -1,11 +1,11 @@
 require "rails_helper"
 
 RSpec.describe "API::V1::CharacterCombatStats", type: :request do
-  let(:password) {"password123"}
-  
+  let(:password) { "password123" }
+
   before(:each) do
      @user = User.create!(username: "user1", email: "user1@gmail.com", password: password)
- 
+
     @character1 = Character.create!(name: "Kaelynn Thornwick",
                                     level: 5,
                                     experience_points: 6500,
@@ -103,7 +103,7 @@ RSpec.describe "API::V1::CharacterCombatStats", type: :request do
         expect(character.combat_stats.id).to eq(test_stats[:id])
       end
     end
-  
+
     context "sad paths" do
       it "returns 400 status when character ID is invalid format" do
         post "/api/v1/characters/invalid/combat_stats", as: :json

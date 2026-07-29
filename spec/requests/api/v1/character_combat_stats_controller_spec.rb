@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe "API::V1::CharacterCombatStats", type: :request do
   describe "RESTful enpoints" do
-    let(:password) {"password123"}
+    let(:password) { "password123" }
 
     before(:each) do
       @user = User.create!(username: "user1", email: "user1@gmail.com", password: password)
@@ -34,8 +34,8 @@ RSpec.describe "API::V1::CharacterCombatStats", type: :request do
         it "should update a combat stats entry in the db and return successful status" do
           stats = CharacterCombatStats.find(@target_id)
 
-          patch "/api/v1/character_combat_stats/#{@target_id}", params: {character_combat_stat: valid_params }, as: :json
-         
+          patch "/api/v1/character_combat_stats/#{@target_id}", params: { character_combat_stat: valid_params }, as: :json
+
           expect(response).to be_successful
 
           json = JSON.parse(response.body, symbolize_names: true)
@@ -48,7 +48,7 @@ RSpec.describe "API::V1::CharacterCombatStats", type: :request do
           expect(target[:attributes][:stable]).to eq(valid_params[:stable])
 
           stats.reload
-          
+
           expect(stats[:current_hp]).to eq(valid_params[:current_hp])
           expect(stats[:temporary_hp]).to eq(valid_params[:temporary_hp])
           expect(stats[:stable]).to eq(valid_params[:stable])
@@ -123,7 +123,7 @@ RSpec.describe "API::V1::CharacterCombatStats", type: :request do
                                               subclass_id: "devotion",
                                               subrace_id: "",
                                               languages: [ "common", "draconic" ])
- 
+
           patch "/api/v1/character_combat_stats/#{@target_id}", params: { character_combat_stat: { character_id: other_character.id } }, as: :json
 
           expect(response).to have_http_status(:bad_request)
