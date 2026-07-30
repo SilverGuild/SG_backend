@@ -26,6 +26,8 @@ class CharacterCombatStats < ApplicationRecord
   validate :hit_dice_remaining_within_level
   validate :validate_conditions_format
 
+  validate :character_id_immutable, on: :update
+
   private
 
   def current_hp_within_max
@@ -49,5 +51,9 @@ class CharacterCombatStats < ApplicationRecord
     unless conditions.all? { |c| c.is_a?(String) && c.match?(/\A[a-z-]+\z/) }
       errors.add(:conditions, "contains an invalid condition slug")
     end
+  end
+
+  def character_id_immutable
+    errors.add(:character_id, "can't be changed after creation") if character_id_changed?
   end
 end
