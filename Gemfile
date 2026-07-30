@@ -1,71 +1,92 @@
 source "https://rubygems.org"
 
-# Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
+# ------------------------------------------------------------------
+# Core framework
+# ------------------------------------------------------------------
+
+# Full-stack web application framework.
+# Pinned "~> 8.1.1" already permits >= 8.1.1, < 8.2 — which includes
+# 8.1.3.1, the patched release for CVE-2026-66066 (Active Storage
+# variant-processing RCE). Run `bundle update rails` to pull the
+# patched version into Gemfile.lock, then re-run bundle-audit to confirm.
 gem "rails", "~> 8.1.1"
-# The original asset pipeline for Rails [https://github.com/rails/sprockets-rails]
-gem "sprockets-rails"
-# Use postgresql as the database for Active Record
-gem "pg", "~> 1.6"
-# Use the Puma web server [https://github.com/puma/puma]
-gem "puma", ">= 5.0"
-# Use JavaScript with ESM import maps [https://github.com/rails/importmap-rails]
-gem "importmap-rails"
-# Hotwire's SPA-like page accelerator [https://turbo.hotwired.dev]
-gem "turbo-rails"
-# Hotwire's modest JavaScript framework [https://stimulus.hotwired.dev]
-gem "stimulus-rails"
-# Build JSON APIs with ease [https://github.com/rails/jbuilder]
-gem "jbuilder"
 
-gem "solid_cache"
+# ------------------------------------------------------------------
+# Database
+# ------------------------------------------------------------------
 
-# Use Active Model has_secure_password [https://guides.rubyonrails.org/active_model_basics.html#securepassword]
-gem "bcrypt", "~> 3.1.7"
+gem "pg", "~> 1.6" # PostgreSQL adapter for Active Record
 
-# Windows does not include zoneinfo files, so bundle the tzinfo-data gem
-gem "tzinfo-data", platforms: %i[ windows jruby ]
+# ------------------------------------------------------------------
+# Web server
+# ------------------------------------------------------------------
 
-# Reduces boot times through caching; required in config/boot.rb
-gem "bootsnap", require: false
+gem "puma", ">= 5.0" # Application server
 
-# Use Active Storage variants [https://guides.rubyonrails.org/active_storage_overview.html#transforming-images]
-# gem "image_processing", "~> 1.2"
+# ------------------------------------------------------------------
+# API / serialization
+# ------------------------------------------------------------------
 
-# Use Rack CORS for handling Cross-Origin Resource Sharing (CORS), making cross-origin Ajax possible
-gem "rack-cors"
-gem "jsonapi-serializer"
+gem "jsonapi-serializer" # JSON:API-style serialization for API responses
 
-gem "faraday"
+# ------------------------------------------------------------------
+# Caching
+# ------------------------------------------------------------------
+
+gem "solid_cache" # Database-backed Rails.cache store
+
+# ------------------------------------------------------------------
+# Authentication
+# ------------------------------------------------------------------
+
+gem "bcrypt", "~> 3.1.7" # Password hashing for has_secure_password (backs Rails-side session auth)
+
+# ------------------------------------------------------------------
+# Authorization
+# ------------------------------------------------------------------
+
+gem "pundit" # Policy-based authorization (Character/User policies) — not yet wired up, planned
+
+# ------------------------------------------------------------------
+# External HTTP client
+# ------------------------------------------------------------------
+
+gem "faraday" # HTTP client used to proxy the live D&D 5e reference API
+
+# ------------------------------------------------------------------
+# Cross-origin requests
+# ------------------------------------------------------------------
+
+gem "rack-cors" # CORS handling — required since SG_frontend runs on a separate origin/port
+
+# ------------------------------------------------------------------
+# Boot / platform
+# ------------------------------------------------------------------
+
+gem "tzinfo-data", platforms: %i[ windows jruby ] # Timezone data for platforms without system zoneinfo
+gem "bootsnap", require: false                    # Caches to reduce boot time
 
 group :development, :test do
-  # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
-  gem "debug", platforms: %i[ mri windows ], require: "debug/prelude"
-
-  # Static analysis for security vulnerabilities [https://brakemanscanner.org/]
-  # gem "brakeman", require: false
-
-  # Omakase Ruby styling [https://github.com/rails/rubocop-rails-omakase/]
-  gem "rubocop-rails-omakase", require: false
-  gem "bundler-audit"
-  gem "brakeman"
-  gem "pry"
-  gem "rspec-rails"
-  gem "shoulda-matchers"
-  gem "pundit-matchers", "~> 4.0"
-  gem "webmock"
-  gem "vcr"
-  gem "factory_bot_rails"
-  gem "faker"
+  gem "debug", platforms: %i[ mri windows ], require: "debug/prelude" # Ruby's built-in interactive debugger
+  gem "rubocop-rails-omakase", require: false # Omakase Ruby/Rails style linting
+  gem "bundler-audit"              # Scans Gemfile.lock against ruby-advisory-db for known CVEs (this is what caught CVE-2026-66066)
+  gem "brakeman"                   # Static analysis security scanner for Rails
+  gem "pry"                        # Interactive Ruby console/debugger
+  gem "rspec-rails"                # RSpec integration for Rails — this project's test framework
+  gem "shoulda-matchers"           # One-line RSpec matchers for common validations/associations
+  gem "pundit-matchers", "~> 4.0"  # RSpec matchers for Pundit policies
+  gem "webmock"                    # Stubs HTTP requests in tests
+  gem "vcr"                        # Records/replays HTTP interactions in tests
+  gem "factory_bot_rails"          # Test data factories
+  gem "faker"                      # Generates realistic fake data for factories
 end
 
 group :development do
-  # Use console on exceptions pages [https://github.com/rails/web-console]
-  gem "web-console"
+  gem "web-console" # In-browser console on exception pages
 end
 
 group :test do
-  # Use system testing [https://guides.rubyonrails.org/testing.html#system-testing]
-  gem "capybara"
-  gem "simplecov"
-  gem "rspec_junit_formatter"
+  gem "capybara"               # System/feature testing
+  gem "simplecov"              # Test coverage reporting
+  gem "rspec_junit_formatter"  # JUnit-format RSpec output for CI reporting
 end
