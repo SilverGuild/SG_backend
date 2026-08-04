@@ -33,6 +33,8 @@ class CharacterBuilder
       raise ActiveRecord::Rollback unless success
     end
 
+    merge_nested_errors(character) unless success
+
     Result.new(success?: success, character: character)
   end
 
@@ -41,5 +43,31 @@ class CharacterBuilder
   def dupliacte_ids?(params_array, key)
     ids = params_array.map { |p| p[key] }.compact
     ids.size != ids.uniq.size
+  end
+
+  # has_one/has_many with validate: true (and no autosave) only add a
+  # generic "<association> is invalid" error on the parent — it doesn't
+  # import the child record's actual attribute-level messages. This
+  # replaces that generic error with the real ones, so
+  # render_param_errors has something specific to surface.
+  def merge_nested_errors(character)
+    merge_association_errors(character, character.ability_scores, :ability_scores, indexed: true)
+    merge_association_errors(character, character.skills, :skills, indexed: true)
+    merge_association_errors(character, Array(character.combat_stats), :combat_stats, indexed: false)
+  end
+
+  def merge_association_errors(character, records, association_name, indexed:)
+    return if records.empty?
+
+    character.errors.delete(association_name)
+
+    records.each_with_index do |record, index|
+      next if record.valid?
+
+      record.errors.each do |error|
+        key = indexed ? :"#{association_name}[#{index}].#{error.attribute}" : :"#{association_name}.#{error.attribute}"
+        character.errors.add(key, error.message)
+      end
+    end
   end
 end

@@ -67,7 +67,7 @@ class Api::V1::Users::CharactersController < ApplicationController
           @character.errors.where(:race_id, :blank).first ||
           @character.errors.where(:character_class_id, :blank).first ||
           @character.errors.first
-    attribute = error.attribute.to_s.humanize
+    attribute = friendly_attribute_label(error.attribute)
     type = error.type
 
     case type
@@ -78,7 +78,7 @@ class Api::V1::Users::CharactersController < ApplicationController
       message = "#{attribute} can't be blank"
       status = :bad_request
     else
-      message = error.full_message
+      message = "#{attribute} #{error.message}"
       status = :bad_request
     end
 
