@@ -37,7 +37,7 @@ class CharacterCombatStats < ApplicationRecord
   end
 
   def hit_dice_remaining_within_level
-   return if hit_dice_remaining.nil? || character.nil?
+   return if hit_dice_remaining.nil? || character.nil? || character.level.nil?
 
    errors.add(:hit_dice_remaining, "can't exceed character level") if hit_dice_remaining > character.level
   end
