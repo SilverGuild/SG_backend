@@ -9,7 +9,6 @@ class SubracePoro
               :url
 
   def initialize(subrace_data)
-    # require "pry"; binding.pry
     @id               = subrace_data[:index]
     @name             = subrace_data[:name]
     @race_id          = subrace_data.dig(:race, :index)

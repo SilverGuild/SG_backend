@@ -104,7 +104,7 @@ RSpec.describe "API::V1::CharacterCombatStats", type: :request do
         xit "returns a 401 when user (non-owner) does not have a dungeon master access" do
         end
 
-        it "returns a 4040 status when target combat stats is not found" do
+        it "returns a 404 status when target combat stats is not found" do
           patch "/api/v1/character_combat_stats/9999999999", params: { character_combat_stat: { current_hp: 10 } }, as: :json
 
           expect(response).to have_http_status(:not_found)

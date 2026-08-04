@@ -61,7 +61,7 @@ RSpec.describe "API::V1::Users::Characters", type: :request do
           expect(first_character[:attributes][:name]).to eq(@character1[:name])
           expect(first_character[:attributes][:level]).to eq(@character1[:level])
           expect(first_character[:attributes][:experience_points]).to eq(@character1[:experience_points])
-          expect(first_character[:attributes][:aligment]).to eq(@character1[:aligment])
+          expect(first_character[:attributes][:alignment]).to eq(@character1[:alignment])
           expect(first_character[:attributes][:background]).to eq(@character1[:background])
           expect(first_character[:attributes][:user_id]).to eq(@character1[:user_id])
           expect(first_character[:attributes][:character_class_id]).to eq(@character1[:character_class_id])
@@ -74,7 +74,7 @@ RSpec.describe "API::V1::Users::Characters", type: :request do
           expect(last_character[:attributes][:name]).to eq(@character3[:name])
           expect(last_character[:attributes][:level]).to eq(@character3[:level])
           expect(last_character[:attributes][:experience_points]).to eq(@character3[:experience_points])
-          expect(last_character[:attributes][:aligment]).to eq(@character3[:aligment])
+          expect(last_character[:attributes][:alignment]).to eq(@character3[:alignment])
           expect(last_character[:attributes][:background]).to eq(@character3[:background])
           expect(last_character[:attributes][:user_id]).to eq(@character3[:user_id])
           expect(last_character[:attributes][:character_class_id]).to eq(@character3[:character_class_id])
@@ -114,7 +114,7 @@ RSpec.describe "API::V1::Users::Characters", type: :request do
 
     describe "POST /api/v1/users/:id/characters" do
       context "happy paths" do
-        it "should create a new charater for a specific user and return 201 Created status" do
+        it "should create a new character for a specific user and return 201 Created status" do
           test_params = {
             name: "Theren Nightwhisper",
             level: 3,
@@ -140,7 +140,7 @@ RSpec.describe "API::V1::Users::Characters", type: :request do
           expect(test_character[:attributes][:name]).to eq(test_params[:name])
           expect(test_character[:attributes][:level]).to eq(test_params[:level])
           expect(test_character[:attributes][:experience_points]).to eq(test_params[:experience_points])
-          expect(test_character[:attributes][:aligment]).to eq(test_params[:aligment])
+          expect(test_character[:attributes][:alignment]).to eq(test_params[:alignment])
           expect(test_character[:attributes][:background]).to eq(test_params[:background])
           expect(test_character[:attributes][:user_id]).to eq(@user1.id)
           expect(test_character[:attributes][:character_class_id]).to eq(test_params[:character_class_id])
@@ -334,10 +334,32 @@ RSpec.describe "API::V1::Users::Characters", type: :request do
           expect(Character.exists?(name: test_params[:name])).to be false
         end
 
+        it "rolls back the whole character when combat_stats fails validation, with a readable nested error message" do
+          test_params = {
+            name: "Rollback Combat Stats Test Character #{SecureRandom.hex(4)}",
+            level: 1, experience_points: 0, alignment: "Neutral Good", background: "Folk Hero",
+            character_class_id: "wizard", race_id: "human", languages: [ "common" ]
+          }
+
+          combat_stats_params = {
+            current_hp: -5, max_hp: 8, temporary_hp: 0, hit_dice_remaining: 1,
+            death_save_successes: 0, death_save_failures: 0, stable: true,
+            armor_class: 12, conditions: []
+          }
+
+          post "/api/v1/users/#{@user1.id}/characters",
+            params: { character: test_params, combat_stats: combat_stats_params },
+            as: :json
+
+            expect(response).to have_http_status(:bad_request)
+            expect(Character.exists?(name: test_params[:name])).to be false
+            expect(JSON.parse(response.body)).to include("error" => "Current hp must be greater than or equal to 0")
+        end
+
         xit "returns 401 status when user is not authenticated" do
         end
 
-        it "returns a 4040 status when target user is not found" do
+        it "returns a 404 status when target user is not found" do
           post "/api/v1/users/99999999/characters", as: :json
 
           expect(response).to have_http_status(:not_found)
