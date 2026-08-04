@@ -42,7 +42,6 @@ class Api::V1::Characters::CharacterCombatStatsController < ApplicationControlle
   end
 
   def render_param_errors(record)
-    # require "pry"; binding.pry
     render json: { error: record.errors.full_messages.first }, status: :bad_request
   end
 

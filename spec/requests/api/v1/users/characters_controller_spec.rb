@@ -93,21 +93,18 @@ RSpec.describe "API::V1::Users::Characters", type: :request do
           expect(JSON.parse(response.body)).to include("error" => "Invalid user ID")
         end
 
-
-        # Will be added late P1 with authentication and autherization overhaul **********
-        # it "returns a 401 status when user is not authenticated" do
-
-        # end
+        xit "returns a 401 status when user is not authenticated" do
+        end
 
         it "returns a 404 status when target user is not found" do
-          get "/api/v1/users/9999999/characters", as: :json
+          get "/api/v1/users/9999999999/characters", as: :json
 
           expect(response).to have_http_status(:not_found)
           expect(JSON.parse(response.body)).to include("error" => "User not found")
         end
 
         it "returns a 404 status when target user has no characters" do
-          get "/api/v1/users/#{@user2.id}/characters", as: :json
+          get "/api/v1/users/#{@user2.id}/characters"
 
           expect(response).to have_http_status(:not_found)
           expect(JSON.parse(response.body)).to include("error" => "No characters were found for this user")
@@ -132,10 +129,13 @@ RSpec.describe "API::V1::Users::Characters", type: :request do
           }
 
           post "/api/v1/users/#{@user1.id}/characters", params: { character: test_params }, as: :json
+
           expect(response).to have_http_status(:created)
 
           json = JSON.parse(response.body, symbolize_names: true)
           test_character = json[:data].first
+
+          expect(Character.exists?(id: test_character[:id])).to be true
 
           expect(test_character[:attributes][:name]).to eq(test_params[:name])
           expect(test_character[:attributes][:level]).to eq(test_params[:level])
@@ -149,7 +149,12 @@ RSpec.describe "API::V1::Users::Characters", type: :request do
           expect(test_character[:attributes][:subrace_id]).to eq(test_params[:subrace_id])
           expect(test_character[:attributes][:languages]).to eq(test_params[:languages])
 
-          # Show that test_character has been added to the existing lsit of characters
+          # Aggregate response shape - empty associations when none are sent
+          expect(test_character[:attributes][:ability_scores]).to eq([])
+          expect(test_character[:attributes][:skills]).to eq([])
+          expect(test_character[:attributes][:combat_stats]).to be_nil
+
+          # Show test_character had been added to the existing list of characters
           user = User.find(@user1.id)
           characters = user.characters
           expect(characters.count).to eq(4)
@@ -157,11 +162,59 @@ RSpec.describe "API::V1::Users::Characters", type: :request do
           last_character = characters.last
           expect(last_character[:id]).to eq(test_character[:id])
         end
+
+        it "creates a character with ability_scores, skills, and combat_stats in one request" do
+          test_params = {
+            name: "Aggregate Test Character #{SecureRandom.hex(4)}",
+            level: 1,
+            experience_points: 0,
+            alignment: "Neutral Good",
+            background: "Hermit",
+            character_class_id: "wizard",
+            race_id: "human",
+            languages: [ "common" ]
+          }
+
+          ability_scores_params = [
+            { ability_id: "str", score: 10, saving_throw_proficient: false },
+            { ability_id: "dex", score: 14, saving_throw_proficient: true },
+            { ability_id: "con", score: 12, saving_throw_proficient: false },
+            { ability_id: "int", score: 16, saving_throw_proficient: true },
+            { ability_id: "wis", score: 11, saving_throw_proficient: false },
+            { ability_id: "cha", score: 8, saving_throw_proficient: false }
+          ]
+
+          skills_params = [ { skill_id: "arcana", proficient: true, expertise: false } ]
+
+          combat_stats_params = {
+            current_hp: 8, max_hp: 8, temporary_hp: 0, hit_dice_remaining: 1,
+            death_save_successes: 0, death_save_failures: 0, stable: true,
+            armor_class: 12, conditions: []
+          }
+
+          post "/api/v1/users/#{@user1.id}/characters",
+            params: {
+              character: test_params,
+              ability_scores: ability_scores_params,
+              skills: skills_params,
+              combat_stats: combat_stats_params
+            },
+            as: :json
+
+          expect(response).to have_http_status(:created)
+
+          json = JSON.parse(response.body, symbolize_names: true)
+          test_character = json[:data].first
+
+          expect(test_character[:attributes][:ability_scores].count).to eq(6)
+          expect(test_character[:attributes][:skills].count).to eq(1)
+          expect(test_character[:attributes][:combat_stats][:current_hp]).to eq(8)
+        end
       end
 
       context "sad paths" do
         it "returns a 400 status when user ID is invalid format" do
-          post "/api/v1/users/invalid/characters", as: :json
+          post "/api/v1/users/invalid/characters",  as: :json
 
           expect(response).to have_http_status(:bad_request)
           expect(JSON.parse(response.body)).to include("error" => "Invalid user ID")
@@ -223,13 +276,91 @@ RSpec.describe "API::V1::Users::Characters", type: :request do
           it_behaves_like "returns 400 for invalid parameter", :subrace_id, 1617, "Subrace is invalid"
         end
 
-        # Will be added late P1 with authentication and autherization overhaul **********
-        # it "returns a 401 status when user is not authenticated" do
+        context "duplicate association ids" do
+          it "returns a 400 and does not create a character when ability_scores has a duplicate ability_id" do
+            test_params = {
+              name: "Unique Test Character #{SecureRandom.hex(4)}",
+              level: 1, experience_points: 0, alignment: "Neutral Good", background: "Folk Hero",
+              character_class_id: "wizard", race_id: "human", languages: [ "common" ]
+            }
 
-        # end
+            ability_scores_params = [
+              { ability_id: "str", score: 10, saving_throw_proficient: false },
+              { ability_id: "str", score: 12, saving_throw_proficient: true }
+            ]
+
+            post "/api/v1/users/#{@user1.id}/characters",
+              params: { character: test_params, ability_scores: ability_scores_params },
+              as: :json
+
+            expect(response).to have_http_status(:bad_request)
+            expect(Character.exists?(name: test_params[:name])).to be false
+          end
+          it "returns a 400 and does not create a character when skills has a duplicate skill_id" do
+            test_params = {
+              name: "Unique Test Character #{SecureRandom.hex(4)}",
+              level: 1, experience_points: 0, alignment: "Neutral Good", background: "Folk Hero",
+              character_class_id: "wizard", race_id: "human", languages: [ "common" ]
+            }
+
+            skills_params = [
+              { skill_id: "arcana", proficient: true, expertise: false },
+              { skill_id: "arcana", proficient: false, expertise: false }
+            ]
+
+            post "/api/v1/users/#{@user1.id}/characters",
+              params: { character: test_params, skills: skills_params },
+              as: :json
+
+            expect(response).to have_http_status(:bad_request)
+            expect(Character.exists?(name: test_params[:name])).to be false
+          end
+        end
+
+        it "rolls back the whole character when a nested ability score fails validation" do
+          test_params = {
+            name: "Rollback Test Character #{SecureRandom.hex(4)}",
+            level: 1, experience_points: 0, alignment: "Neutral Good", background: "Folk Hero",
+            character_class_id: "wizard", race_id: "human", languages: [ "common" ]
+          }
+
+          ability_scores_params = [ { ability_id: "str", score: 999, saving_throw_proficient: false } ]
+
+          post "/api/v1/users/#{@user1.id}/characters",
+            params: { character: test_params, ability_scores: ability_scores_params },
+            as: :json
+
+          expect(response).to have_http_status(:bad_request)
+          expect(Character.exists?(name: test_params[:name])).to be false
+        end
+
+        it "rolls back the whole character when combat_stats fails validation, with a readable nested error message" do
+          test_params = {
+            name: "Rollback Combat Stats Test Character #{SecureRandom.hex(4)}",
+            level: 1, experience_points: 0, alignment: "Neutral Good", background: "Folk Hero",
+            character_class_id: "wizard", race_id: "human", languages: [ "common" ]
+          }
+
+          combat_stats_params = {
+            current_hp: -5, max_hp: 8, temporary_hp: 0, hit_dice_remaining: 1,
+            death_save_successes: 0, death_save_failures: 0, stable: true,
+            armor_class: 12, conditions: []
+          }
+
+          post "/api/v1/users/#{@user1.id}/characters",
+            params: { character: test_params, combat_stats: combat_stats_params },
+            as: :json
+
+            expect(response).to have_http_status(:bad_request)
+            expect(Character.exists?(name: test_params[:name])).to be false
+            expect(JSON.parse(response.body)).to include("error" => "Current hp must be greater than or equal to 0")
+        end
+
+        xit "returns 401 status when user is not authenticated" do
+        end
 
         it "returns a 404 status when target user is not found" do
-          post "/api/v1/users/9999999/characters", as: :json
+          post "/api/v1/users/99999999/characters", as: :json
 
           expect(response).to have_http_status(:not_found)
           expect(JSON.parse(response.body)).to include("error" => "User not found")
