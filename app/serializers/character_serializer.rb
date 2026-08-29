@@ -19,11 +19,11 @@ class CharacterSerializer
       {
         ability_id: a.ability_id,
         score: a.score,
-        saving_throw_proficient: a.saving_throw_proficient,
+        saving_throw_proficient: a.saving_throw_proficient
       }
     end
   end
-  
+
   attribute :skills do |character|
     character.skills.map do |s|
       {
@@ -47,7 +47,7 @@ class CharacterSerializer
       death_save_failures: cs.death_save_failures,
       stable: cs.stable,
       armor_class: cs.armor_class,
-      conditions: cs.conditions,
+      conditions: cs.conditions
     }
   end
 end
