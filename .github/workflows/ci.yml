@@ -18,7 +18,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Install Ruby and gems
         uses: ruby/setup-ruby@v1
@@ -53,28 +53,17 @@ jobs:
           --health-timeout 5s
           --health-retries 5
 
-      redis:
-        image: redis:7-alpine
-        ports:
-          - 6379:6379
-        options: >-
-          --health-cmd "redis-cli ping"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-
     env:
       RAILS_ENV: test
       DATABASE_URL: postgres://postgres:postgres@localhost:5432/rails_test
-      REDIS_URL: redis://localhost:6379/0
       CI: true
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Cache VCR cassettes
-        uses: actions/cache@v5
+        uses: actions/cache@v6
         with:
           path: spec/vcr_cassettes
           key: vcr-cassettes-${{ hashFiles('spec/vcr_cassettes/**/*.yml') }}
@@ -90,8 +79,10 @@ jobs:
       - name: Verify database connection
         run: psql "$DATABASE_URL" -c "SELECT version();"
 
-      - name: Load test schema
-        run: bin/rails db:schema:load
+      - name: Prepare test database
+        run: |
+          bin/rails db:create
+          bin/rails db:schema:load
 
       - name: Run tests
         run: |
@@ -102,9 +93,18 @@ jobs:
             --out tmp/rspec-results.xml
 
       - name: Upload test results
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v7
         if: always()
         with:
           name: rspec-results
           path: tmp/rspec-results.xml
+          retention-days: 7
+
+      - name: Keep screenshots from failed system tests
+        uses: actions/upload-artifact@v7
+        if: failure()
+        with:
+          name: screenshots
+          path: ${{ github.workspace }}/tmp/screenshots
+          if-no-files-found: ignore
           retention-days: 7

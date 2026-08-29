@@ -3,7 +3,7 @@ class Api::V1::CharactersController < ApplicationController
   before_action :set_character, only: [ :show, :update, :destroy ]
 
   def index
-    characters = Character.all
+    characters = Character.order(:id)
 
     render json: CharacterSerializer.new(characters).serializable_hash
   end

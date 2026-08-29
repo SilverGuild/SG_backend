@@ -1,9 +1,11 @@
 require 'rails_helper'
 
 RSpec.describe Character, type: :model do
-  describe "happy paths" do
+  context "happy paths" do
+    let(:password) { "password123" }
+
     before(:each) do
-      @user =  @user1 = User.create!(username: "user1", email: "user1@gmail.com")
+      @user =  @user1 = User.create!(username: "user1", email: "user1@gmail.com", password: password)
 
       @character = Character.create!(name: "Kaelynn Thornwick",
                                       level: 1,
@@ -21,6 +23,9 @@ RSpec.describe Character, type: :model do
 
     describe "relationships" do
       it { should belong_to(:user) }
+      it { should have_many(:skills).class_name("CharacterSkill").dependent(:destroy) }
+      it { should have_many(:ability_scores).class_name("CharacterAbilityScore").dependent(:destroy) }
+      it { should have_one(:combat_stats).class_name("CharacterCombatStats").dependent(:destroy) }
     end
 
     describe "validations" do
@@ -131,6 +136,38 @@ RSpec.describe Character, type: :model do
             expect(test_language.script).to eq("Dwarvish")
           end
         end
+      end
+    end
+
+    describe "cascading deletes" do
+      it "destroys associated skills when the character is destroyed" do
+        skill = @character.skills.create!(skill_id: "stealth", proficient: true)
+
+        expect(CharacterSkill.exists?(skill.id)).to be true
+
+        @character.destroy
+
+        expect(CharacterSkill.exists?(skill.id)).to be false
+      end
+
+      it "destroys associated ability scores when the character is destroyed" do
+        ability_score = @character.ability_scores.create!(ability_id: "wis", score: 14)
+
+        expect(CharacterAbilityScore.exists?(ability_score.id)).to be true
+
+        @character.destroy
+
+        expect(CharacterAbilityScore.exists?(ability_score.id)).to be false
+      end
+
+      it "destroys associated combat stats when the character is destroyed" do
+        combat_stats = @character.create_combat_stats!(current_hp: 10, max_hp: 10, hit_dice_remaining: @character.level, armor_class: 12)
+
+        expect(CharacterCombatStats.exists?(combat_stats.id)).to be true
+
+        @character.destroy
+
+        expect(CharacterCombatStats.exists?(combat_stats.id)).to be false
       end
     end
   end

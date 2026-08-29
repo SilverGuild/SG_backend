@@ -2,8 +2,10 @@ require "rails_helper"
 
 RSpec.describe "API::V1::Characters", type: :request do
   describe "RESTful endpoints" do
+    let(:password) { "password123" }
+
     before(:each) do
-      @user = User.create!(username: "user1", email: "user1@gmail.com")
+      @user = User.create!(username: "user1", email: "user1@gmail.com", password: password)
 
       @character1 = Character.create!(name: "Kaelynn Thornwick",
                                       level: 1,

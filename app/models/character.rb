@@ -3,6 +3,10 @@ class Character < ApplicationRecord
   belongs_to :user
   validates :user_id, presence: true
 
+  has_many :skills, class_name: "CharacterSkill", dependent: :destroy
+  has_many :ability_scores, class_name: "CharacterAbilityScore", dependent: :destroy
+  has_one :combat_stats, class_name: "CharacterCombatStats", dependent: :destroy, validate: true
+
   # Presence validations
   validates :name, presence: true
   validates :level, presence: true
@@ -69,7 +73,7 @@ class Character < ApplicationRecord
 
   def language(lang)
     @language ||= begin
-      data = Dnd5eDataGateway.fetch_langauges(lang)
+      data = Dnd5eDataGateway.fetch_languages(lang)
       LanguagePoro.new(data)
     end
   end

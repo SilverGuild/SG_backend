@@ -1,0 +1,9 @@
+production:
+  refresh_dnd5e_cache:
+    class: Dnd5eCacheRefreshJob
+    schedule: every day at 3am
+
+development:
+  refresh_dnd5e_cache:
+    class: Dnd5eCacheRefreshJob
+    schedule: every 6 hours

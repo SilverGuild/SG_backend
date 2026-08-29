@@ -36,6 +36,16 @@ end
 #
 # Rails.root.glob('spec/support/**/*.rb').sort_by(&:to_s).each { |f| require f }
 
+# Defaults every request-spec HTTP call to `as: :json` unless explicitly
+# overridden, so individual specs don't need to repeat `as: :json`
+# every get/post/patch/delete call:
+module DefaultJsonRequestFormat
+  def process(method, action = nill, **args)
+    args[:as] = :json unless args.key?(:as)
+    super
+  end
+end
+
 # Ensures that the test database schema matches the current schema file.
 # If there are pending migrations it will invoke `db:test:prepare` to
 # recreate the test database by loading the schema.
@@ -55,7 +65,7 @@ RSpec.configure do |config|
   # examples within a transaction, remove the following line or assign false
   # instead of true.
   config.use_transactional_fixtures = true
-
+  config.include DefaultJsonRequestFormat, type: :request
   # You can uncomment this line to turn off ActiveRecord support entirely.
   # config.use_active_record = false
 

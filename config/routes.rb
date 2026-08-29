@@ -10,11 +10,25 @@ Rails.application.routes.draw do
       resources :subraces, only: [ :index, :show ]
       resources :languages, only: [ :index, :show ]
 
-      resources :users, only: [ :index, :show, :create, :update, :destroy ] do
+      resources :users, only: [ :index, :show, :update, :destroy ] do
         resources :characters, only: [ :index, :create ], controller: "users/characters"
       end
 
-      resources :characters, only: [ :index, :show, :update, :destroy ]
+      resources :characters, only: [ :index, :show, :update, :destroy ] do
+        resources :skills, only: [ :index, :create ], controller: "characters/character_skills"
+        resources :ability_scores, only: [ :index, :create ], controller: "characters/character_ability_scores"
+        resource :combat_stats, only: [ :show, :create ], controller: "characters/character_combat_stats"
+      end
+
+      resources :character_skills, only: [ :update, :destroy ]
+      resources :character_ability_scores, only: [ :update, :destroy ]
+      resources :character_combat_stats, only: [ :update, :destroy ]
+
+      # Auth
+      post "signup", to: "users#create"
+      post "login", to: "sessions#create"
+      delete "logout", to: "sessions#destroy"
+      get "current", to: "sessions#current"
     end
   end
 end

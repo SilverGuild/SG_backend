@@ -5,19 +5,20 @@ Character.destroy_all
 
 # Sample Character_Classes, Races (embedded Subclasses, Subraces, and languages), Alignments, and Backgrounds
 CHARACTER_CLASSES = {
-  'barbarian' => { subclasses: [ 'berserker', nil ] },
-  'bard' => { subclasses: [ 'lore', nil ] },
-  'cleric' => { subclasses: [ 'life', nil ] },
-  'druid' => { subclasses: [ 'land', nil ] },
-  'fighter' => { subclasses: [ 'champion', nil ] },
-  'monk' => { subclasses: [ 'open-hand', nil ] },
-  'paladin' => { subclasses: [ 'devotion', nil ] },
-  'ranger' => { subclasses: [ 'hunter', nil ] },
-  'rogue' => { subclasses: [ 'thief', nil ] },
-  'sorcerer' => { subclasses: [ 'draconic', nil ] },
-  'warlock' => { subclasses: [ 'fiend', nil ] },
-  'wizard' => { subclasses: [ 'evocation', nil ] }
+  'barbarian' => { subclasses: [ 'berserker', nil ], hit_die: 12 },
+  'bard' => { subclasses: [ 'lore', nil ], hit_die: 8 },
+  'cleric' => { subclasses: [ 'life', nil ], hit_die: 8 },
+  'druid' => { subclasses: [ 'land', nil ], hit_die: 8 },
+  'fighter' => { subclasses: [ 'champion', nil ], hit_die: 10 },
+  'monk' => { subclasses: [ 'open-hand', nil ], hit_die: 8 },
+  'paladin' => { subclasses: [ 'devotion', nil ], hit_die: 10 },
+  'ranger' => { subclasses: [ 'hunter', nil ], hit_die: 10 },
+  'rogue' => { subclasses: [ 'thief', nil ], hit_die: 8 },
+  'sorcerer' => { subclasses: [ 'draconic', nil ], hit_die: 6 },
+  'warlock' => { subclasses: [ 'fiend', nil ], hit_die: 8 },
+  'wizard' => { subclasses: [ 'evocation', nil ], hit_die: 6 }
 }
+
 RACES = {
   'dragonborn' => { subraces: [ nil ], languages: [ 'common', 'draconic' ] },
   'dwarf' => { subraces: [ 'hill-dwarf', nil ], languages: [ 'common', 'dwarfish' ] },
@@ -30,40 +31,77 @@ RACES = {
   'tiefling' => { subraces: [ nil ], languages: [ 'common', 'infernal' ] }
 }
 
-ALIGNMENTS = [
-  'Lawful Good',
-  'Neutral Good',
-  'Chaotic Good',
-  'Lawful Neutral',
-  'True Neutral',
-  'Chaotic Neutral',
-  'Lawful Evil',
-  'Neutral Evil',
-  'Chaotic Evil'
-]
+ALIGNMENTS = %w[
+  lawful-good neutral-good chaotic-good lawful-neutral true-neutral chaotic-neutral lawful-evil neutral-evil chaotic-evil
+].freeze
 
-BACKGROUNDS = [
-  'Acolyte',
-  'Charlatan',
-  'Criminal',
-  'Entertainer',
-  'Folk Hero',
-  'Guild Artisan',
-  'Hermit',
-  'Noble',
-  'Outlander',
-  'Sage',
-  'Sailor',
-  'Soldier',
-  'Urchin'
-]
+BACKGROUNDS = %w[
+  acolyte charlatan criminal entertainer folk hero guild artisan hermit noble outlander sage sailor soldier urchin
+].freeze
+
+ABILITIES = %w[ str dex con int wis cha ].freeze
+
+SKILLS = %w[
+  acrobatics animal-handling arcana athletics deception history
+  insight intimidation investigation medicine nature perception
+  performance persuasion religion sleight-of-hand stealth survival
+].freeze
+
+CONDITIONS = %w[
+
+].freeze
+
+def assign_ability_scores(character)
+  saving_throw_ids = ABILITIES.sample(2)
+
+  ABILITIES.each do |ability_id|
+    character.ability_scores.create!(
+      ability_id: ability_id,
+      score: rand(8..18),
+      saving_throw_proficient: saving_throw_ids.include?(ability_id)
+    )
+  end
+end
+
+def assign_skills(character)
+  proficient_skill_ids = SKILLS.sample(rand(2..4))
+  expertise_skill_ids = rand < 0.3 ? proficient_skill_ids.sample(1) : []
+
+  SKILLS.each do |skill_id|
+    character.skills.create!(
+      skill_id: skill_id,
+      proficient: proficient_skill_ids.include?(skill_id),
+      expertise: expertise_skill_ids.include?(skill_id)
+    )
+  end
+end
+
+def assign_combat_skills(character)
+  hit_die = CHARACTER_CLASSES.fetch(character.character_class_id)[:hit_die]
+
+  con_modifier = (character.ability_scores.find_by!(ability_id: "con").score - 10) / 2
+  dex_modifier = (character.ability_scores.find_by!(ability_id: "dex").score - 10) / 2
+
+  max_hp = [ hit_die + con_modifier, 1 ].max
+  (2..character.level).each do
+    max_hp += [ rand(1..hit_die) + con_modifier, 1 ].max
+  end
+
+  character.create_combat_stats!(
+    current_hp: max_hp,
+    max_hp: max_hp,
+    hit_dice_remaining: character.level,
+    armor_class: 10 + dex_modifier + rand(0..2)
+  )
+end
 
 # Create test users with Faker
 Rails.logger.info "Creating test users with Faker..."
 10.times do
   User.create!(
     username: Faker::Internet.unique.username(specifier: 5..12),
-    email: Faker::Internet.unique.email
+    email: Faker::Internet.unique.email,
+    password: Faker::Internet.password
   )
 end
 
@@ -84,7 +122,7 @@ User.all.each do |user|
     xp_thresholds = [ 0, 300, 900, 2700, 6500, 14000, 23000, 34000, 48000, 64000, 85000 ]
     experience_points = xp_thresholds[level - 1] + rand(0..(xp_thresholds[level] - xp_thresholds[level - 1]))
 
-    user.characters.create!(
+    character = user.characters.create!(
       name: Faker::Games::ElderScrolls.name,
       level: level,
       experience_points: experience_points,
@@ -96,5 +134,50 @@ User.all.each do |user|
       subrace_id: subrace,
       languages: RACES[race][:languages]
     )
+
+    # Assign character ability scores and skills
+    assign_ability_scores(character)
+    assign_skills(character)
+    assign_combat_skills(character)
   end
+end
+
+Rails.logger.info "Creating admin account for development"
+admin = User.create!(
+  username: "sg_admin",
+  email: "sg_admin@gmail.com",
+  password: "dnd4life"
+)
+
+Rails.logger.info "Create test characters for admin account"
+8.times do
+  # Handle random class associated subclass assignment
+  character_class = CHARACTER_CLASSES.keys.sample
+  subclass = CHARACTER_CLASSES[character_class][:subclasses].sample
+
+  # Handle random race associated subrace assignment
+  race = RACES.keys.sample
+  subrace = RACES[race][:subraces].sample
+
+  # Ensure that experience points are generated randomly based on the level
+  level = rand(1..10)
+  xp_thresholds = [ 0, 300, 900, 2700, 6500, 14000, 23000, 34000, 48000, 64000, 85000 ]
+  experience_points = xp_thresholds[level - 1] + rand(0..(xp_thresholds[level] - xp_thresholds[level - 1]))
+
+  character = admin.characters.create!(
+    name: Faker::Games::ElderScrolls.name,
+    level: level,
+    experience_points: experience_points,
+    alignment: ALIGNMENTS.sample,
+    background: BACKGROUNDS.sample,
+    character_class_id: character_class,
+    race_id: race,
+    subclass_id: subclass,
+    subrace_id: subrace,
+    languages: RACES[race][:languages]
+  )
+
+  assign_ability_scores(character)
+  assign_skills(character)
+  assign_combat_skills(character)
 end
