@@ -9,13 +9,13 @@ source "https://rubygems.org"
 # 8.1.3.1, the patched release for CVE-2026-66066 (Active Storage
 # variant-processing RCE). Run `bundle update rails` to pull the
 # patched version into Gemfile.lock, then re-run bundle-audit to confirm.
-gem "rails", "~> 8.1.1"
+gem "rails", "~> 8.1.4"
 
 # ------------------------------------------------------------------
 # Database
 # ------------------------------------------------------------------
 
-gem "pg", "~> 1.6" # PostgreSQL adapter for Active Record
+gem "pg", "~> 1.7" # PostgreSQL adapter for Active Record
 
 # ------------------------------------------------------------------
 # Web server
